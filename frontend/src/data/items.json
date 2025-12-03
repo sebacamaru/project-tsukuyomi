@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "name": "Potion",
+    "price": 50,
+    "icon": "https://via.placeholder.com/64/3498db/ffffff?text=P"
+  },
+  {
+    "id": 2,
+    "name": "Elixir",
+    "price": 120,
+    "icon": "https://via.placeholder.com/64/e74c3c/ffffff?text=E"
+  },
+  {
+    "id": 3,
+    "name": "Phoenix Down",
+    "price": 500,
+    "icon": "https://via.placeholder.com/64/f39c12/ffffff?text=PD"
+  },
+  {
+    "id": 4,
+    "name": "Ether",
+    "price": 150,
+    "icon": "https://via.placeholder.com/64/9b59b6/ffffff?text=ET"
+  }
+]

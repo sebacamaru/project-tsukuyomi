@@ -1,0 +1,17 @@
+services:
+  redis:
+    image: redis:7
+    container_name: chigo-redis
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data/redis:/data
+    networks:
+      - chigonet
+
+networks:
+  chigonet:
+    driver: bridge
