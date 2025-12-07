@@ -1,0 +1,240 @@
+/* Layouts - Mobile first */
+/*
+ * Nota sobre breakpoints:
+ * Los valores están sincronizados con las variables en variables.css
+ * --breakpoint-sm: 640px
+ * --breakpoint-md: 768px
+ * --breakpoint-lg: 1024px
+ * --breakpoint-xl: 1280px
+ *
+ * Para cambiar los breakpoints globalmente, modifica las variables en variables.css
+ * y actualiza los valores aquí manualmente (CSS no permite variables en @media)
+ */
+
+/* Container */
+.container {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 var(--space-4);
+}
+
+@media (min-width: 640px) {
+    .container {
+        padding: 0 var(--space-6);
+    }
+}
+
+.container-sm {
+    max-width: 640px;
+}
+
+.container-md {
+    max-width: 768px;
+}
+
+.container-lg {
+    max-width: 1024px;
+}
+
+/* Section */
+.section {
+    padding: var(--space-8) 0;
+}
+
+@media (min-width: 768px) {
+    .section {
+        padding: var(--space-10) 0;
+    }
+}
+
+/* Flex */
+.flex {
+    display: flex;
+}
+
+.flex-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
+}
+
+.flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.items-start {
+    align-items: flex-start;
+}
+.items-center {
+    align-items: center;
+}
+.items-end {
+    align-items: flex-end;
+}
+.items-stretch {
+    align-items: stretch;
+}
+
+.justify-start {
+    justify-content: flex-start;
+}
+.justify-center {
+    justify-content: center;
+}
+.justify-end {
+    justify-content: flex-end;
+}
+.justify-between {
+    justify-content: space-between;
+}
+.justify-around {
+    justify-content: space-around;
+}
+
+.gap-1 {
+    gap: var(--space-1);
+}
+.gap-2 {
+    gap: var(--space-2);
+}
+.gap-3 {
+    gap: var(--space-3);
+}
+.gap-4 {
+    gap: var(--space-4);
+}
+.gap-5 {
+    gap: var(--space-5);
+}
+.gap-6 {
+    gap: var(--space-6);
+}
+
+/* Grid */
+.grid {
+    display: grid;
+    gap: var(--space-4);
+}
+
+.grid-2 {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+    .grid-2 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.grid-3 {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+    .grid-3 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 768px) {
+    .grid-3 {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.grid-4 {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+    .grid-4 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .grid-4 {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* Stack vertical con separación */
+.stack > * + * {
+    margin-top: var(--space-4);
+}
+
+.stack-sm > * + * {
+    margin-top: var(--space-2);
+}
+
+.stack-lg > * + * {
+    margin-top: var(--space-6);
+}
+
+/* Posicionamiento */
+.relative {
+    position: relative;
+}
+.absolute {
+    position: absolute;
+}
+.fixed {
+    position: fixed;
+}
+.sticky {
+    position: sticky;
+}
+
+/* Display */
+.block {
+    display: block;
+}
+.inline {
+    display: inline;
+}
+.inline-block {
+    display: inline-block;
+}
+.hidden {
+    display: none;
+}
+
+/* Ancho */
+.w-full {
+    width: 100%;
+}
+.w-auto {
+    width: auto;
+}
+.h-full {
+    height: 100%;
+}
+.h-auto {
+    height: auto;
+}
+
+/* Overflow */
+.overflow-hidden {
+    overflow: hidden;
+}
+.overflow-auto {
+    overflow: auto;
+}
+.overflow-x-auto {
+    overflow-x: auto;
+}
+.overflow-y-auto {
+    overflow-y: auto;
+}
