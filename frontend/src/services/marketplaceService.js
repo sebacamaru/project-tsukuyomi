@@ -2,10 +2,11 @@ import { store } from "../core/Store.js";
 
 export const marketplaceService = {
   async getItems() {
+    console.warn("holis...");
     if (store.items.length) return store.items;
 
     try {
-      const res = await fetch("/src/data/items.json");
+      const res = await fetch("/api/items");
       if (!res.ok) throw new Error("Failed to fetch items");
       const json = await res.json();
       store.items = json;

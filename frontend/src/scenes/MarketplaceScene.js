@@ -10,6 +10,7 @@ export class MarketplaceScene extends Scene {
   }
 
   async initUI() {
+    console.warn("initUI");
     // 🎬 SIMULACIÓN: Delay de 5 segundos para ver el loading indicator
     // await new Promise((resolve) => setTimeout(resolve, 500));
 
@@ -18,7 +19,9 @@ export class MarketplaceScene extends Scene {
     const container = document.getElementById("marketItems");
 
     // Renderizar usando el componente ItemCard
-    container.innerHTML = items.map((item) => ItemCard.renderHTML(item)).join("");
+    container.innerHTML = items
+      .map((item) => ItemCard.renderHTML(item))
+      .join("");
 
     // Event delegation usando el helper onClick de la clase base
     this.onClick(".item-card", (e, card) => {

@@ -1,14 +1,17 @@
 import { Elysia } from "elysia";
 import { jwtPlugin } from "./core/jwt.js";
-import { staticFiles } from "./core/static.js";
 import { loadApiRoutes } from "./api/index.js";
 import { logger } from "./utils/logger.js";
 import { loadWsHandlers } from "./ws/index.js";
+import { staticPlugin } from "@elysiajs/static";
 import { handleWsOpen, handleWsMessage, handleWsClose } from "./ws/handler.js";
+import { initDatabase } from "./db/index.js";
+
+// Inicializar base de datos
+initDatabase();
 
 const app = new Elysia()
   .use(jwtPlugin())
-  .use(staticFiles())
   .onStart(() => logger.info("🚀 Chigotama backend inició"));
 
 // API
@@ -23,6 +26,14 @@ app
     message: handleWsMessage,
     close: handleWsClose,
   })
+  .use(
+    staticPlugin({
+      assets: "../public",
+      prefix: "/",
+      alwaysStatic: true,
+    }),
+  )
+  .get("/", () => Bun.file("../public/index.html"))
   .listen(process.env.PORT);
 
 logger.info(`✔ Server running on http://localhost:${process.env.PORT}`);

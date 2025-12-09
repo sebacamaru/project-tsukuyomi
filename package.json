@@ -5,7 +5,9 @@
   "scripts": {
     "frontend": "cd frontend && bun run dev",
     "backend": "cd backend && bun ./src/server.js",
-    "dev": "concurrently \"npm:frontend\" \"npm:backend\""
+    "docker": "cd backend && docker-compose up -d",
+    "dev": "concurrently \"npm:docker\" \"npm:backend\"",
+    "build": "cd frontend && npm run build && cd .. && npm run dev"
   },
   "devDependencies": {
     "concurrently": "^9.2.1"

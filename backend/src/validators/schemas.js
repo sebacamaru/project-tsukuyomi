@@ -4,7 +4,10 @@ import { z } from "zod";
 export const registerSchema = z.object({
   email: z.string().email("Email inválido"),
   password: z.string().min(6, "Contraseña debe tener mínimo 6 caracteres"),
-  nickname: z.string().min(3, "Nickname debe tener mínimo 3 caracteres").max(20, "Nickname muy largo"),
+  nickname: z
+    .string()
+    .min(3, "Nickname debe tener mínimo 3 caracteres")
+    .max(20, "Nickname muy largo"),
 });
 
 export const loginSchema = z.object({
@@ -16,19 +19,41 @@ export const loginSchema = z.object({
 export const createUserSchema = z.object({
   email: z.string().email("Email inválido"),
   password: z.string().min(6, "Contraseña debe tener mínimo 6 caracteres"),
-  nickname: z.string().min(3, "Nickname debe tener mínimo 3 caracteres").max(20, "Nickname muy largo"),
+  nickname: z
+    .string()
+    .min(3, "Nickname debe tener mínimo 3 caracteres")
+    .max(20, "Nickname muy largo"),
 });
 
 // ===== MONSTER SCHEMAS =====
 export const createMonsterSchema = z.object({
   name: z.string().min(1, "Nombre requerido").max(50, "Nombre muy largo"),
-  attack: z.number().int().min(1, "Ataque debe ser mayor a 0").max(999, "Ataque máximo: 999"),
-  defense: z.number().int().min(1, "Defensa debe ser mayor a 0").max(999, "Defensa máxima: 999"),
+  attack: z
+    .number()
+    .int()
+    .min(1, "Ataque debe ser mayor a 0")
+    .max(999, "Ataque máximo: 999"),
+  defense: z
+    .number()
+    .int()
+    .min(1, "Defensa debe ser mayor a 0")
+    .max(999, "Defensa máxima: 999"),
   ownerId: z.number().int().positive("ID de dueño inválido"),
 });
 
 export const userIdParamSchema = z.object({
   userId: z.string().regex(/^\d+$/, "ID debe ser numérico").transform(Number),
+});
+
+// ===== ITEM SCHEMAS =====
+export const createItemSchema = z.object({
+  name: z.string().min(1, "Nombre requerido").max(50, "Nombre muy largo"),
+  price: z
+    .number()
+    .int()
+    .min(0, "Precio debe ser mayor o igual a 0")
+    .max(999999, "Precio máximo: 999999"),
+  icon: z.string().url("URL de ícono inválida"),
 });
 
 // ===== WEBSOCKET SCHEMAS =====
