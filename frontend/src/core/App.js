@@ -2,9 +2,9 @@ import { Renderer } from "./Renderer.js";
 import { SceneManager } from "./SceneManager.js";
 import { router } from "./Router.js";
 import { loadingIndicator } from "../ui/components/LoadingIndicator/LoadingIndicator.js";
-import "../ui/global.css";
+import { Navbar } from "../ui/components/Navbar/Navbar.js";
 import layoutHTML from "../ui/layout/layout.html?raw";
-import "../ui/layout/layout.css";
+import "../styles/chigui.css";
 
 export class App {
   constructor() {
@@ -25,5 +25,42 @@ export class App {
     // Inicializar SceneManager con el outlet y el router
     const outlet = uiRoot.querySelector("#scene-outlet");
     SceneManager.init(outlet, router);
+
+    // Inicializar Navbar con items de navegación
+    this.initNavbar(uiRoot);
+  }
+
+  initNavbar(uiRoot) {
+    const navItems = [
+      {
+        route: "/",
+        label: "Inicio",
+        icon: "🏠",
+      },
+      {
+        route: "/battle",
+        label: "Batalla",
+        icon: "⚔️",
+      },
+      {
+        route: "/inventory",
+        label: "Inventario",
+        icon: "🎒",
+      },
+      {
+        route: "/marketplace",
+        label: "Marketplace",
+        icon: "🏪",
+      },
+      {
+        route: "/profile",
+        label: "Perfil",
+        icon: "👤",
+      },
+    ];
+
+    const navbar = new Navbar(navItems);
+    const navbarContainer = uiRoot.querySelector("#navbar-container");
+    navbarContainer.appendChild(navbar.render());
   }
 }

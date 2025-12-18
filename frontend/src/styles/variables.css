@@ -1,10 +1,10 @@
 :root {
     /* Colores principales */
-    --primary: #3b82f6;
+    --primary: #a2e9ff;
     --primary-dark: #2563eb;
     --primary-light: #60a5fa;
 
-    --secondary: #8b5cf6;
+    --secondary: #ddfd00;
     --secondary-dark: #7c3aed;
     --secondary-light: #a78bfa;
 
@@ -50,8 +50,8 @@
 
     /* Tipografía */
     --font-sans:
-        -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
-        Arial, sans-serif;
+        "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI",
+        "Helvetica Neue", Arial, sans-serif;
     --font-mono: "SF Mono", Monaco, "Cascadia Code", "Courier New", monospace;
 
     --text-xs: 0.75rem; /* 12px */
@@ -105,16 +105,4 @@
     --breakpoint-lg: 1024px;
     --breakpoint-xl: 1280px;
     --breakpoint-2xl: 1536px;
-}
-
-/* Dark mode (opcional) */
-@media (prefers-color-scheme: dark) {
-    :root {
-        --bg: var(--neutral-900);
-        --bg-alt: var(--neutral-800);
-        --surface: var(--neutral-800);
-        --text: var(--neutral-50);
-        --text-muted: var(--neutral-400);
-        --border: var(--neutral-700);
-    }
 }

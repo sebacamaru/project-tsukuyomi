@@ -1,0 +1,127 @@
+/**
+ * Navbar
+ */
+
+.navbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: var(--z-fixed);
+    background-color: var(--bg);
+    height: 110px;
+}
+
+.navbar__title {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    margin-top: -10px;
+    background-image: url("@/assets/images/navbar__title_bg1.png");
+    background-position: 0px -4px;
+}
+
+.navbar__title h1 {
+    margin: 0;
+    font-size: var(--text-lg);
+    font-weight: var(--weight-bold);
+    color: var(--text);
+    display: block;
+    padding: 0 24px;
+    background-image: url("@/assets/images/navbar__title_bg2.png");
+    background-position: 0px -4px;
+}
+
+.navbar__container {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-3);
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-top: var(--space-2);
+}
+
+.navbar__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-1);
+    padding: var(--space-2);
+    width: 64px;
+    height: 64px;
+    text-decoration: none;
+    color: var(--text-muted);
+    /*transition: width var(--transition-fast);
+    transform-origin: bottom center;*/
+    cursor: pointer;
+    border-radius: var(--radius-lg);
+    position: relative;
+    border: 3px solid #000;
+    box-shadow: 2px 4px 0 #000;
+}
+
+/* Alternar colores de fondo */
+.navbar__item:nth-child(odd) {
+    background-color: var(--primary);
+}
+
+.navbar__item:nth-child(even) {
+    background-color: var(--secondary);
+}
+
+.navbar__icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    transition: all var(--transition-base);
+    transform-origin: bottom center;
+}
+
+.navbar__label {
+    font-size: var(--text-xs);
+    font-weight: var(--weight-medium);
+    white-space: nowrap;
+    opacity: 0.8;
+    display: none;
+}
+
+.navbar__item:hover .navbar__icon {
+    transform: scale(1.4) translateY(5px);
+}
+
+.navbar__item:hover .navbar__label {
+    opacity: 1;
+    font-weight: var(--weight-semibold);
+}
+
+/* Item activo - zoom fijo solo en el ícono */
+.navbar__item--active {
+    width: 72px;
+    height: 72px;
+}
+.navbar__item--active .navbar__icon {
+    transform: scale(1.4) translateY(5px);
+}
+
+/* Animación de entrada suave */
+.navbar {
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

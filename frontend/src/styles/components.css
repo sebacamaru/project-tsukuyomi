@@ -255,19 +255,3 @@
     box-shadow: var(--shadow-xl);
     z-index: var(--z-modal);
 }
-
-/* Navbar */
-.navbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: var(--space-4);
-    background-color: var(--bg);
-    border-bottom: var(--border-width) solid var(--border);
-}
-
-@media (min-width: 768px) {
-    .navbar {
-        padding: var(--space-4) var(--space-6);
-    }
-}
