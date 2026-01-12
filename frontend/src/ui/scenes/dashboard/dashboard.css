@@ -1,4 +1,13 @@
-.dashboard {
-  padding: 20px;
-  font-family: sans-serif;
+.dashboard h1 {
+    margin-bottom: var(--space-4);
+    font-size: var(--text-2xl);
+}
+
+/* Background específico del dashboard */
+.dashboard-background {
+    background: linear-gradient(
+        to bottom,
+        rgba(255, 255, 244, 0.95),
+        rgba(230, 240, 255, 0.9)
+    ) !important;
 }

@@ -4,6 +4,7 @@ import { router } from "./Router.js";
 import { loadingIndicator } from "../ui/components/LoadingIndicator/LoadingIndicator.js";
 import { Navbar } from "../ui/components/Navbar/Navbar.js";
 import layoutHTML from "../ui/layout/layout.html?raw";
+import "../ui/layout/layout.css";
 import "../styles/chigui.css";
 
 export class App {
@@ -43,9 +44,10 @@ export class App {
         icon: "⚔️",
       },
       {
-        route: "/inventory",
-        label: "Inventario",
+        route: "/professor",
+        label: "Profesor Cacho",
         icon: "🎒",
+        badge: 5,
       },
       {
         route: "/marketplace",

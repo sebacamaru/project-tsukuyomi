@@ -1,0 +1,356 @@
+/**
+ * MessageBox - Estilos del sistema de mensajes RPG
+ */
+
+/* Overlay */
+.message-box-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0);
+    backdrop-filter: blur(0px);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    z-index: var(--z-modal);
+    padding: var(--space-4);
+    opacity: 0;
+    transition:
+        opacity var(--transition-base),
+        backdrop-filter var(--transition-base),
+        background var(--transition-base);
+    pointer-events: none;
+}
+
+.message-box-overlay.active {
+    opacity: 1;
+    /*background: rgba(0, 0, 0, 0.4);*/
+    /*backdrop-filter: blur(2px);*/
+    pointer-events: all;
+}
+
+/* Contenedor principal */
+.message-box {
+    background: var(--bg);
+    border: 3px solid var(--neutral-800);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+    max-width: 600px;
+    width: 100%;
+    display: flex;
+    gap: var(--space-4);
+    padding: var(--space-5);
+    transform: translateY(20px);
+    transition: transform var(--transition-base);
+    position: relative;
+}
+
+.message-box-overlay.active .message-box {
+    transform: translateY(0);
+}
+
+/* Avatar */
+.message-box__avatar {
+    flex-shrink: 0;
+    width: 64px;
+    height: 64px;
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 2px solid var(--neutral-300);
+    background: var(--surface);
+}
+
+.message-box__avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Contenido */
+.message-box__content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    min-width: 0;
+}
+
+/* Speaker (nombre del personaje) */
+.message-box__speaker {
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-bold);
+    color: var(--vibrant-coral);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding-bottom: var(--space-2);
+    border-bottom: 2px solid var(--border);
+}
+
+/* Texto del mensaje */
+.message-box__text {
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: 1.6;
+    color: var(--text);
+    min-height: 2.4em;
+    cursor: pointer;
+    user-select: none;
+}
+
+/* Hint de cierre */
+.message-box__close-hint {
+    margin-top: var(--space-2);
+    text-align: center;
+}
+
+.message-box__close-hint span {
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    font-style: italic;
+    opacity: 0;
+    animation: fadeInHint 0.3s ease forwards 0.5s;
+}
+
+@keyframes fadeInHint {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Opciones */
+.message-box__options {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin-top: var(--space-2);
+    opacity: 0;
+    transform: translateY(8px);
+    transition:
+        opacity var(--transition-base),
+        transform var(--transition-base);
+    pointer-events: none;
+}
+
+.message-box__options.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: all;
+}
+
+/* Botones de opción */
+.message-box__option {
+    background: var(--surface);
+    border: 2px solid var(--neutral-300);
+    border-radius: var(--radius);
+    padding: var(--space-3) var(--space-4);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    font-weight: var(--weight-medium);
+    color: var(--text);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    text-align: left;
+    position: relative;
+    overflow: hidden;
+}
+
+.message-box__option::before {
+    content: "▶";
+    position: absolute;
+    left: var(--space-3);
+    opacity: 0;
+    transform: translateX(-8px);
+    transition: all var(--transition-fast);
+    color: var(--vibrant-coral);
+    font-size: var(--text-sm);
+}
+
+.message-box__option:hover {
+    background: var(--neutral-100);
+    border-color: var(--vibrant-coral);
+    padding-left: var(--space-6);
+    transform: translateX(4px);
+}
+
+.message-box__option:hover::before {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.message-box__option:active {
+    transform: translateX(4px) scale(0.98);
+    background: var(--neutral-200);
+}
+
+/* Ícono de opción */
+.message-box__option .option-icon {
+    font-size: var(--text-lg);
+    flex-shrink: 0;
+}
+
+.message-box__option .option-text {
+    flex: 1;
+}
+
+/* Animación de entrada de opciones (stagger) */
+.message-box__options.visible .message-box__option {
+    animation: slideInOption 0.2s ease forwards;
+}
+
+.message-box__options.visible .message-box__option:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.message-box__options.visible .message-box__option:nth-child(2) {
+    animation-delay: 0.05s;
+}
+
+.message-box__options.visible .message-box__option:nth-child(3) {
+    animation-delay: 0.1s;
+}
+
+.message-box__options.visible .message-box__option:nth-child(4) {
+    animation-delay: 0.15s;
+}
+
+.message-box__options.visible .message-box__option:nth-child(5) {
+    animation-delay: 0.2s;
+}
+
+@keyframes slideInOption {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Efecto de cursor parpadeante (typewriter) */
+.message-box__text.typing::after {
+    content: "▋";
+    animation: blink 0.7s infinite;
+    margin-left: 2px;
+}
+
+@keyframes blink {
+    0%,
+    49% {
+        opacity: 1;
+    }
+    50%,
+    100% {
+        opacity: 0;
+    }
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .message-box {
+        flex-direction: column;
+        padding: var(--space-4);
+    }
+
+    .message-box__avatar {
+        width: 48px;
+        height: 48px;
+        align-self: flex-start;
+    }
+
+    .message-box__text {
+        font-size: var(--text-sm);
+    }
+
+    .message-box__option {
+        padding: var(--space-2) var(--space-3);
+        font-size: var(--text-sm);
+    }
+
+    .message-box__option:hover {
+        padding-left: var(--space-5);
+    }
+}
+
+/* Tablets */
+@media (min-width: 641px) and (max-width: 1024px) {
+    .message-box-overlay {
+        align-items: center;
+    }
+}
+
+/* Desktop */
+@media (min-width: 1025px) {
+    .message-box-overlay {
+        align-items: center;
+    }
+
+    .message-box {
+        max-width: 700px;
+    }
+
+    .message-box__avatar {
+        width: 80px;
+        height: 80px;
+    }
+}
+
+/* Variantes de color */
+.message-box--info .message-box__speaker {
+    color: var(--info);
+}
+
+.message-box--success .message-box__speaker {
+    color: var(--success);
+}
+
+.message-box--warning .message-box__speaker {
+    color: var(--warning);
+}
+
+.message-box--error .message-box__speaker {
+    color: var(--error);
+}
+
+/* Tema oscuro (opcional) */
+@media (prefers-color-scheme: dark) {
+    .message-box {
+        background: var(--neutral-800);
+        border-color: var(--neutral-600);
+    }
+
+    .message-box__speaker {
+        border-bottom-color: var(--neutral-700);
+    }
+
+    .message-box__text {
+        color: var(--neutral-100);
+    }
+
+    .message-box__option {
+        background: var(--neutral-700);
+        border-color: var(--neutral-600);
+        color: var(--neutral-100);
+    }
+
+    .message-box__option:hover {
+        background: var(--neutral-600);
+        border-color: var(--vibrant-coral);
+    }
+
+    .message-box__option:active {
+        background: var(--neutral-700);
+    }
+}

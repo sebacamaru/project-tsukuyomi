@@ -1,0 +1,31 @@
+/**
+ * App Layout
+ * Sistema de layout principal que distribuye el espacio entre scene-outlet y navbar
+ */
+
+#app-layout {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+}
+
+#scene-outlet {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background-color: rgba(255, 255, 244, 0.9);
+    backdrop-filter: blur(10px);
+}
+
+#navbar-container {
+    flex-shrink: 0;
+    transition: transform var(--transition-slow);
+}
+
+/* Ocultar navbar en modo cutscene con transición suave */
+#navbar-container.navbar-container--hidden {
+    transform: translateY(120px);
+    pointer-events: none;
+}

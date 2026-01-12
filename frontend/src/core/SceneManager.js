@@ -6,6 +6,7 @@ export const SceneManager = {
   current: null,
   container: null,
   router: null,
+  cutsceneMode: false,
 
   init(domContainer, router = null) {
     this.container = domContainer;
@@ -58,7 +59,10 @@ export const SceneManager = {
 
       // Lazy load si es una función (dynamic import)
       let SceneClass = sceneClassOrImporter;
-      if (typeof sceneClassOrImporter === "function" && !sceneClassOrImporter.prototype) {
+      if (
+        typeof sceneClassOrImporter === "function" &&
+        !sceneClassOrImporter.prototype
+      ) {
         const module = await sceneClassOrImporter();
         SceneClass = module.default || Object.values(module)[0];
       }
@@ -89,6 +93,34 @@ export const SceneManager = {
     } finally {
       // Ocultar loading indicator cuando termine (éxito o error)
       loadingIndicator.hide();
+    }
+  },
+
+  /**
+   * Aplicar o remover el modo cutscene
+   * @param {boolean} enabled - true para activar, false para desactivar
+   */
+  _applyCutsceneMode(enabled) {
+    this.cutsceneMode = enabled;
+
+    const navbarContainer = document.querySelector("#navbar-container");
+    const sceneOutlet = document.querySelector("#scene-outlet");
+
+    if (!navbarContainer) {
+      console.warn("SceneManager: #navbar-container no encontrado");
+      return;
+    }
+
+    if (enabled) {
+      navbarContainer.classList.add("navbar-container--hidden");
+      if (sceneOutlet) {
+        sceneOutlet.classList.add("cutscene-mode");
+      }
+    } else {
+      navbarContainer.classList.remove("navbar-container--hidden");
+      if (sceneOutlet) {
+        sceneOutlet.classList.remove("cutscene-mode");
+      }
     }
   },
 };

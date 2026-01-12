@@ -3,6 +3,11 @@ import "../ui/scenes/dashboard/dashboard.css";
 import { Scene } from "../core/Scene.js";
 
 export class DashboardScene extends Scene {
+  constructor() {
+    super();
+    this.backgroundClass = "dashboard-background";
+  }
+
   async getHTML() {
     return dashboardHTML;
   }

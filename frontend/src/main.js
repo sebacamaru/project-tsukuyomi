@@ -15,6 +15,10 @@ async function start() {
     () => import("./scenes/DashboardScene.js"),
   );
   SceneManager.register("market", () => import("./scenes/MarketplaceScene.js"));
+  SceneManager.register(
+    "professor",
+    () => import("./scenes/ProfessorScene.js"),
+  );
 
   // Si querés una ruta custom, pasá el tercer parámetro:
   // SceneManager.register("profile", () => import("./scenes/ProfileScene.js"), "/mi-perfil");

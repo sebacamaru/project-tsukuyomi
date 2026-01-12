@@ -53,11 +53,18 @@ export class Navbar {
       link.classList.add("navbar__item--active");
     }
 
+    // Badge opcional
+    const badgeHTML =
+      item.badge && item.badge > 0
+        ? `<span class="navbar__badge">${item.badge > 99 ? "99+" : item.badge}</span>`
+        : "";
+
     link.innerHTML = `
       <div class="navbar__icon">
         ${item.icon}
       </div>
       <span class="navbar__label">${item.label}</span>
+      ${badgeHTML}
     `;
 
     // Event listener para navegación
@@ -123,6 +130,39 @@ export class Navbar {
   }
 
   /**
+   * Actualiza el badge de un item específico
+   */
+  updateBadge(route, count) {
+    // Actualizar en los datos
+    const item = this.items.find((item) => item.route === route);
+    if (item) {
+      item.badge = count;
+    }
+
+    // Actualizar en el DOM
+    const navItem = document.querySelector(
+      `.navbar__item[data-route="${route}"]`,
+    );
+    if (navItem) {
+      let badge = navItem.querySelector(".navbar__badge");
+
+      if (count > 0) {
+        const badgeText = count > 99 ? "99+" : count;
+        if (badge) {
+          badge.textContent = badgeText;
+        } else {
+          badge = document.createElement("span");
+          badge.className = "navbar__badge";
+          badge.textContent = badgeText;
+          navItem.appendChild(badge);
+        }
+      } else if (badge) {
+        badge.remove();
+      }
+    }
+  }
+
+  /**
    * Versión estática para rendering rápido
    */
   static renderHTML(items = [], currentRoute = "/") {
@@ -142,6 +182,10 @@ export class Navbar {
             ? currentRoute === "/"
             : currentRoute.startsWith(item.route);
         const activeClass = isActive ? " navbar__item--active" : "";
+        const badgeHTML =
+          item.badge && item.badge > 0
+            ? `<span class="navbar__badge">${item.badge > 99 ? "99+" : item.badge}</span>`
+            : "";
 
         return `
         <a href="${item.route}" class="navbar__item${activeClass}" data-route="${item.route}">
@@ -149,6 +193,7 @@ export class Navbar {
             ${item.icon}
           </div>
           <span class="navbar__label">${item.label}</span>
+          ${badgeHTML}
         </a>
       `;
       })

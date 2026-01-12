@@ -41,14 +41,16 @@ export class Renderer {
   }
 
   createParticles() {
-    const particleCount = 50;
+    const particleCount = 25;
 
     for (let i = 0; i < particleCount; i++) {
       const graphics = new this.PIXI.Graphics();
 
       // Círculo con gradiente (simulado con opacity)
-      const size = Math.random() * 3 + 1;
-      const color = [0x3498db, 0x2ecc71, 0x9b59b6, 0xf39c12][Math.floor(Math.random() * 4)];
+      const size = Math.random() * 64 + 1;
+      const color = [0x3498db, 0x2ecc71, 0x9b59b6, 0xf39c12][
+        Math.floor(Math.random() * 4)
+      ];
 
       graphics.circle(0, 0, size);
       graphics.fill({ color, alpha: 0.6 });

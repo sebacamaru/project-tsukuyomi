@@ -1,16 +1,22 @@
 :root {
     /* Colores principales */
-    --primary: #a2e9ff;
+    --primary: #fe5150ff;
     --primary-dark: #2563eb;
     --primary-light: #60a5fa;
 
-    --secondary: #ddfd00;
+    --secondary: #50a4fe;
     --secondary-dark: #7c3aed;
     --secondary-light: #a78bfa;
 
-    --accent: #f59e0b;
+    --accent: #fe5150ff;
     --accent-dark: #d97706;
     --accent-light: #fbbf24;
+
+    --frosted-blue: #a2e9ff;
+    --taupe: #3f3934ff;
+    --vibrant-coral: #fe5150ff;
+    --lime-yellow: #ddfd00ff;
+    --green-yellow: #abec69ff;
 
     /* Neutrales */
     --neutral-50: #fafafa;

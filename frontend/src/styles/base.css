@@ -17,7 +17,7 @@ h5,
 h6 {
     font-weight: var(--weight-bold);
     line-height: 1.2;
-    margin-bottom: var(--space-3);
+    /*margin-bottom: var(--space-3);*/
 }
 
 h1 {
@@ -55,7 +55,7 @@ h6 {
 /* Para cambiar breakpoints, modifica las variables en variables.css */
 
 p {
-    margin-bottom: var(--space-4);
+    /*margin-bottom: var(--space-4);*/
 }
 
 strong,
