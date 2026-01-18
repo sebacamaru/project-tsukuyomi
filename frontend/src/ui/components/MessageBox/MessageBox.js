@@ -8,7 +8,6 @@ export class MessageBox {
 
   constructor(config) {
     this.speaker = config.speaker || "";
-    this.avatar = config.avatar || null;
     this.text = config.text || "";
     this.options = config.options || [];
     this.onSelect = config.onSelect || (() => {});
@@ -35,15 +34,6 @@ export class MessageBox {
     container.className = "message-box-overlay";
     container.innerHTML = `
       <div class="message-box">
-        ${
-          this.avatar
-            ? `
-          <div class="message-box__avatar">
-            <img src="${this.avatar}" alt="${this.speaker}" />
-          </div>
-        `
-            : ""
-        }
         <div class="message-box__content">
           ${
             this.speaker
@@ -75,7 +65,7 @@ export class MessageBox {
             this.closable && this.options.length === 0
               ? `
             <div class="message-box__close-hint">
-              <span>Presiona [Enter] o haz click para continuar</span>
+              <span>Tap o [Enter] para continuar</span>
             </div>
           `
               : ""

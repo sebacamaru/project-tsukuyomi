@@ -3,15 +3,77 @@ import Database from "bun:sqlite";
 // Abrimos la base de datos SQLite (si no existe, se crea)
 export const db = new Database("./src/db/database.db");
 
+// Función para generar username temporal único
+export const generateTempUsername = () => {
+  const chars =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let result = "User_";
+  for (let i = 0; i < 6; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+};
+
 // Función para inicializar todas las tablas
 export const initDatabase = () => {
   // Tabla Users
   db.run(`CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    email TEXT NOT NULL,
+    email TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL,
-    nickname TEXT
+    username TEXT UNIQUE NOT NULL,
+    current_quest_code TEXT
   )`);
+
+  // Tabla Quests
+  db.run(`CREATE TABLE IF NOT EXISTS quests (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    code TEXT UNIQUE NOT NULL,
+    name TEXT NOT NULL,
+    description TEXT,
+    type TEXT NOT NULL,
+    scene TEXT,
+    prerequisite_quest_code TEXT,
+    rewards_json TEXT
+  )`);
+
+  // Insertar quests iniciales si la tabla está vacía
+  const questCount = db.query("SELECT COUNT(*) as count FROM quests").get();
+  if (questCount.count === 0) {
+    const initialQuests = [
+      {
+        code: "set_username",
+        name: "Tu Nombre",
+        description: "Elige cómo te llamarás en este mundo",
+        type: "main",
+        scene: "professor",
+        prerequisite_quest_code: null,
+        rewards_json: null,
+      },
+      {
+        code: "onboarding",
+        name: "Bienvenida al Mundo",
+        description: "Conoce al Profesor y elige tu primer compañero",
+        type: "main",
+        scene: "professor",
+        prerequisite_quest_code: "set_username",
+        rewards_json: JSON.stringify({ gold: 500 }),
+      },
+    ];
+
+    initialQuests.forEach((quest) => {
+      db.run(
+        "INSERT INTO quests (code, name, description, type, scene, prerequisite_quest_code, rewards_json) VALUES (?, ?, ?, ?, ?, ?, ?)",
+        quest.code,
+        quest.name,
+        quest.description,
+        quest.type,
+        quest.scene,
+        quest.prerequisite_quest_code,
+        quest.rewards_json,
+      );
+    });
+  }
 
   // Tabla Monsters
   db.run(`CREATE TABLE IF NOT EXISTS monsters (

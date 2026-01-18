@@ -20,12 +20,6 @@
     padding: var(--space-4) var(--space-4) 130px var(--space-4);
 }
 
-@media (min-width: 640px) {
-    .container {
-        /*padding: 0 var(--space-6);*/
-    }
-}
-
 .container-sm {
     max-width: 640px;
 }
@@ -40,8 +34,8 @@
 
 .box {
     border-radius: var(--radius-lg);
-    border: 3px solid #000;
-    box-shadow: 2px 4px 0 #000;
+    border: 3px solid var(--neutral-900);
+    box-shadow: 2px 4px 0 var(--neutral-900);
     overflow: hidden;
 }
 
@@ -49,7 +43,7 @@
     padding: var(--space-4);
     background-color: var(--primary);
     color: var(--neutral-50);
-    text-shadow: 2px 2px 0 #000;
+    text-shadow: 2px 2px 0 var(--neutral-900);
 }
 
 .box__title.secondary {

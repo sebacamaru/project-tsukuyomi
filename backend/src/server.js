@@ -31,9 +31,16 @@ app
       assets: "../public",
       prefix: "/",
       alwaysStatic: true,
+      indexHTML: false,
     }),
   )
-  .get("/", () => Bun.file("../public/index.html"))
+  // Catch-all: sirve index.html para rutas del SPA
+  .get("*", async ({ path, set }) => {
+    if (path.startsWith("/api")) return;
+    set.headers["content-type"] = "text/html; charset=utf-8";
+    const html = await Bun.file("../public/index.html").text();
+    return html;
+  })
   .listen(process.env.PORT);
 
 logger.info(`✔ Server running on http://localhost:${process.env.PORT}`);

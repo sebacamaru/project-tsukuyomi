@@ -1,62 +1,112 @@
-import { db } from "../db/index.js";
-import bcrypt from "bcrypt";
 import { validate } from "../validators/validate.js";
-import { createUserSchema } from "../validators/schemas.js";
+import { usernameSchema } from "../validators/schemas.js";
 import { cache } from "../services/cache.js";
 import { asyncHandler } from "../utils/errorHandler.js";
+import {
+  getUsers,
+  getUserById,
+  updateUsername,
+  checkUsernameAvailable,
+  completeCurrentQuest,
+} from "../db/schema/users.js";
 
 // Registrar rutas de usuario
 export function registerUsers(router) {
   // GET all users
-  router.get("/api/users", asyncHandler(async () => {
-    // Intentar obtener del cache
-    const cached = await cache.get("users:all");
-    if (cached) {
-      return Response.json(cached);
-    }
+  router.get(
+    "/api/users",
+    asyncHandler(async () => {
+      // Intentar obtener del cache
+      const cached = await cache.get("users:all");
+      if (cached) {
+        return cached;
+      }
 
-    // Si no está en cache, consultar DB
-    const users = [...db.query("SELECT id, email, nickname FROM users")].map(([id, email, nickname]) => ({
-      id,
-      email,
-      nickname,
-    }));
+      // Si no está en cache, consultar DB
+      const users = getUsers();
 
-    // Guardar en cache por 5 minutos
-    await cache.set("users:all", users, 300);
+      // Guardar en cache por 5 minutos
+      await cache.set("users:all", users, 300);
 
-    return Response.json(users);
-  }));
+      return users;
+    }),
+  );
 
-  // POST create user
-  router.post("/api/users", asyncHandler(async (req) => {
-    const body = await req.json();
+  // GET check username availability (debe ir antes de :userId para evitar colisión)
+  router.get(
+    "/api/users/check-username/:username",
+    asyncHandler(async (ctx) => {
+      const { username } = ctx.params;
+      const available = checkUsernameAvailable(username);
+      return { available };
+    }),
+  );
 
-    // Validar datos
-    const validation = validate(createUserSchema, body);
-    if (!validation.success) {
-      return Response.json({ error: validation.error }, { status: 400 });
-    }
+  // GET user by ID
+  router.get(
+    "/api/users/:userId",
+    asyncHandler(async (ctx) => {
+      const userId = parseInt(ctx.params.userId);
+      const user = getUserById(userId);
 
-    const { email, password, nickname } = validation.data;
+      if (!user) {
+        ctx.set.status = 404;
+        return { error: "User not found" };
+      }
 
-    // Hashear la contraseña
-    const hashed = await bcrypt.hash(password, 10);
+      return user;
+    }),
+  );
 
-    // Insertar usuario
-    db.run(
-      "INSERT INTO users (email, password, nickname) VALUES (?, ?, ?)",
-      email,
-      hashed,
-      nickname
-    );
+  // PUT update username
+  router.put(
+    "/api/users/:userId/username",
+    asyncHandler(async (ctx) => {
+      const userId = parseInt(ctx.params.userId);
+      const body = ctx.body;
 
-    // Obtener el último ID insertado
-    const id = db.lastInsertRowId;
+      // Validar datos
+      const validation = validate(usernameSchema, body);
+      if (!validation.success) {
+        ctx.set.status = 400;
+        return { error: validation.error };
+      }
 
-    // Invalidar cache de usuarios
-    await cache.delete("users:all");
+      const { username } = validation.data;
 
-    return Response.json({ id, email, nickname });
-  }));
+      const result = updateUsername(userId, username);
+
+      if (!result.success) {
+        ctx.set.status = 409;
+        return { error: result.error };
+      }
+
+      // Invalidar cache de usuarios
+      await cache.delete("users:all");
+
+      const updatedUser = getUserById(userId);
+      return updatedUser;
+    }),
+  );
+
+  // POST complete current quest
+  router.post(
+    "/api/users/:userId/complete-quest",
+    asyncHandler(async (ctx) => {
+      const userId = parseInt(ctx.params.userId);
+
+      const result = completeCurrentQuest(userId);
+
+      if (!result.success) {
+        ctx.set.status = 400;
+        return { error: result.error };
+      }
+
+      const updatedUser = getUserById(userId);
+      return {
+        ...result,
+        user: updatedUser,
+      };
+    }),
+  );
 }

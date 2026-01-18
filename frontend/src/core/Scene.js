@@ -95,6 +95,22 @@ export class Scene {
   }
 
   /**
+   * Shortcut para querySelector dentro del root de la escena
+   * Ejemplo: this.$("#email")
+   */
+  $(selector) {
+    return this.root.querySelector(selector);
+  }
+
+  /**
+   * Shortcut para querySelectorAll dentro del root de la escena
+   * Ejemplo: this.$$(".item")
+   */
+  $$(selector) {
+    return this.root.querySelectorAll(selector);
+  }
+
+  /**
    * Event delegation helper - registra un click handler en el root
    * Ejemplo: this.onClick('#btnSubmit', () => {...})
    */

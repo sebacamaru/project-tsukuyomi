@@ -18,7 +18,13 @@ export function asyncHandler(handler) {
 
       if (error.message.includes("UNIQUE constraint failed")) {
         status = 409;
-        message = "El recurso ya existe";
+        if (error.message.includes("users.email")) {
+          message = "Este email ya está registrado";
+        } else if (error.message.includes("users.username")) {
+          message = "Este nombre de usuario ya existe";
+        } else {
+          message = "El recurso ya existe";
+        }
       } else if (error.message.includes("NOT NULL constraint failed")) {
         status = 400;
         message = "Faltan campos requeridos";
@@ -28,8 +34,12 @@ export function asyncHandler(handler) {
       }
 
       return Response.json(
-        { error: message, details: process.env.NODE_ENV === "development" ? error.message : undefined },
-        { status }
+        {
+          error: message,
+          details:
+            process.env.NODE_ENV === "development" ? error.message : undefined,
+        },
+        { status },
       );
     }
   };
@@ -50,8 +60,9 @@ export function wsErrorHandler(handler) {
         JSON.stringify({
           type: "ERROR",
           message: "Error procesando evento",
-          details: process.env.NODE_ENV === "development" ? error.message : undefined,
-        })
+          details:
+            process.env.NODE_ENV === "development" ? error.message : undefined,
+        }),
       );
     }
   };

@@ -1,0 +1,57 @@
+<div class="auth">
+    <div class="auth__container">
+        <h1 class="auth__title">Project Tsukuyomi</h1>
+        <p class="auth__subtitle">Crea una cuenta nueva</p>
+
+        <form class="auth__form" id="auth-form">
+            <div class="auth__field">
+                <label for="email" class="auth__label">Email</label>
+                <input
+                    type="email"
+                    id="email"
+                    class="auth__input"
+                    placeholder="tu@email.com"
+                    required
+                    autocomplete="email"
+                />
+            </div>
+
+            <div class="auth__field">
+                <label for="password" class="auth__label">Password</label>
+                <input
+                    type="password"
+                    id="password"
+                    class="auth__input"
+                    placeholder="******"
+                    required
+                    autocomplete="new-password"
+                />
+            </div>
+
+            <div class="auth__field">
+                <label for="password-confirm" class="auth__label"
+                    >Confirmar Password</label
+                >
+                <input
+                    type="password"
+                    id="password-confirm"
+                    class="auth__input"
+                    placeholder="******"
+                    required
+                    autocomplete="new-password"
+                />
+            </div>
+
+            <div class="auth__error" id="auth-error"></div>
+
+            <button type="submit" class="auth__button" id="auth-submit">
+                Registrarse
+            </button>
+        </form>
+
+        <p class="auth__toggle">
+            <span>Ya tienes cuenta?</span>
+            <a href="/login">Inicia sesion</a>
+        </p>
+    </div>
+</div>

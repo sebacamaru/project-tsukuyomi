@@ -4,10 +4,6 @@ import { z } from "zod";
 export const registerSchema = z.object({
   email: z.string().email("Email inválido"),
   password: z.string().min(6, "Contraseña debe tener mínimo 6 caracteres"),
-  nickname: z
-    .string()
-    .min(3, "Nickname debe tener mínimo 3 caracteres")
-    .max(20, "Nickname muy largo"),
 });
 
 export const loginSchema = z.object({
@@ -16,13 +12,15 @@ export const loginSchema = z.object({
 });
 
 // ===== USER SCHEMAS =====
-export const createUserSchema = z.object({
-  email: z.string().email("Email inválido"),
-  password: z.string().min(6, "Contraseña debe tener mínimo 6 caracteres"),
-  nickname: z
+export const usernameSchema = z.object({
+  username: z
     .string()
-    .min(3, "Nickname debe tener mínimo 3 caracteres")
-    .max(20, "Nickname muy largo"),
+    .min(3, "Username debe tener mínimo 3 caracteres")
+    .max(20, "Username muy largo")
+    .regex(
+      /^[a-zA-Z0-9_]+$/,
+      "Username solo puede contener letras, números y guiones bajos",
+    ),
 });
 
 // ===== MONSTER SCHEMAS =====

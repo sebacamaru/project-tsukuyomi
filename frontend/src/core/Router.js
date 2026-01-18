@@ -1,3 +1,7 @@
+import { authService } from "../services/authService.js";
+
+const PUBLIC_ROUTES = ["/login", "/register"];
+
 /**
  * Router simple con History API
  * Sincroniza rutas con escenas
@@ -57,6 +61,18 @@ export class Router {
    * Manejar cambio de ruta (sin updatear URL, ya viene de popstate o navigate)
    */
   handleRoute(path) {
+    // Guard: redirigir a /auth si no está autenticado y la ruta es protegida
+    if (!PUBLIC_ROUTES.includes(path) && !authService.isAuthenticated()) {
+      this.navigate("/login");
+      return;
+    }
+
+    // Guard: redirigir a / si está autenticado y quiere ir a login/register
+    if (PUBLIC_ROUTES.includes(path) && authService.isAuthenticated()) {
+      this.navigate("/");
+      return;
+    }
+
     const sceneName = this.routes.get(path);
 
     if (sceneName) {

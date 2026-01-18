@@ -1,0 +1,61 @@
+{
+  "code": "onboarding",
+  "dialogues": [
+    {
+      "id": "intro",
+      "speaker": "Profesor Cacho",
+      "text": "Ahora que ya nos conocemos, es hora de darte tu primer companero!",
+      "next": "choose_starter"
+    },
+    {
+      "id": "choose_starter",
+      "speaker": "Profesor Cacho",
+      "text": "Tengo tres criaturas especiales. Cual sera tu primer companero?",
+      "options": [
+        { "text": "Fuego", "value": "fire", "icon": "fire", "next": "fire_chosen" },
+        { "text": "Agua", "value": "water", "icon": "water", "next": "water_chosen" },
+        { "text": "Planta", "value": "grass", "icon": "grass", "next": "grass_chosen" }
+      ]
+    },
+    {
+      "id": "fire_chosen",
+      "speaker": "Profesor Cacho",
+      "text": "Excelente eleccion! El tipo fuego es apasionado y poderoso.",
+      "action": "create_monster",
+      "actionData": { "type": "fire" },
+      "next": "explanation"
+    },
+    {
+      "id": "water_chosen",
+      "speaker": "Profesor Cacho",
+      "text": "Buena eleccion! El tipo agua es versatil y adaptable.",
+      "action": "create_monster",
+      "actionData": { "type": "water" },
+      "next": "explanation"
+    },
+    {
+      "id": "grass_chosen",
+      "speaker": "Profesor Cacho",
+      "text": "Interesante! El tipo planta es resistente y equilibrado.",
+      "action": "create_monster",
+      "actionData": { "type": "grass" },
+      "next": "explanation"
+    },
+    {
+      "id": "explanation",
+      "speaker": "Profesor Cacho",
+      "text": "Tu companero crecera contigo a medida que explores el mundo y enfrentes desafios.",
+      "next": "farewell"
+    },
+    {
+      "id": "farewell",
+      "speaker": "Profesor Cacho",
+      "text": "Ahora estas listo para comenzar tu aventura. Buena suerte!",
+      "next": "complete"
+    },
+    {
+      "id": "complete",
+      "action": "complete_quest"
+    }
+  ]
+}

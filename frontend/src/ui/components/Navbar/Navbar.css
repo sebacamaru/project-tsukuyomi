@@ -62,8 +62,8 @@
     cursor: pointer;
     border-radius: var(--radius-lg);
     position: relative;
-    border: 3px solid #000;
-    box-shadow: 2px 4px 0 #000;
+    border: 3px solid var(--neutral-900);
+    box-shadow: 2px 4px 0 var(--neutral-900);
 }
 
 .navbar__item:nth-child(odd) {

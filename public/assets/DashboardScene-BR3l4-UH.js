@@ -1,0 +1,98 @@
+import{t as e}from"./Scene-Bx4WwdoU.js";var t=`<div class="dashboard">
+    <div class="container">
+        <h1>
+            ¡Bienvenido, <span class="text-primary">\${{ user.name }}</span>!
+        </h1>
+        <div class="flex flex-col gap-4">
+            <div class="box">
+                <h2 class="box__title">Actualizaciones</h2>
+                <div class="box__content">
+                    <div class="flex flex-col gap-3">
+                        <div class="flex flex-col gap-2">
+                            <p class="text-sm">
+                                <span class="badge neutral">15/12/2024</span>
+                                <span class="badge mr-1">2.1.0</span>
+                                <span class="font-bold"
+                                    >Nueva interfaz de usuario:</span
+                                >
+                                Hemos renovado completamente el diseño del
+                                dashboard con mejoras en la navegación y una
+                                experiencia más intuitiva para todos los
+                                usuarios. Incluye nuevos iconos, mejor
+                                organización de contenido y animaciones suaves
+                                que mejoran la interacción general del sistema.
+                            </p>
+                            <p class="text-sm">
+                                <span class="badge neutral">08/12/2024</span>
+                                <span class="badge mr-1">2.0.5</span>
+                                <span class="font-bold"
+                                    >Optimización de rendimiento:</span
+                                >
+                                Mejoras significativas en la velocidad de carga
+                                del sistema. Las páginas ahora cargan un 40% más
+                                rápido que en la versión anterior.
+                            </p>
+                            <p class="text-sm">
+                                <span class="badge neutral">01/12/2024</span>
+                                <span class="badge mr-1">2.0.0</span>
+                                <span class="font-bold"
+                                    >Sistema de notificaciones:;</span
+                                >
+                                Implementado un nuevo sistema de notificaciones
+                                en tiempo real para mantenerte informado de
+                                todas las novedades importantes. Ahora recibirás
+                                alertas instantáneas sobre actualizaciones,
+                                mensajes y eventos relevantes. Puedes
+                                personalizar qué tipo de notificaciones deseas
+                                recibir desde tu panel de configuración.
+                            </p>
+                            <p class="text-sm">
+                                <span class="badge neutral">20/11/2024</span>
+                                <span class="badge mr-1">1.9.0</span>
+                                <span class="font-bold"
+                                    >Modo oscuro disponible:</span
+                                >
+                                Ya puedes activar el modo oscuro desde la
+                                configuración de tu perfil para una experiencia
+                                visual más cómoda durante la noche.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="box">
+                <h2 class="box__title secondary">Fixes</h2>
+                <div class="box__content">
+                    <div class="flex flex-col gap-3">
+                        <div class="flex flex-col gap-2">
+                            <p class="text-sm">
+                                <span class="badge neutral">18/12/2024</span>
+                                <span class="badge secondary mr-1">2.1.3</span>
+                                Solucionado error que impedía procesar pagos con
+                                tarjetas internacionales.
+                            </p>
+                            <p class="text-sm">
+                                <span class="badge neutral">15/12/2024</span>
+                                <span class="badge secondary mr-1">2.1.2</span>
+                                Corregido problema donde algunos campos no
+                                mostraban mensajes de error.
+                            </p>
+                            <p class="text-sm">
+                                <span class="badge neutral">12/12/2024</span>
+                                <span class="badge secondary mr-1">2.1.1</span>
+                                Resuelto bug que causaba resultados duplicados.
+                            </p>
+                            <p class="text-sm">
+                                <span class="badge neutral">08/12/2024</span>
+                                <span class="badge secondary mr-1">2.1.0</span>
+                                Solucionada fuga de memoria que afectaba el
+                                rendimiento tras navegar entre secciones.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+`,n=class extends e{constructor(){super(),this.backgroundClass=`dashboard-background`}async getHTML(){return t}async initUI(){}};export{n as DashboardScene};

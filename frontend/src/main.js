@@ -2,10 +2,14 @@
 import { App } from "./core/App.js";
 import { SceneManager } from "./core/SceneManager.js";
 import { router } from "./core/Router.js";
+import { authService } from "./services/authService.js";
 
 async function start() {
   const app = new App();
   await app.init();
+
+  // Restaurar sesión antes de inicializar el router
+  authService.restoreSession();
 
   // Registrar escenas - las rutas se generan automáticamente!
   // dashboard -> /
@@ -18,6 +22,16 @@ async function start() {
   SceneManager.register(
     "professor",
     () => import("./scenes/ProfessorScene.js"),
+  );
+  SceneManager.register(
+    "login",
+    () => import("./scenes/LoginScene.js"),
+    "/login",
+  );
+  SceneManager.register(
+    "register",
+    () => import("./scenes/RegisterScene.js"),
+    "/register",
   );
 
   // Si querés una ruta custom, pasá el tercer parámetro:
