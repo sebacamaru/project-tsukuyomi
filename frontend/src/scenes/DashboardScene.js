@@ -1,6 +1,8 @@
 import dashboardHTML from "../ui/scenes/dashboard/dashboard.html?raw";
 import "../ui/scenes/dashboard/dashboard.css";
 import { Scene } from "../core/Scene.js";
+import { store } from "../core/Store.js";
+import { render } from "../utils/template.js";
 
 export class DashboardScene extends Scene {
   constructor() {
@@ -9,7 +11,9 @@ export class DashboardScene extends Scene {
   }
 
   async getHTML() {
-    return dashboardHTML;
+    return render(dashboardHTML, {
+      user: store.user,
+    });
   }
 
   async initUI() {

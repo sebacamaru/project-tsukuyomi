@@ -33,11 +33,15 @@ export function registerUsers(router) {
   );
 
   // GET check username availability (debe ir antes de :userId para evitar colisión)
+  // Query param opcional: ?excludeUserId=123 para excluir al usuario actual
   router.get(
     "/api/users/check-username/:username",
     asyncHandler(async (ctx) => {
       const { username } = ctx.params;
-      const available = checkUsernameAvailable(username);
+      const excludeUserId = ctx.query.excludeUserId
+        ? parseInt(ctx.query.excludeUserId)
+        : null;
+      const available = checkUsernameAvailable(username, excludeUserId);
       return { available };
     }),
   );
@@ -94,8 +98,10 @@ export function registerUsers(router) {
     "/api/users/:userId/complete-quest",
     asyncHandler(async (ctx) => {
       const userId = parseInt(ctx.params.userId);
+      const body = ctx.body || {};
+      const delayMinutes = body.delayMinutes || 0;
 
-      const result = completeCurrentQuest(userId);
+      const result = completeCurrentQuest(userId, delayMinutes);
 
       if (!result.success) {
         ctx.set.status = 400;

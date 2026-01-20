@@ -1,7 +1,7 @@
-import{t as e}from"./Scene-Bx4WwdoU.js";var t=`<div class="dashboard">
+import{a as e}from"./index-BGJZ9jUx.js";import{t}from"./Scene-Hlsq3uGG.js";var n=`<div class="dashboard">
     <div class="container">
         <h1>
-            ¡Bienvenido, <span class="text-primary">\${{ user.name }}</span>!
+            ¡Bienvenido, <span class="text-primary">\${{ user.username }}</span>!
         </h1>
         <div class="flex flex-col gap-4">
             <div class="box">
@@ -95,4 +95,4 @@ import{t as e}from"./Scene-Bx4WwdoU.js";var t=`<div class="dashboard">
         </div>
     </div>
 </div>
-`,n=class extends e{constructor(){super(),this.backgroundClass=`dashboard-background`}async getHTML(){return t}async initUI(){}};export{n as DashboardScene};
+`;function r(e,t){return e.replace(/\$\{\{\s*([\w.]+)\s*\}\}/g,(e,n)=>n.split(`.`).reduce((e,t)=>e?.[t],t)??``)}var i=class extends t{constructor(){super(),this.backgroundClass=`dashboard-background`}async getHTML(){return r(n,{user:e.user})}async initUI(){}};export{i as DashboardScene};

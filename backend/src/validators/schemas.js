@@ -2,12 +2,12 @@ import { z } from "zod";
 
 // ===== AUTH SCHEMAS =====
 export const registerSchema = z.object({
-  email: z.string().email("Email inválido"),
-  password: z.string().min(6, "Contraseña debe tener mínimo 6 caracteres"),
+  email: z.string().email("El e-mail introducido no es inválido"),
+  password: z.string().min(6, "La contraseña debe tener mínimo 6 caracteres"),
 });
 
 export const loginSchema = z.object({
-  email: z.string().email("Email inválido"),
+  email: z.string().email("El e-mail introducido no es inválido"),
   password: z.string().min(1, "Contraseña requerida"),
 });
 
@@ -15,11 +15,11 @@ export const loginSchema = z.object({
 export const usernameSchema = z.object({
   username: z
     .string()
-    .min(3, "Username debe tener mínimo 3 caracteres")
-    .max(20, "Username muy largo")
+    .min(3, "El nombre de usuario debe tener mínimo 3 caracteres")
+    .max(20, "Nombre de usuario muy largo")
     .regex(
       /^[a-zA-Z0-9_]+$/,
-      "Username solo puede contener letras, números y guiones bajos",
+      "El nombre de usuario solo puede contener letras, números y guiones bajos",
     ),
 });
 

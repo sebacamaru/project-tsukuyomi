@@ -22,8 +22,18 @@ export const initDatabase = () => {
     email TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL,
     username TEXT UNIQUE NOT NULL,
-    current_quest_code TEXT
+    current_quest_code TEXT,
+    next_quest_available_at INTEGER
   )`);
+
+  // Migración: agregar columna next_quest_available_at si no existe
+  const userColumns = db.query("PRAGMA table_info(users)").all();
+  const hasNextQuestAvailableAt = userColumns.some(
+    (col) => col.name === "next_quest_available_at",
+  );
+  if (!hasNextQuestAvailableAt) {
+    db.run("ALTER TABLE users ADD COLUMN next_quest_available_at INTEGER");
+  }
 
   // Tabla Quests
   db.run(`CREATE TABLE IF NOT EXISTS quests (

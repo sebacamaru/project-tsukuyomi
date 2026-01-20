@@ -4,12 +4,16 @@ import { SceneManager } from "./core/SceneManager.js";
 import { router } from "./core/Router.js";
 import { authService } from "./services/authService.js";
 
-async function start() {
-  const app = new App();
-  await app.init();
+// Instancia global de la app para acceso desde otros módulos
+export let app = null;
 
-  // Restaurar sesión antes de inicializar el router
+async function start() {
+  app = new App();
+
+  // Restaurar sesión ANTES de inicializar la app para que el navbar tenga los datos
   authService.restoreSession();
+
+  await app.init();
 
   // Registrar escenas - las rutas se generan automáticamente!
   // dashboard -> /
@@ -32,6 +36,11 @@ async function start() {
     "register",
     () => import("./scenes/RegisterScene.js"),
     "/register",
+  );
+  SceneManager.register(
+    "admin",
+    () => import("./scenes/AdminScene.js"),
+    "/admin",
   );
 
   // Si querés una ruta custom, pasá el tercer parámetro:

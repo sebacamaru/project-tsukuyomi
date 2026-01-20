@@ -54,10 +54,6 @@ h6 {
 
 /* Para cambiar breakpoints, modifica las variables en variables.css */
 
-p {
-    /*margin-bottom: var(--space-4);*/
-}
-
 strong,
 b {
     font-weight: var(--weight-semibold);
@@ -128,7 +124,7 @@ input:focus,
 textarea:focus,
 select:focus {
     outline: none;
-    border-color: var(--primary);
+    border-color: var(--primary-dark);
 }
 
 input::placeholder,

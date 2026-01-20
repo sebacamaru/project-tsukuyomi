@@ -25,12 +25,15 @@ export const questService = {
 
   /**
    * Verifica si un username está disponible
+   * @param {string} username - Username a verificar
+   * @param {number} excludeUserId - ID del usuario a excluir (para permitir su propio username)
    */
-  async checkUsername(username) {
-    const response = await fetch(
-      `${API_BASE}/users/check-username/${encodeURIComponent(username)}`,
-      { headers: getAuthHeaders() },
-    );
+  async checkUsername(username, excludeUserId = null) {
+    let url = `${API_BASE}/users/check-username/${encodeURIComponent(username)}`;
+    if (excludeUserId) {
+      url += `?excludeUserId=${excludeUserId}`;
+    }
+    const response = await fetch(url, { headers: getAuthHeaders() });
     const data = await response.json();
     return data.available;
   },
@@ -55,11 +58,14 @@ export const questService = {
 
   /**
    * Completa la quest actual del usuario
+   * @param {number} userId - ID del usuario
+   * @param {number} delayMinutes - Minutos de delay para la siguiente quest (0 = sin delay)
    */
-  async completeQuest(userId) {
+  async completeQuest(userId, delayMinutes = 0) {
     const response = await fetch(`${API_BASE}/users/${userId}/complete-quest`, {
       method: "POST",
       headers: getAuthHeaders(),
+      body: JSON.stringify({ delayMinutes }),
     });
 
     if (response.ok) {

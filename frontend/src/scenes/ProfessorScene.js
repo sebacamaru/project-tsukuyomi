@@ -44,6 +44,20 @@ export class ProfessorScene extends Scene {
       return;
     }
 
+    // Verificar si la quest está en delay (no disponible aún)
+    if (user.next_quest_available_at) {
+      const now = Math.floor(Date.now() / 1000);
+      if (now < user.next_quest_available_at) {
+        // Quest aún no disponible, mostrar saludo normal sin revelar el delay
+        await MessageBox.alert(
+          `Hola, ${user.username}! Vuelve cuando quieras.`,
+          "Profesor Cacho",
+        );
+        this.exitCutsceneMode();
+        return;
+      }
+    }
+
     // Verificar si la quest actual corresponde a esta escena
     const quest = await questService.getQuest(currentQuestCode);
 
@@ -63,18 +77,21 @@ export class ProfessorScene extends Scene {
 
     this.exitCutsceneMode();
 
-    // Después de completar, verificar si hay otra quest de esta escena
-    // Refrescar datos del usuario
-    const updatedUser = await questService.getUser(user.id);
-    store.user = updatedUser;
+    // Solo ejecutar siguiente quest si autoNextQuest !== false Y no hay delay configurado
+    const hasDelay = questData.nextQuestDelay && questData.nextQuestDelay > 0;
+    if (questData.autoNextQuest !== false && !hasDelay) {
+      // Refrescar datos del usuario
+      const updatedUser = await questService.getUser(user.id);
+      store.user = updatedUser;
 
-    // Si hay otra quest de esta escena, ejecutarla
-    if (updatedUser.current_quest_code) {
-      const nextQuest = await questService.getQuest(
-        updatedUser.current_quest_code,
-      );
-      if (nextQuest && nextQuest.scene === "professor") {
-        await this.checkAndRunQuests();
+      // Si hay otra quest de esta escena, ejecutarla
+      if (updatedUser.current_quest_code) {
+        const nextQuest = await questService.getQuest(
+          updatedUser.current_quest_code,
+        );
+        if (nextQuest && nextQuest.scene === "professor") {
+          await this.checkAndRunQuests();
+        }
       }
     }
   }

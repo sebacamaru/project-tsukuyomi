@@ -23,15 +23,16 @@
 }
 
 .navbar__title h1 {
-    margin: 0;
-    font-size: var(--text-xl);
-    font-weight: var(--weight-bold);
+    margin: -6px 0 0 0;
+    font-size: var(--text-lg);
     color: var(--text);
     display: block;
-    padding: 0 24px;
+    padding: 6px 14px;
     background-image: url("@/assets/images/navbar__title_bg2.png");
     background-position: 0px -5px;
     line-height: var(--text-xl);
+    background-color: var(--neutral-50);
+    border-radius: var(--radius);
 }
 
 .navbar__container {

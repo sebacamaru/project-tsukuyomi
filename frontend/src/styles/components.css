@@ -1,7 +1,7 @@
 /* Componentes - Mobile first */
 /* Breakpoints sincronizados con variables.css */
 
-/* Buttons */
+/* Buttons - Retro UI */
 .button {
     display: inline-flex;
     align-items: center;
@@ -9,62 +9,104 @@
     gap: var(--space-2);
     padding: var(--space-3) var(--space-5);
     font-size: var(--text-base);
-    font-weight: var(--weight-medium);
-    border-radius: var(--radius);
-    border: var(--border-width) solid transparent;
+    font-weight: var(--weight-bold);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-radius: var(--retro-radius);
+    border: var(--retro-border-width) solid var(--retro-border-color);
     background-color: var(--primary);
-    color: white;
-    transition: all var(--transition-fast);
+    color: var(--neutral-50);
+    box-shadow: var(--retro-shadow);
     cursor: pointer;
     text-align: center;
+    transition:
+        transform var(--retro-transition),
+        box-shadow var(--retro-transition);
 }
 
 .button:hover {
-    background-color: var(--primary-dark);
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-md);
+    transform: translate(-1px, -2px);
+    box-shadow: var(--retro-shadow-lg);
 }
 
 .button:active {
-    transform: translateY(0);
+    transform: translate(2px, 4px);
+    box-shadow: none;
+}
+
+.button:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+.button:disabled {
+    background-color: var(--neutral-400);
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.button:disabled:hover {
+    transform: none;
+    box-shadow: var(--retro-shadow);
 }
 
 .button.secondary {
     background-color: var(--secondary);
 }
 
-.button.secondary:hover {
-    background-color: var(--secondary-dark);
+.button.success {
+    background-color: var(--success);
+}
+
+.button.warning {
+    background-color: var(--warning);
+    color: var(--neutral-900);
+}
+
+.button.danger {
+    background-color: var(--error);
 }
 
 .button.outline {
-    background-color: transparent;
-    border-color: var(--primary);
-    color: var(--primary);
+    background-color: var(--bg);
+    border-color: var(--retro-border-color);
+    color: var(--text);
 }
 
 .button.outline:hover {
-    background-color: var(--primary);
-    color: white;
+    background-color: var(--neutral-100);
 }
 
 .button.ghost {
     background-color: transparent;
+    border-color: transparent;
+    box-shadow: none;
     color: var(--text);
 }
 
 .button.ghost:hover {
     background-color: var(--surface);
+    transform: none;
 }
 
 .button.small {
     padding: var(--space-2) var(--space-3);
     font-size: var(--text-sm);
+    box-shadow: var(--retro-shadow-sm);
+}
+
+.button.small:active {
+    transform: translate(1px, 2px);
 }
 
 .button.large {
     padding: var(--space-4) var(--space-6);
     font-size: var(--text-lg);
+    box-shadow: var(--retro-shadow-lg);
+}
+
+.button.large:active {
+    transform: translate(3px, 6px);
 }
 
 /* Card */
@@ -90,22 +132,34 @@
     box-shadow: var(--shadow-lg);
 }
 
-/* Input */
+/* Input - Retro UI */
 .input {
     width: 100%;
     padding: var(--space-3);
     font-size: var(--text-base);
-    border: var(--border-width) solid var(--border);
-    border-radius: var(--radius);
-    background-color: var(--bg);
+    font-family: var(--font-sans);
+    border: var(--retro-border-width) solid var(--retro-border-color);
+    border-radius: var(--retro-radius);
+    background-color: var(--neutral-50);
     color: var(--text);
-    transition: border-color var(--transition-fast);
+    box-shadow: var(--retro-shadow-sm);
+    transition:
+        box-shadow var(--retro-transition),
+        border-color var(--retro-transition);
 }
 
 .input:focus {
-    outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    box-shadow: 1px 2px 0 var(--primary-dark);
+}
+
+.input::placeholder {
+    color: var(--neutral-400);
+}
+
+.input:disabled {
+    background-color: var(--neutral-200);
+    cursor: not-allowed;
+    opacity: 0.7;
 }
 
 .input.error {
@@ -113,7 +167,13 @@
 }
 
 .input.error:focus {
-    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+    box-shadow:
+        var(--retro-shadow-sm),
+        0 0 0 2px var(--error);
+}
+
+.input.success {
+    border-color: var(--success);
 }
 
 /* Badge */
@@ -254,4 +314,21 @@
     width: 100%;
     box-shadow: var(--shadow-xl);
     z-index: var(--z-modal);
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+    .button,
+    .input {
+        transition: none;
+    }
+
+    .button:hover,
+    .button:active {
+        transform: none;
+    }
+
+    .button:active {
+        box-shadow: var(--retro-shadow-sm);
+    }
 }

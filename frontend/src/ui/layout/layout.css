@@ -26,6 +26,6 @@
 
 /* Ocultar navbar en modo cutscene con transición suave */
 #navbar-container.navbar-container--hidden {
-    transform: translateY(120px);
+    transform: translateY(126px);
     pointer-events: none;
 }

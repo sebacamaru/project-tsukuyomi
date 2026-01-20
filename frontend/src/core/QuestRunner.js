@@ -1,6 +1,8 @@
 import { MessageBox } from "../ui/components/MessageBox/MessageBox.js";
 import { questService } from "../services/questService.js";
+import { authService } from "../services/authService.js";
 import { store } from "./Store.js";
+import { app } from "../main.js";
 
 /**
  * Carga dinámicamente un archivo JSON de quest
@@ -22,7 +24,7 @@ export class QuestRunner {
     this.dialogueMap = new Map();
 
     // Construir mapa de diálogos por ID
-    this.dialogues.forEach(d => {
+    this.dialogues.forEach((d) => {
       this.dialogueMap.set(d.id, d);
     });
 
@@ -50,20 +52,7 @@ export class QuestRunner {
    * Procesa un diálogo individual
    */
   async processDialogue(dialogue) {
-    // Ejecutar acción si existe (antes del texto)
-    if (dialogue.action) {
-      const shouldContinue = await this.handleAction(dialogue);
-      // Si la acción es complete_quest, terminamos
-      if (dialogue.action === "complete_quest") {
-        return null;
-      }
-      // Si la acción falló y no tiene texto, no continuar
-      if (!shouldContinue && !dialogue.text) {
-        return dialogue.next || null;
-      }
-    }
-
-    // Mostrar diálogo si tiene texto
+    // Mostrar diálogo si tiene texto (ANTES de la acción)
     if (dialogue.text) {
       const text = this.replaceVariables(dialogue.text);
 
@@ -72,22 +61,37 @@ export class QuestRunner {
         const result = await MessageBox.show({
           speaker: dialogue.speaker,
           text: text,
-          options: dialogue.options.map(opt => ({
+          options: dialogue.options.map((opt) => ({
             text: opt.text,
             value: opt.value,
-            icon: opt.icon
-          }))
+            icon: opt.icon,
+          })),
         });
 
         if (result) {
           // Buscar la opción seleccionada y retornar su next
-          const selectedOption = dialogue.options.find(opt => opt.value === result.value);
+          const selectedOption = dialogue.options.find(
+            (opt) => opt.value === result.value,
+          );
           return selectedOption?.next || dialogue.next || null;
         }
         return null;
       } else {
         // Diálogo simple
         await MessageBox.alert(text, dialogue.speaker);
+      }
+    }
+
+    // Ejecutar acción si existe (DESPUÉS del texto)
+    if (dialogue.action) {
+      const shouldContinue = await this.handleAction(dialogue);
+      // Si la acción es complete_quest, terminamos
+      if (dialogue.action === "complete_quest") {
+        return null;
+      }
+      // Si la acción falló, no continuar
+      if (!shouldContinue) {
+        return dialogue.next || null;
       }
     }
 
@@ -122,7 +126,7 @@ export class QuestRunner {
     let isValid = false;
 
     while (!isValid) {
-      username = await this.showUsernameInput();
+      username = await this.showUsernameInput("Escribe tu nombre:");
 
       if (!username) {
         // Usuario canceló
@@ -131,25 +135,40 @@ export class QuestRunner {
 
       // Validar formato
       if (username.length < 3) {
-        await MessageBox.alert("El nombre debe tener al menos 3 caracteres.", "Profesor Cacho");
+        await MessageBox.alert(
+          "El nombre debe tener al menos 3 caracteres.",
+          "Profesor Cacho",
+        );
         continue;
       }
 
       if (username.length > 20) {
-        await MessageBox.alert("El nombre no puede tener mas de 20 caracteres.", "Profesor Cacho");
+        await MessageBox.alert(
+          "El nombre no puede tener mas de 20 caracteres.",
+          "Profesor Cacho",
+        );
         continue;
       }
 
       if (!/^[a-zA-Z0-9_]+$/.test(username)) {
-        await MessageBox.alert("El nombre solo puede contener letras, numeros y guiones bajos.", "Profesor Cacho");
+        await MessageBox.alert(
+          "El nombre solo puede contener letras, numeros y guiones bajos.",
+          "Profesor Cacho",
+        );
         continue;
       }
 
-      // Verificar disponibilidad en el servidor
-      const available = await questService.checkUsername(username);
+      // Verificar disponibilidad en el servidor (excluir al usuario actual)
+      const available = await questService.checkUsername(
+        username,
+        store.user.id,
+      );
 
       if (!available) {
-        await MessageBox.alert("Ese nombre ya esta en uso. Intenta con otro.", "Profesor Cacho");
+        await MessageBox.alert(
+          "Ese nombre ya esta en uso. Intenta con otro.",
+          "Profesor Cacho",
+        );
         continue;
       }
 
@@ -157,12 +176,16 @@ export class QuestRunner {
       const result = await questService.setUsername(store.user.id, username);
 
       if (result.success) {
-        // Actualizar store local
+        // Actualizar store local y persistir en localStorage
         store.user.username = username;
+        authService.updateSession();
         this.context.username = username;
         isValid = true;
       } else {
-        await MessageBox.alert("Hubo un error al guardar el nombre. Intenta de nuevo.", "Profesor Cacho");
+        await MessageBox.alert(
+          "Hubo un error al guardar el nombre. Intenta de nuevo.",
+          "Profesor Cacho",
+        );
       }
     }
 
@@ -170,58 +193,60 @@ export class QuestRunner {
   }
 
   /**
-   * Muestra el input de username personalizado
+   * Muestra el input de username personalizado (sin speaker, centrado)
+   * @param {string} promptText - Texto opcional a mostrar encima del input
    */
-  async showUsernameInput() {
+  async showUsernameInput(promptText = "") {
     return new Promise((resolve) => {
+      const currentUsername = store.user?.username || "";
+      const textHtml = promptText
+        ? `<p class="username-input-box__text">${promptText}</p>`
+        : "";
+
       const overlay = document.createElement("div");
-      overlay.className = "message-box-overlay active";
+      overlay.className = "message-box-overlay message-box-overlay--centered";
       overlay.innerHTML = `
-        <div class="message-box">
-          <div class="message-box__content">
-            <div class="message-box__speaker">Profesor Cacho</div>
-            <div class="message-box__text">Escribe tu nombre:</div>
-            <div class="username-input-container">
-              <input type="text" class="username-input" maxlength="20" placeholder="Tu nombre..." autofocus />
-              <div class="username-input-buttons">
-                <button class="username-btn username-btn--cancel">Cancelar</button>
-                <button class="username-btn username-btn--confirm">Confirmar</button>
-              </div>
-            </div>
+        <div class="message-box username-input-box">
+          <div class="username-input-container">
+            ${textHtml}
+            <input type="text" class="input" value="${currentUsername}" maxlength="20" placeholder="Tu nombre..." />
+            <button class="button">Confirmar</button>
           </div>
         </div>
       `;
 
-      const input = overlay.querySelector(".username-input");
-      const confirmBtn = overlay.querySelector(".username-btn--confirm");
-      const cancelBtn = overlay.querySelector(".username-btn--cancel");
+      const input = overlay.querySelector(".input");
+      const confirmBtn = overlay.querySelector(".button");
 
       const cleanup = () => {
         overlay.classList.remove("active");
         setTimeout(() => overlay.remove(), 300);
       };
 
-      confirmBtn.addEventListener("click", () => {
+      const confirm = () => {
         const value = input.value.trim();
-        cleanup();
-        resolve(value || null);
-      });
+        if (value) {
+          cleanup();
+          resolve(value);
+        }
+      };
 
-      cancelBtn.addEventListener("click", () => {
-        cleanup();
-        resolve(null);
-      });
+      confirmBtn.addEventListener("click", confirm);
 
       input.addEventListener("keydown", (e) => {
         if (e.key === "Enter") {
-          const value = input.value.trim();
-          cleanup();
-          resolve(value || null);
+          confirm();
         }
       });
 
       document.body.appendChild(overlay);
-      input.focus();
+
+      // Trigger animation after append
+      requestAnimationFrame(() => {
+        overlay.classList.add("active");
+        input.focus();
+        input.select();
+      });
     });
   }
 
@@ -236,14 +261,50 @@ export class QuestRunner {
   }
 
   /**
+   * Calcula el delay en minutos para la siguiente quest
+   * @returns {number} Minutos de delay (0 si no hay delay)
+   */
+  parseDelay() {
+    const delay = this.questData.nextQuestDelay;
+    if (!delay) return 0;
+
+    const isDebug = this.questData.debug === true;
+    const multiplier = isDebug ? 1 : 60; // debug: minutos, producción: horas
+
+    if (typeof delay === "number") {
+      return delay * multiplier;
+    }
+
+    if (typeof delay === "string" && delay.includes("-")) {
+      const [min, max] = delay.split("-").map(Number);
+      const value = Math.random() * (max - min) + min;
+      return Math.round(value * multiplier);
+    }
+
+    return 0;
+  }
+
+  /**
    * Completa la quest actual
    */
   async handleCompleteQuest() {
-    const result = await questService.completeQuest(store.user.id);
+    const delayMinutes = this.parseDelay();
+    const result = await questService.completeQuest(
+      store.user.id,
+      delayMinutes,
+    );
 
     if (result.success) {
-      // Actualizar el current_quest_code en el store
+      // Actualizar el current_quest_code y next_quest_available_at en el store
       store.user.current_quest_code = result.user.current_quest_code;
+      store.user.next_quest_available_at = result.user.next_quest_available_at;
+      authService.updateSession();
+
+      // Actualizar el badge del navbar (esto también programa el timer automático)
+      if (app) {
+        app.updateProfessorBadge();
+      }
+
       return true;
     }
 

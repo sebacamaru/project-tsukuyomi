@@ -76,14 +76,14 @@ export function registerAuth(router) {
 
       if (!user) {
         ctx.set.status = 404;
-        return { error: "User not found" };
+        return { error: "Los datos introducidos no son correctos" };
       }
 
       // Verificar contraseña
       const ok = await bcrypt.compare(password, user.password);
       if (!ok) {
         ctx.set.status = 401;
-        return { error: "Invalid password" };
+        return { error: "Los datos introducidos no son correctos" };
       }
 
       // Generar token JWT

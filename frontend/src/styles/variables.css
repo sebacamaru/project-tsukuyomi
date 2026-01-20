@@ -37,7 +37,7 @@
     --info: #3b82f6;
 
     /* Superficie y texto */
-    --bg: #ffffff;
+    --bg: var(--neutral-50);
     --bg-alt: var(--neutral-50);
     --surface: var(--neutral-100);
     --text: var(--neutral-900);
@@ -111,4 +111,13 @@
     --breakpoint-lg: 1024px;
     --breakpoint-xl: 1280px;
     --breakpoint-2xl: 1536px;
+
+    /* === RETRO UI === */
+    --retro-border-width: 3px;
+    --retro-border-color: var(--neutral-900);
+    --retro-shadow: 2px 4px 0 var(--retro-border-color);
+    --retro-shadow-sm: 1px 2px 0 var(--retro-border-color);
+    --retro-shadow-lg: 3px 6px 0 var(--retro-border-color);
+    --retro-radius: var(--radius-sm);
+    --retro-transition: 100ms ease-out;
 }

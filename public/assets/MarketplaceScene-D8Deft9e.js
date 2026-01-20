@@ -1,4 +1,4 @@
-import{i as e}from"./index-Do9XzL4n.js";import{t}from"./Scene-Bx4WwdoU.js";var n=`<div class="marketplace">\r
+import{a as e}from"./index-BGJZ9jUx.js";import{t}from"./Scene-Hlsq3uGG.js";var n=`<div class="marketplace">\r
   <h1>Marketplace</h1>\r
   <p>Contenido del marketplace</p>\r
   <div id="marketItems"></div>\r

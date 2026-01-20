@@ -1,4 +1,5 @@
 import { store } from "../core/Store.js";
+import { app } from "../main.js";
 
 const API_BASE = "/auth";
 const STORAGE_KEY = "tsukuyomi_auth";
@@ -23,7 +24,10 @@ export const authService = {
       const data = await response.json();
 
       if (!response.ok) {
-        return { success: false, error: data.error || "Error al iniciar sesión" };
+        return {
+          success: false,
+          error: data.error || "Error al iniciar sesión",
+        };
       }
 
       this._saveSession(data.token, data.user);
@@ -97,6 +101,19 @@ export const authService = {
   },
 
   /**
+   * Actualiza los datos del usuario en localStorage
+   * Llamar después de modificar store.user
+   */
+  updateSession() {
+    if (store.token && store.user) {
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({ token: store.token, user: store.user }),
+      );
+    }
+  },
+
+  /**
    * Obtener el token actual
    */
   getToken() {
@@ -110,6 +127,11 @@ export const authService = {
     store.token = token;
     store.user = user;
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ token, user }));
+
+    // Actualizar badge del profesor después de guardar sesión
+    if (app) {
+      app.updateProfessorBadge();
+    }
   },
 };
 

@@ -1,0 +1,48 @@
+<div class="admin">
+    <div class="container">
+        <div class="flex flex-col gap-4">
+            <!-- Reset Quest -->
+            <div class="box">
+                <div class="box__content">
+                    <div class="flex flex-col gap-4">
+                        <div class="admin__field">
+                            <label class="admin__label" for="user-select"
+                                >Usuario</label
+                            >
+                            <select id="user-select" class="input">
+                                <option value="">Cargando usuarios...</option>
+                            </select>
+                        </div>
+
+                        <div class="admin__field">
+                            <label class="admin__label" for="quest-select"
+                                >Quest actual</label
+                            >
+                            <select id="quest-select" class="input">
+                                <option value="">Cargando quests...</option>
+                            </select>
+                        </div>
+
+                        <div id="admin-message" class="admin__message"></div>
+
+                        <button id="reset-quest-btn" class="button">
+                            Guardar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Info -->
+            <div class="box">
+                <h2 class="box__title secondary">Información del usuario</h2>
+                <div class="box__content">
+                    <div id="user-info" class="admin__user-info">
+                        <p class="text-muted">
+                            Selecciona un usuario para ver sus datos
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

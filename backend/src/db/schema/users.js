@@ -21,7 +21,9 @@ export const insertUser = (email, password) => {
 
 export const getUsers = () => {
   const rows = db
-    .query("SELECT id, email, username, current_quest_code FROM users")
+    .query(
+      "SELECT id, email, username, current_quest_code, next_quest_available_at FROM users",
+    )
     .all();
   return rows;
 };
@@ -29,7 +31,7 @@ export const getUsers = () => {
 export const getUserById = (id) => {
   return db
     .query(
-      "SELECT id, email, username, current_quest_code FROM users WHERE id = ?",
+      "SELECT id, email, username, current_quest_code, next_quest_available_at FROM users WHERE id = ?",
     )
     .get(id);
 };
@@ -51,14 +53,21 @@ export const updateUsername = (userId, username) => {
   return { success: true };
 };
 
-export const checkUsernameAvailable = (username) => {
-  const existing = db
-    .query("SELECT id FROM users WHERE username = ?")
-    .get(username);
+export const checkUsernameAvailable = (username, excludeUserId = null) => {
+  let existing;
+  if (excludeUserId) {
+    existing = db
+      .query("SELECT id FROM users WHERE username = ? AND id != ?")
+      .get(username, excludeUserId);
+  } else {
+    existing = db
+      .query("SELECT id FROM users WHERE username = ?")
+      .get(username);
+  }
   return !existing;
 };
 
-export const completeCurrentQuest = (userId) => {
+export const completeCurrentQuest = (userId, delayMinutes = 0) => {
   const user = getUserById(userId);
   if (!user || !user.current_quest_code) {
     return { success: false, error: "No active quest" };
@@ -68,10 +77,17 @@ export const completeCurrentQuest = (userId) => {
   const nextQuest = getNextQuest(user.current_quest_code);
   const nextQuestCode = nextQuest ? nextQuest.code : null;
 
-  // Actualizar current_quest_code
+  // Calcular timestamp de disponibilidad si hay delay
+  let nextQuestAvailableAt = null;
+  if (delayMinutes > 0) {
+    nextQuestAvailableAt = Math.floor(Date.now() / 1000) + delayMinutes * 60;
+  }
+
+  // Actualizar current_quest_code y next_quest_available_at
   db.run(
-    "UPDATE users SET current_quest_code = ? WHERE id = ?",
+    "UPDATE users SET current_quest_code = ?, next_quest_available_at = ? WHERE id = ?",
     nextQuestCode,
+    nextQuestAvailableAt,
     userId,
   );
 
@@ -79,5 +95,6 @@ export const completeCurrentQuest = (userId) => {
     success: true,
     completedQuest: user.current_quest_code,
     nextQuest: nextQuestCode,
+    nextQuestAvailableAt,
   };
 };

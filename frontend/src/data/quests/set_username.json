@@ -1,29 +1,19 @@
 {
   "code": "set_username",
+  "nextQuestDelay": 2,
+  "debug": true,
   "dialogues": [
     {
       "id": "welcome",
       "speaker": "Profesor Cacho",
-      "text": "Bienvenido a mi laboratorio!",
-      "next": "intro"
-    },
-    {
-      "id": "intro",
-      "speaker": "Profesor Cacho",
-      "text": "Soy el Profesor Cacho, y estoy aqui para ayudarte a comenzar tu aventura.",
+      "text": "¿Un nuevo entusiasta, eh? Vení crack, pasá, pasá… Dejá la mochila ahí y agarrá una silla. Tengo bastante para contarte.",
       "next": "ask_name"
     },
     {
       "id": "ask_name",
       "speaker": "Profesor Cacho",
-      "text": "Pero antes, necesito saber... Como te gustaria que te llamen?",
+      "text": "Así que estás interesado en el mundo chigo... Decime, ¿cómo te llamás?",
       "action": "input_username",
-      "next": "name_confirmed"
-    },
-    {
-      "id": "name_confirmed",
-      "speaker": "Profesor Cacho",
-      "text": "Excelente nombre, {username}! Te queda muy bien.",
       "next": "complete"
     },
     {
