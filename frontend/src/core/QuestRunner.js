@@ -1,8 +1,10 @@
 import { MessageBox } from "../ui/components/MessageBox/MessageBox.js";
 import { questService } from "../services/questService.js";
 import { authService } from "../services/authService.js";
+import { inventoryService } from "../services/inventoryService.js";
 import { store } from "./Store.js";
 import { app } from "../main.js";
+import { actions } from "../ui/actions/index.js";
 
 /**
  * Carga dinámicamente un archivo JSON de quest
@@ -102,7 +104,27 @@ export class QuestRunner {
    * Maneja las acciones especiales
    */
   async handleAction(dialogue) {
-    switch (dialogue.action) {
+    const actionName = dialogue.action;
+
+    // Acciones UI registradas (lazy loaded)
+    if (actions[actionName]) {
+      try {
+        const module = await actions[actionName]();
+        // Obtener la clase exportada (primera export del modulo)
+        const ActionClass = module[Object.keys(module)[0]];
+        const instance = new ActionClass(
+          { runner: this, context: this.context, store, scene: this.scene },
+          dialogue.actionData,
+        );
+        return await instance.show();
+      } catch (error) {
+        console.error(`Error loading action "${actionName}":`, error);
+        return true;
+      }
+    }
+
+    // Acciones legacy (built-in)
+    switch (actionName) {
       case "input_username":
         return await this.handleInputUsername();
 
@@ -113,7 +135,7 @@ export class QuestRunner {
         return await this.handleCompleteQuest();
 
       default:
-        console.warn(`Unknown action: ${dialogue.action}`);
+        console.warn(`Unknown action: ${actionName}`);
         return true;
     }
   }
@@ -295,9 +317,21 @@ export class QuestRunner {
     );
 
     if (result.success) {
+      // // Mostrar recompensas si las hay
+      // if (
+      //   result.rewards &&
+      //   (result.rewards.gold > 0 || result.rewards.items?.length > 0)
+      // ) {
+      //   await this.showRewards(result.rewards);
+      // }
+
+      // Recargar inventario desde servidor
+      await inventoryService.loadInventory();
+
       // Actualizar el current_quest_code y next_quest_available_at en el store
       store.user.current_quest_code = result.user.current_quest_code;
       store.user.next_quest_available_at = result.user.next_quest_available_at;
+      store.user.gold = result.user.gold;
       authService.updateSession();
 
       // Actualizar el badge del navbar (esto también programa el timer automático)
@@ -310,6 +344,27 @@ export class QuestRunner {
 
     console.error("Failed to complete quest:", result);
     return false;
+  }
+
+  /**
+   * Muestra las recompensas obtenidas al completar una quest
+   */
+  async showRewards(rewards) {
+    let message = "";
+
+    if (rewards.gold > 0) {
+      message += `+${rewards.gold} oro\n`;
+    }
+
+    if (rewards.items?.length > 0) {
+      for (const item of rewards.items) {
+        message += `+${item.quantity}x ${item.name}\n`;
+      }
+    }
+
+    if (message) {
+      await MessageBox.alert(message.trim(), "Recompensas");
+    }
   }
 
   /**

@@ -1,0 +1,182 @@
+/* EggReveal - Overlay para mostrar el huevo del starter */
+
+.egg-reveal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: var(--z-modal);
+    opacity: 0;
+    transition: opacity var(--transition-slow);
+    pointer-events: none;
+    cursor: pointer;
+}
+
+.egg-reveal.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+/* Contenido central */
+.egg-reveal__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-6);
+}
+
+/* Contenedor del huevo con glow */
+.egg-reveal__egg-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Imagen del huevo */
+.egg-reveal__egg {
+    width: 150px;
+    height: auto;
+    opacity: 0;
+    transform: scale(0.3);
+    animation:
+        eggReveal 1s ease forwards 0.3s,
+        eggWobble 1.5s ease-in-out infinite 1.3s;
+    position: relative;
+    z-index: 2;
+    filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.5));
+    transform-origin: center bottom;
+}
+
+/* Efecto glow detras del huevo */
+.egg-reveal__glow {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(
+        circle,
+        rgba(255, 215, 0, 0.4) 0%,
+        rgba(255, 215, 0, 0.1) 50%,
+        transparent 70%
+    );
+    border-radius: 50%;
+    z-index: 1;
+    opacity: 0;
+    animation: glowPulse 2s ease-in-out infinite 1s;
+}
+
+/* Texto */
+.egg-reveal__text {
+    font-family: var(--font-sans);
+    font-size: var(--text-xl);
+    font-weight: var(--weight-bold);
+    color: var(--neutral-50);
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    max-width: 80%;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: textFadeIn 0.5s ease forwards 1.2s;
+}
+
+/* Hint para continuar */
+.egg-reveal__hint {
+    position: absolute;
+    bottom: var(--space-8);
+    font-size: var(--text-sm);
+    color: var(--neutral-400);
+    font-style: italic;
+    opacity: 0;
+    animation: hintFadeIn 0.3s ease forwards 2s;
+}
+
+/* === ANIMACIONES === */
+
+@keyframes eggReveal {
+    0% {
+        opacity: 0;
+        transform: scale(0.3);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+    70% {
+        transform: scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes eggWobble {
+    0%,
+    100% {
+        transform: scale(1) rotate(0deg);
+    }
+    25% {
+        transform: scale(1) rotate(3deg);
+    }
+    50% {
+        transform: scale(1) rotate(0deg);
+    }
+    75% {
+        transform: scale(1) rotate(-3deg);
+    }
+}
+
+@keyframes glowPulse {
+    0%,
+    100% {
+        opacity: 0.5;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.1);
+    }
+}
+
+@keyframes textFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes hintFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 0.7;
+    }
+}
+
+/* === RESPONSIVE === */
+
+@media (min-width: 768px) {
+    .egg-reveal__egg {
+        width: 200px;
+    }
+
+    .egg-reveal__glow {
+        width: 280px;
+        height: 280px;
+    }
+
+    .egg-reveal__text {
+        font-size: var(--text-2xl);
+    }
+}

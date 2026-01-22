@@ -40,7 +40,7 @@ project-tsukuyomi/
 ├── frontend/src/
 │   ├── main.js             # Punto de entrada
 │   ├── core/               # App, Scene, SceneManager, Router, Store, Renderer
-│   ├── scenes/             # Vistas (Login, Register, Dashboard, Professor, Battle, Marketplace, Admin)
+│   ├── scenes/             # Vistas (Login, Register, Dashboard, Professor, Battle, Marketplace, Inventory, Admin)
 │   ├── services/           # Comunicación API (auth, user, quest, marketplace, admin)
 │   ├── ui/
 │   │   ├── components/     # Navbar, MessageBox, ItemCard, LoadingIndicator
@@ -145,6 +145,48 @@ store = { gold, inventory, items, user, token }
 **Progreso:** `current_quest_code` en usuario, encadenadas por `prerequisite_quest_code`
 
 **Badge Profesor:** `App.js` muestra notificación si hay quest disponible y no hay delay activo
+
+## Sistema de Items
+
+**Tabla `items`:**
+
+| Campo | Tipo | Descripción |
+|-------|------|-------------|
+| `name` | TEXT | Identificador interno (ej: `basic_potion`, `chigo_egg`) |
+| `label` | TEXT | Nombre visible al usuario (ej: "Poción Básica") |
+| `description` | TEXT | Descripción del item (opcional) |
+| `price` | INTEGER | Precio en oro (0 = no comprable, es recompensa) |
+| `icon` | TEXT | Nombre del archivo en /assets (ej: `sprite-egg.png`) |
+| `type` | TEXT | Categoría: `potion`, `egg`, `misc` |
+
+**API REST:**
+- `GET /api/items` - Listado de items (cache 5 min)
+- `POST /api/marketplace/buy` - Comprar item
+- `GET /api/users/:id/inventory` - Inventario del usuario
+
+**Admin (solo dev):**
+- `GET /api/admin/items` - Listar items
+- `POST /api/admin/items` - Crear item
+- `PUT /api/admin/items/:id` - Actualizar item
+- `DELETE /api/admin/items/:id` - Eliminar item
+- `DELETE /api/admin/items` - Eliminar todos
+
+**Frontend:**
+- `InventoryScene` - Vista del inventario (`/inventory`)
+- `MarketplaceScene` - Tienda (`/marketplace`)
+- `inventoryService` - Operaciones de inventario
+- `ItemCard` - Componente reutilizable para mostrar items
+
+**Recompensas en Quests:**
+
+Los items se otorgan via `rewards_json` en quests:
+```json
+{
+  "gold": 500,
+  "items": [{ "itemName": "chigo_egg", "quantity": 1 }]
+}
+```
+Nota: `itemName` usa el campo `name` (identificador interno).
 
 ## Notas Importantes
 

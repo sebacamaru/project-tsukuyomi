@@ -42,4 +42,84 @@ export const adminService = {
     const error = await response.json();
     return { success: false, error: error.error };
   },
+
+  /**
+   * Elimina todos los items de la base de datos
+   */
+  async deleteAllItems() {
+    const response = await fetch(`${API_BASE}/items`, {
+      method: "DELETE",
+      headers: getAuthHeaders(),
+    });
+
+    if (response.ok) {
+      return { success: true, ...(await response.json()) };
+    }
+
+    const error = await response.json();
+    return { success: false, error: error.error };
+  },
+
+  /**
+   * Obtiene todos los items
+   */
+  async getItems() {
+    const response = await fetch(`${API_BASE}/items`, {
+      headers: getAuthHeaders(),
+    });
+    return response.json();
+  },
+
+  /**
+   * Crea un nuevo item
+   */
+  async createItem(data) {
+    const response = await fetch(`${API_BASE}/items`, {
+      method: "POST",
+      headers: getAuthHeaders(),
+      body: JSON.stringify(data),
+    });
+
+    if (response.ok) {
+      return { success: true, ...(await response.json()) };
+    }
+
+    const error = await response.json();
+    return { success: false, error: error.error };
+  },
+
+  /**
+   * Actualiza un item existente
+   */
+  async updateItem(id, data) {
+    const response = await fetch(`${API_BASE}/items/${id}`, {
+      method: "PUT",
+      headers: getAuthHeaders(),
+      body: JSON.stringify(data),
+    });
+
+    if (response.ok) {
+      return { success: true, ...(await response.json()) };
+    }
+
+    const error = await response.json();
+    return { success: false, error: error.error };
+  },
+
+  /**
+   * Elimina un item individual
+   */
+  async deleteItem(id) {
+    const response = await fetch(`${API_BASE}/items/${id}`, {
+      method: "DELETE",
+      headers: getAuthHeaders(),
+    });
+
+    if (response.ok) {
+      return { success: true, ...(await response.json()) };
+    }
+
+    const error = await response.json();
+    return { success: false, error: error.error };
+  },
 };

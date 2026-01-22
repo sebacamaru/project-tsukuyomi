@@ -4,6 +4,7 @@ import { registerMonsters } from "./monsters.js";
 import { registerItems } from "./items.js";
 import { registerQuests } from "./quests.js";
 import { registerAdmin } from "./admin.js";
+import { registerInventory } from "./inventory.js";
 
 export function loadApiRoutes(router) {
   registerAuth(router);
@@ -12,4 +13,5 @@ export function loadApiRoutes(router) {
   registerItems(router);
   registerQuests(router);
   registerAdmin(router);
+  registerInventory(router);
 }

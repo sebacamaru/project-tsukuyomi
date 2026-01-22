@@ -1,0 +1,26 @@
+<div class="inventory">
+    <div class="container">
+        <div class="inventory__header">
+            <h1>Mi Inventario</h1>
+            <div class="inventory__gold">
+                <span class="gold-icon"></span>
+                <span id="goldAmount">0</span>g
+            </div>
+        </div>
+
+        <div class="inventory__tabs">
+            <button class="tab active" data-type="all">Todos</button>
+            <button class="tab" data-type="potion">Pociones</button>
+            <button class="tab" data-type="egg">Huevos</button>
+            <button class="tab" data-type="misc">Otros</button>
+        </div>
+
+        <div id="inventoryItems" class="inventory__grid">
+            <!-- Items se cargan dinamicamente -->
+        </div>
+
+        <div id="emptyMessage" class="inventory__empty hidden">
+            <p>No tienes items en tu inventario</p>
+        </div>
+    </div>
+</div>

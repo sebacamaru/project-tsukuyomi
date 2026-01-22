@@ -1,26 +1,38 @@
 [
   {
     "id": 1,
-    "name": "Potion",
+    "name": "basic_potion",
+    "label": "Poción",
+    "description": "Restaura una pequeña cantidad de salud",
     "price": 50,
-    "icon": "https://via.placeholder.com/64/3498db/ffffff?text=P"
+    "icon": "https://via.placeholder.com/64/3498db/ffffff?text=P",
+    "type": "potion"
   },
   {
     "id": 2,
-    "name": "Elixir",
+    "name": "elixir",
+    "label": "Elixir",
+    "description": "Restaura salud y energía moderadamente",
     "price": 120,
-    "icon": "https://via.placeholder.com/64/e74c3c/ffffff?text=E"
+    "icon": "https://via.placeholder.com/64/e74c3c/ffffff?text=E",
+    "type": "potion"
   },
   {
     "id": 3,
-    "name": "Phoenix Down",
+    "name": "phoenix_down",
+    "label": "Pluma de Fénix",
+    "description": "Revive a un compañero caído",
     "price": 500,
-    "icon": "https://via.placeholder.com/64/f39c12/ffffff?text=PD"
+    "icon": "https://via.placeholder.com/64/f39c12/ffffff?text=PD",
+    "type": "potion"
   },
   {
     "id": 4,
-    "name": "Ether",
+    "name": "ether",
+    "label": "Éter",
+    "description": "Restaura energía mágica",
     "price": 150,
-    "icon": "https://via.placeholder.com/64/9b59b6/ffffff?text=ET"
+    "icon": "https://via.placeholder.com/64/9b59b6/ffffff?text=ET",
+    "type": "potion"
   }
 ]

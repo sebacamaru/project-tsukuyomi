@@ -60,13 +60,13 @@
     {
       "id": "ask_question_1",
       "speaker": "Profesor Cacho",
-      "text": "Bien, seguro te puedo dar una mano con eso. Pero antes...",
+      "text": "Seguro te puedo dar una mano con eso. Pero antes...",
       "next": "ask_question_2"
     },
     {
       "id": "ask_question_2",
       "speaker": "Profesor Cacho",
-      "text": "¿Tenés alguna pregunta en particular?",
+      "text": "¿Tenés alguna duda en particular?",
       "options": [
         {
           "text": "Bueno em, sí. ¿Qué són los chigos?",
@@ -93,6 +93,110 @@
           "next": "start_adventure_1"
         }
       ]
+    },
+    {
+      "id": "chigo_info_1",
+      "speaker": "Profesor Cacho",
+      "text": "¿Ehh? Ah... Ya sé, tenés ganas de escuchar la explicación técnica del profe, ¿no? Bueno, espero estar a la altura, acá va...",
+      "next": "chigo_info_2"
+    },
+    {
+      "id": "chigo_info_2",
+      "speaker": "Profesor Cacho",
+      "text": "De sus orígenes sabemos poco, pero tenemos algunas cosas claras.",
+      "next": "chigo_info_3"
+    },
+    {
+      "id": "chigo_info_3",
+      "speaker": "Profesor Cacho",
+      "text": "En cuanto a personalidad, por lo general son criaturas a las que les encantan los desafíos, medir sus habilidades entre sí y superarse.",
+      "next": "chigo_info_4"
+    },
+    {
+      "id": "chigo_info_4",
+      "speaker": "Profesor Cacho",
+      "text": "A nivel biológico, los chigos son seres elementales. Hasta la fecha descubrimos que hay seis tipos: Fuego, Hielo, Aire, Tierra, Rayo, y Agua.",
+      "next": "chigo_info_5"
+    },
+    {
+      "id": "chigo_info_5",
+      "speaker": "Profesor Cacho",
+      "text": "Algo fascinante es que sin importar el tipo de chigo que sea, cada uno nace con dos elementos: uno dominante y uno secundario.",
+      "next": "chigo_info_6"
+    },
+    {
+      "id": "chigo_info_6",
+      "speaker": "Profesor Cacho",
+      "text": "Por ejemplo, un X puede nacer de cualquier elemento, y el elemento dominante altera su apariencia. ¡Eso los hace únicos a todos!",
+      "next": "chigo_info_7"
+    },
+    {
+      "id": "chigo_info_7",
+      "speaker": "Profesor Cacho",
+      "text": "Hay cosas de los chigos que… bueno, ya las vas a descubrir. Perdón, me entusiasmo un poco cuando se trata de chigos. 😅",
+      "next": "ask_question_2"
+    },
+    {
+      "id": "care_info_1",
+      "speaker": "Profesor Cacho",
+      "text": "Hay algunas recomendaciones. Al principio, durante la Incubación, lo importante es estar presente. No es solo un huevo, ¿viste?",
+      "next": "care_info_2"
+    },
+    {
+      "id": "care_info_2",
+      "speaker": "Profesor Cacho",
+      "text": "Después es más simple: cuanto más interactuás con él, mejor se llevan… y eso lo hace más fuerte y más feliz.",
+      "next": "ask_question_2"
+    },
+    {
+      "id": "battle_info_1",
+      "speaker": "Profesor Cacho",
+      "text": "No te preocupes, ellos no sienten dolor físico como nosotros. Y no me vas a creer, pero... *sorbe mate* los chigos son inmortales. Sí, así como leíste, no pueden morir... Salvo circunstancias muy específicas. Son seres fascinantes.",
+      "next": "battle_info_2"
+    },
+    {
+      "id": "battle_info_2",
+      "speaker": "Profesor Cacho",
+      "text": "Y si bien algunos eligen llevar una vida pacífica, a la mayoría les encanta medirse y competir. Algo lógico teniendo en cuenta sus condiciones favorables.",
+      "next": "ask_question_2"
+    },
+    {
+      "id": "start_adventure_1",
+      "speaker": "Profesor Cacho",
+      "text": "Ah te agarró el entusiasmo {username}, ¿eh? Mirá, te voy a hacer un regalo, y capaz este sea el comienzo de algo grande.",
+      "next": "start_adventure_2"
+    },
+    {
+      "id": "start_adventure_2",
+      "speaker": "Profesor Cacho",
+      "text": "Cerrá los ojos, y cuando escuches un sonido, abrilos. ¿Dale?",
+      "next": "egg_reveal"
+    },
+    {
+      "id": "egg_reveal",
+      "action": "egg_reveal",
+      "actionData": {
+        "text": "¡Recibiste un huevo chigo!"
+      },
+      "next": "start_adventure_3"
+    },
+    {
+      "id": "start_adventure_3",
+      "speaker": "Profesor Cacho",
+      "text": "Si crack, es tu primer huevo chigo. ¡Acá empieza tu gran aventura! ¿Estás feliz? Se te ve en la cara.",
+      "next": "start_adventure_4"
+    },
+    {
+      "id": "start_adventure_4",
+      "speaker": "Profesor Cacho",
+      "text": "Ahora te toca cuidarlo hasta que eclosione. En CONICHIGO disponemos de cámaras de incubación que son públicas, libres y gratuitas, pero ojo, el cuidado de tu huevo depende de vos.",
+      "next": "start_adventure_5"
+    },
+    {
+      "id": "start_adventure_5",
+      "speaker": "Profesor Cacho",
+      "text": "Bueno, ya me tendría que ir tomando el palo porque tengo algunas investigaciones en curso. ¿Te puedo ayudar en algo más?",
+      "action": "complete_quest"
     }
   ]
 }

@@ -38,11 +38,11 @@ export class Scene {
     const html = await this.getHTML();
     root.innerHTML = html;
 
-    // Inicializar lazy loading automáticamente
-    initLazyImages(root);
-
     // Inicializar UI específica de la escena
     await this.initUI(root);
+
+    // Inicializar lazy loading DESPUÉS de initUI (donde se renderizan items dinámicos)
+    initLazyImages(root);
 
     // Llamar a onEnterComplete de forma no bloqueante
     // Esto permite que el loading indicator se oculte inmediatamente

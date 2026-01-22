@@ -1,5 +1,6 @@
 import { store } from "../core/Store.js";
 import { app } from "../main.js";
+import { inventoryService } from "./inventoryService.js";
 
 const API_BASE = "/auth";
 const STORAGE_KEY = "tsukuyomi_auth";
@@ -31,6 +32,10 @@ export const authService = {
       }
 
       this._saveSession(data.token, data.user);
+
+      // Cargar inventario después de login
+      await inventoryService.loadInventory();
+
       return { success: true };
     } catch (error) {
       console.error("Login error:", error);
@@ -57,6 +62,10 @@ export const authService = {
       }
 
       this._saveSession(data.token, data.user);
+
+      // Cargar inventario después de registro
+      await inventoryService.loadInventory();
+
       return { success: true };
     } catch (error) {
       console.error("Register error:", error);
@@ -70,6 +79,8 @@ export const authService = {
   logout() {
     store.token = null;
     store.user = null;
+    store.gold = 0;
+    store.inventory = [];
     localStorage.removeItem(STORAGE_KEY);
   },
 
@@ -86,6 +97,9 @@ export const authService = {
       if (token && user) {
         store.token = token;
         store.user = user;
+
+        // Cargar inventario al restaurar sesión
+        inventoryService.loadInventory();
       }
     } catch (error) {
       console.error("Error restoring session:", error);

@@ -45,13 +45,23 @@ export const userIdParamSchema = z.object({
 
 // ===== ITEM SCHEMAS =====
 export const createItemSchema = z.object({
-  name: z.string().min(1, "Nombre requerido").max(50, "Nombre muy largo"),
+  name: z
+    .string()
+    .min(1, "Nombre interno requerido")
+    .max(50, "Nombre interno muy largo")
+    .regex(
+      /^[a-z0-9_]+$/,
+      "El nombre interno solo puede contener letras minúsculas, números y guiones bajos",
+    ),
+  label: z.string().min(1, "Label requerido").max(100, "Label muy largo"),
+  description: z.string().max(500, "Descripción muy larga").optional(),
   price: z
     .number()
     .int()
     .min(0, "Precio debe ser mayor o igual a 0")
     .max(999999, "Precio máximo: 999999"),
-  icon: z.string().url("URL de ícono inválida"),
+  icon: z.string().min(1, "Ícono requerido"),
+  type: z.enum(["potion", "egg", "misc"]).default("misc"),
 });
 
 // ===== WEBSOCKET SCHEMAS =====

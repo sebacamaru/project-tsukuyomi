@@ -57,3 +57,140 @@
     display: inline-block;
     margin-left: var(--space-2);
 }
+
+/* Item Form */
+.item-form {
+    padding: var(--space-4);
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-md);
+}
+
+.item-form__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-3);
+}
+
+.item-form__actions {
+    display: flex;
+    gap: var(--space-2);
+}
+
+/* Items List */
+.items-list__title {
+    font-size: var(--text-base);
+    font-weight: var(--weight-bold);
+    margin: 0 0 var(--space-3) 0;
+    color: var(--color-text);
+}
+
+.items-list__container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.item-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    background: white;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    transition: all 0.2s ease;
+}
+
+.item-row:hover {
+    border-color: var(--color-primary);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.item-row__icon {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    flex-shrink: 0;
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-sm);
+}
+
+.item-row__info {
+    flex: 1;
+    min-width: 0;
+}
+
+.item-row__name {
+    font-weight: var(--weight-bold);
+    color: var(--color-text);
+    margin: 0;
+    font-size: var(--text-sm);
+}
+
+.item-row__meta {
+    font-size: var(--text-xs);
+    color: var(--color-text-secondary);
+    margin: 0;
+}
+
+.item-row__price {
+    font-weight: var(--weight-bold);
+    color: #f39c12;
+    font-size: var(--text-sm);
+    white-space: nowrap;
+}
+
+.item-row__actions {
+    display: flex;
+    gap: var(--space-1);
+}
+
+.item-row__btn {
+    padding: var(--space-1) var(--space-2);
+    font-size: var(--text-xs);
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.item-row__btn--edit {
+    background: #3b82f6;
+    color: white;
+}
+
+.item-row__btn--edit:hover {
+    background: #2563eb;
+}
+
+.item-row__btn--delete {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.item-row__btn--delete:hover {
+    background: #fecaca;
+}
+
+/* Danger zone */
+.items-danger {
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--color-border);
+}
+
+/* Button variants */
+.button--secondary {
+    background: var(--color-bg-secondary);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+}
+
+.button--secondary:hover {
+    background: var(--color-border);
+}
+
+.button--small {
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--text-sm);
+}

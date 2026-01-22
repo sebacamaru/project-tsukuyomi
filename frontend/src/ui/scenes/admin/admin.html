@@ -43,6 +43,125 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Items Editor -->
+            <div class="box">
+                <h2 class="box__title secondary">Editor de Items</h2>
+                <div class="box__content">
+                    <div class="flex flex-col gap-4">
+                        <!-- Formulario de item -->
+                        <div id="item-form" class="item-form">
+                            <div class="item-form__grid">
+                                <div class="admin__field">
+                                    <label class="admin__label" for="item-name"
+                                        >Name (interno)</label
+                                    >
+                                    <input
+                                        type="text"
+                                        id="item-name"
+                                        class="input"
+                                        placeholder="basic_potion"
+                                    />
+                                </div>
+                                <div class="admin__field">
+                                    <label class="admin__label" for="item-label"
+                                        >Label (visible)</label
+                                    >
+                                    <input
+                                        type="text"
+                                        id="item-label"
+                                        class="input"
+                                        placeholder="Pocion Basica"
+                                    />
+                                </div>
+                                <div class="admin__field">
+                                    <label class="admin__label" for="item-price"
+                                        >Precio</label
+                                    >
+                                    <input
+                                        type="number"
+                                        id="item-price"
+                                        class="input"
+                                        placeholder="100"
+                                        min="0"
+                                    />
+                                </div>
+                                <div class="admin__field">
+                                    <label class="admin__label" for="item-type"
+                                        >Tipo</label
+                                    >
+                                    <select id="item-type" class="input">
+                                        <option value="misc">Misc</option>
+                                        <option value="potion">Potion</option>
+                                        <option value="egg">Egg</option>
+                                    </select>
+                                </div>
+                                <div class="admin__field">
+                                    <label class="admin__label" for="item-icon"
+                                        >Icon (URL/path)</label
+                                    >
+                                    <input
+                                        type="text"
+                                        id="item-icon"
+                                        class="input"
+                                        placeholder="/assets/item.png"
+                                    />
+                                </div>
+                                <div class="admin__field">
+                                    <label
+                                        class="admin__label"
+                                        for="item-description"
+                                        >Descripcion</label
+                                    >
+                                    <input
+                                        type="text"
+                                        id="item-description"
+                                        class="input"
+                                        placeholder="Descripcion del item"
+                                    />
+                                </div>
+                            </div>
+                            <input type="hidden" id="item-edit-id" value="" />
+                            <div
+                                id="item-form-message"
+                                class="admin__message"
+                            ></div>
+                            <div class="item-form__actions">
+                                <button id="save-item-btn" class="button">
+                                    Crear Item
+                                </button>
+                                <button
+                                    id="cancel-item-btn"
+                                    class="button button--secondary hidden"
+                                >
+                                    Cancelar
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Lista de items -->
+                        <div class="items-list">
+                            <h3 class="items-list__title">Items existentes</h3>
+                            <div
+                                id="items-list-container"
+                                class="items-list__container"
+                            >
+                                <p class="text-muted">Cargando items...</p>
+                            </div>
+                        </div>
+
+                        <!-- Acciones peligrosas -->
+                        <div class="items-danger">
+                            <button
+                                id="delete-items-btn"
+                                class="button button--danger button--small"
+                            >
+                                Borrar todos los items
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

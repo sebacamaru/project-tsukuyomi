@@ -28,6 +28,14 @@ app
   })
   .use(
     staticPlugin({
+      assets: "../public/assets",
+      prefix: "/assets",
+      alwaysStatic: true,
+      indexHTML: false,
+    }),
+  )
+  .use(
+    staticPlugin({
       assets: "../public",
       prefix: "/",
       alwaysStatic: true,
