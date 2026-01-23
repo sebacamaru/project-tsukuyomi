@@ -64,14 +64,14 @@ export class App {
         icon: "🏠",
       },
       {
-        route: "/battle",
-        label: "Batalla",
-        icon: "⚔️",
+        route: "/inventory",
+        label: "Inventario",
+        icon: "🎒",
       },
       {
         route: "/professor",
         label: "Profesor Cacho",
-        icon: "🎒",
+        icon: "🥼",
         badge: this.getProfessorBadge(),
       },
       {

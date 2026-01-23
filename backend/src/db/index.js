@@ -115,17 +115,72 @@ export const initDatabase = () => {
     type TEXT NOT NULL DEFAULT 'misc'
   )`);
 
-  // Tabla User Items (inventario)
+  // Migración: agregar columna stackable a items si no existe
+  const itemColumns = db.query("PRAGMA table_info(items)").all();
+  const hasStackable = itemColumns.some((col) => col.name === "stackable");
+  if (!hasStackable) {
+    db.run("ALTER TABLE items ADD COLUMN stackable INTEGER NOT NULL DEFAULT 1");
+    // Items tipo egg y chigo no son stackeables
+    db.run("UPDATE items SET stackable = 0 WHERE type IN ('egg', 'chigo')");
+  }
+
+  // Tabla User Items (inventario) - sin UNIQUE constraint para soportar items únicos
   db.run(`CREATE TABLE IF NOT EXISTS user_items (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
     item_id INTEGER NOT NULL,
     quantity INTEGER NOT NULL DEFAULT 1,
     obtained_at INTEGER NOT NULL,
+    uuid TEXT,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE,
-    UNIQUE(user_id, item_id)
+    FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE
   )`);
+
+  // Migración: agregar columna uuid a user_items si no existe
+  const userItemColumns = db.query("PRAGMA table_info(user_items)").all();
+  const hasUuid = userItemColumns.some((col) => col.name === "uuid");
+  if (!hasUuid) {
+    db.run("ALTER TABLE user_items ADD COLUMN uuid TEXT");
+  }
+
+  // Migración: remover UNIQUE constraint de user_items si existe
+  // SQLite no permite DROP CONSTRAINT, hay que recrear la tabla
+  const tableInfo = db
+    .query(
+      "SELECT sql FROM sqlite_master WHERE type='table' AND name='user_items'",
+    )
+    .get();
+
+  if (tableInfo && tableInfo.sql && tableInfo.sql.includes("UNIQUE")) {
+    // Recrear tabla sin UNIQUE constraint
+    db.run("BEGIN TRANSACTION");
+    try {
+      // Crear tabla temporal con nueva estructura
+      db.run(`CREATE TABLE user_items_new (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        item_id INTEGER NOT NULL,
+        quantity INTEGER NOT NULL DEFAULT 1,
+        obtained_at INTEGER NOT NULL,
+        uuid TEXT,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE
+      )`);
+
+      // Copiar datos existentes
+      db.run(`INSERT INTO user_items_new (id, user_id, item_id, quantity, obtained_at, uuid)
+              SELECT id, user_id, item_id, quantity, obtained_at, uuid FROM user_items`);
+
+      // Eliminar tabla vieja y renombrar nueva
+      db.run("DROP TABLE user_items");
+      db.run("ALTER TABLE user_items_new RENAME TO user_items");
+
+      db.run("COMMIT");
+    } catch (error) {
+      db.run("ROLLBACK");
+      throw error;
+    }
+  }
 
   // Índices para user_items
   db.run(
@@ -134,6 +189,7 @@ export const initDatabase = () => {
   db.run(
     "CREATE INDEX IF NOT EXISTS idx_user_items_item_id ON user_items(item_id)",
   );
+  db.run("CREATE INDEX IF NOT EXISTS idx_user_items_uuid ON user_items(uuid)");
 
   // Insertar datos iniciales de items si la tabla está vacía
   const count = db.query("SELECT COUNT(*) as count FROM items").get();
@@ -146,6 +202,7 @@ export const initDatabase = () => {
         price: 50,
         icon: "https://via.placeholder.com/64/3498db/ffffff?text=P",
         type: "potion",
+        stackable: 1,
       },
       {
         name: "elixir",
@@ -154,6 +211,7 @@ export const initDatabase = () => {
         price: 120,
         icon: "https://via.placeholder.com/64/e74c3c/ffffff?text=E",
         type: "potion",
+        stackable: 1,
       },
       {
         name: "phoenix_down",
@@ -162,6 +220,7 @@ export const initDatabase = () => {
         price: 500,
         icon: "https://via.placeholder.com/64/f39c12/ffffff?text=PD",
         type: "potion",
+        stackable: 1,
       },
       {
         name: "ether",
@@ -170,6 +229,7 @@ export const initDatabase = () => {
         price: 150,
         icon: "https://via.placeholder.com/64/9b59b6/ffffff?text=ET",
         type: "potion",
+        stackable: 1,
       },
       {
         name: "chigo_egg",
@@ -178,18 +238,20 @@ export const initDatabase = () => {
         price: 0,
         icon: "sprite-egg.png",
         type: "egg",
+        stackable: 0,
       },
     ];
 
     initialItems.forEach((item) => {
       db.run(
-        "INSERT INTO items (name, label, description, price, icon, type) VALUES (?, ?, ?, ?, ?, ?)",
+        "INSERT INTO items (name, label, description, price, icon, type, stackable) VALUES (?, ?, ?, ?, ?, ?, ?)",
         item.name,
         item.label,
         item.description,
         item.price,
         item.icon,
         item.type,
+        item.stackable,
       );
     });
   }

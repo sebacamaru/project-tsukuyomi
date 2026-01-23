@@ -1,5 +1,5 @@
 const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./EggReveal-BFex_Yik.js","./assetRegistry-nONwpp3R.js","./EggReveal-CBOrKqUU.css"])))=>i.map(i=>d[i]);
-import{a as e,i as t,l as n,o as r,r as i,t as a}from"./index-BbzHd__1.js";import{t as o}from"./Scene-BuxfXckF.js";var s=`<div class="professor">
+import{a as e,i as t,l as n,o as r,r as i,t as a}from"./index-D8PBEQHq.js";import{t as o}from"./Scene-B0WgXyFJ.js";var s=`<div class="professor">
     <div class="sprite"></div>
 </div>
 `,c=class e{static isActive=!1;constructor(e){this.speaker=e.speaker||``,this.text=e.text||``,this.options=e.options||[],this.onSelect=e.onSelect||(()=>{}),this.onClose=e.onClose||(()=>{}),this.typewriterSpeed=e.typewriterSpeed||30,this.enableTypewriter=e.enableTypewriter!==!1,this.closable=e.closable!==!1,this.element=null,this.textElement=null,this.typewriterTimeout=null,this.isTyping=!1,this.fullText=this.text,this.currentCharIndex=0,this.resolvePromise=null}render(){let e=document.createElement(`div`);return e.className=`message-box-overlay`,e.innerHTML=`

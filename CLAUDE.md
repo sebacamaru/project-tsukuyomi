@@ -194,3 +194,8 @@ Nota: `itemName` usa el campo `name` (identificador interno).
 - Pixi.js renderiza background con partículas animadas
 - Modo "cutscene" oculta navbar para diálogos inmersivos
 - Admin routes solo disponibles en desarrollo
+
+## Restricciones de Claude
+
+- **NO ejecutar builds automáticamente** - No correr `npm run build`, `npm run dev`, `npm run frontend`, `npm run backend` ni comandos similares sin autorización explícita del usuario.
+- Solo ejecutar comandos de build/dev cuando el usuario lo solicite específicamente.

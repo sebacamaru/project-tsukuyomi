@@ -1,4 +1,4 @@
-import{o as e}from"./index-BbzHd__1.js";import{t}from"./Scene-BuxfXckF.js";import{t as n}from"./assetRegistry-nONwpp3R.js";var r=`<div class="marketplace">\r
+import{o as e}from"./index-D8PBEQHq.js";import{t}from"./Scene-B0WgXyFJ.js";import{t as n}from"./assetRegistry-nONwpp3R.js";var r=`<div class="marketplace">\r
   <h1>Marketplace</h1>\r
   <p>Contenido del marketplace</p>\r
   <div id="marketItems"></div>\r

@@ -87,10 +87,21 @@ export const inventoryService = {
   },
 
   /**
-   * Obtiene la cantidad de un item en el inventario
+   * Obtiene la cantidad total de un item en el inventario
+   * Suma las quantities de todos los registros con ese item_id
+   * (soporta items únicos que tienen múltiples registros)
    */
   getItemQuantity(itemId) {
-    const item = store.inventory.find((item) => item.item_id === itemId);
-    return item ? item.quantity : 0;
+    return store.inventory
+      .filter((item) => item.item_id === itemId)
+      .reduce((sum, item) => sum + item.quantity, 0);
+  },
+
+  /**
+   * Obtiene todos los registros de un item específico
+   * Útil para items únicos como huevos
+   */
+  getItemInstances(itemId) {
+    return store.inventory.filter((item) => item.item_id === itemId);
   },
 };
