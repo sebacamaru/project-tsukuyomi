@@ -2,9 +2,9 @@
 
 Juego educativo web con arquitectura cliente-servidor.
 
-## Stack Tecnológico
+## Stack Tecnologico
 
-| Capa | Tecnología |
+| Capa | Tecnologia |
 |------|-----------|
 | Runtime | Bun |
 | Backend | Elysia 1.4.17 |
@@ -12,7 +12,7 @@ Juego educativo web con arquitectura cliente-servidor.
 | Base de Datos | SQLite (dev), PostgreSQL (prod) |
 | Cache | Redis |
 | Auth | JWT + Bcrypt |
-| Validación | Zod |
+| Validacion | Zod |
 
 ## Comandos
 
@@ -30,31 +30,33 @@ npm run build         # Build frontend + ejecuta dev
 project-tsukuyomi/
 ├── backend/src/
 │   ├── server.js           # Punto de entrada Elysia
-│   ├── api/                # Rutas REST (auth, users, items, quests, monsters, admin)
+│   ├── api/                # Rutas REST (auth, users, eggs, candies, stones, chigos, quests, admin, inventory)
 │   ├── db/                 # SQLite + esquemas
+│   │   ├── schema/         # eggs, candies, stones, chigos, users
+│   │   └── seeds/          # egg_types, candy_types, stone_types, chigo_species
 │   ├── ws/                 # WebSocket handlers (battle, challenge)
 │   ├── validators/         # Esquemas Zod
-│   ├── services/cache.js   # Abstracción Redis
+│   ├── services/cache.js   # Abstraccion Redis
 │   └── utils/              # Logger (Pino), errorHandler
 │
 ├── frontend/src/
 │   ├── main.js             # Punto de entrada
-│   ├── core/               # App, Scene, SceneManager, Router, Store, Renderer
+│   ├── core/               # App, Scene, SceneManager, Router, Store, Renderer, QuestRunner
 │   ├── scenes/             # Vistas (Login, Register, Dashboard, Professor, Battle, Marketplace, Inventory, Admin)
-│   ├── services/           # Comunicación API (auth, user, quest, marketplace, admin)
+│   ├── services/           # Comunicacion API (auth, user, quest, egg, candy, stone, chigo, marketplace, admin)
 │   ├── ui/
-│   │   ├── components/     # Navbar, MessageBox, ItemCard, LoadingIndicator
+│   │   ├── components/     # Navbar, MessageBox, ItemGrid, LoadingIndicator
 │   │   ├── layout/         # Template principal
 │   │   └── scenes/         # HTML+CSS por escena
 │   ├── styles/             # CSS global (variables, base, components, utilities)
-│   └── data/               # items.json, quests/*.json
+│   └── data/               # quests/*.json
 │
 └── public/                 # Build output (assets compilados)
 ```
 
 ## Arquitectura Frontend
 
-**Patrón Scene-based** (similar a game engines):
+**Patron Scene-based** (similar a game engines):
 - Cada vista es una `Scene` que extiende la clase base
 - Lifecycle: `onEnter()`, `onExit()`, `onEnterComplete()`
 - Lazy loading con dynamic imports
@@ -62,7 +64,15 @@ project-tsukuyomi/
 
 **Estado global:**
 ```javascript
-store = { gold, inventory, items, user, token }
+store = {
+  gold: 0,
+  eggs: [],           // Huevos del usuario
+  candies: [],        // Caramelos del usuario
+  stones: [],         // Piedras del usuario
+  chigos: [],         // Chigos del usuario
+  user: null,
+  token: null
+}
 ```
 
 **Persistencia:** LocalStorage key `tsukuyomi_auth`
@@ -73,20 +83,20 @@ store = { gold, inventory, items, user, token }
 - `POST /auth/register` - Registro (email + password)
 - `POST /auth/login` - Login, retorna JWT
 - `GET/PUT /api/users/:id` - CRUD usuarios
-- `GET /api/items` - Listado items
+- `GET /api/users/:id/inventory` - Inventario completo (eggs, candies, stones, chigos, gold)
 - `GET /api/quests/:code` - Obtener quest
 - `POST /api/users/:id/complete-quest` - Completar quest
 
 **WebSocket `/ws`:** Eventos LOGIN, CHALLENGE, PLAYER_READY, batalla en tiempo real
 
-**Cache Redis:** TTL 5 min para users, items, monsters
+**Cache Redis:** TTL 5 min para catalogos, 1 min para inventario usuario
 
-## Convenciones de Código
+## Convenciones de Codigo
 
 - **JavaScript ES6+** (no TypeScript)
-- **CSS puro** con variables CSS, metodología BEM
+- **CSS puro** con variables CSS, metodologia BEM
 - **Mobile-first** responsive design
-- **Validación Zod** en backend
+- **Validacion Zod** en backend
 - **Estructura modular** por feature
 
 ## Variables de Entorno
@@ -98,10 +108,10 @@ store = { gold, inventory, items, user, token }
 **Backend (.env):**
 - `PORT` - Puerto del servidor (3000)
 - `JWT_SECRET` - Secreto para tokens
-- `JWT_EXP` - Expiración JWT (2h)
+- `JWT_EXP` - Expiracion JWT (2h)
 - `REDIS_URL` - URL de Redis
 
-## Flujo de Autenticación
+## Flujo de Autenticacion
 
 1. Usuario registra con email + password
 2. Password hasheado con bcrypt
@@ -122,21 +132,21 @@ store = { gold, inventory, items, user, token }
   "debug": true,
   "dialogues": [
     { "id": "d1", "speaker": "NPC", "text": "Hola {username}", "next": "d2" },
-    { "id": "d2", "options": [{ "text": "Opción", "next": "d3" }] },
+    { "id": "d2", "options": [{ "text": "Opcion", "next": "d3" }] },
     { "id": "d3", "action": "complete_quest" }
   ]
 }
 ```
 
-**Acciones en diálogos:**
-- Diálogo simple: `speaker`, `text`, `next`
-- Opciones múltiples: `options[]` con `text`, `value`, `icon`, `next`
-- `input_username`: Input validado (3-20 chars, alfanumérico)
-- `create_monster`: Selección de starter (TODO)
+**Acciones en dialogos:**
+- Dialogo simple: `speaker`, `text`, `next`
+- Opciones multiples: `options[]` con `text`, `value`, `icon`, `next`
+- `input_username`: Input validado (3-20 chars, alfanumerico)
+- `create_monster`: Seleccion de starter (TODO)
 - `complete_quest`: Finaliza quest y programa siguiente
 
 **Sistema de delays:**
-- `nextQuestDelay`: número fijo o rango `"1-3"`
+- `nextQuestDelay`: numero fijo o rango `"1-3"`
 - `debug: true` → minutos, `debug: false` → horas
 - Guarda timestamp en `user.next_quest_available_at`
 
@@ -144,58 +154,102 @@ store = { gold, inventory, items, user, token }
 
 **Progreso:** `current_quest_code` en usuario, encadenadas por `prerequisite_quest_code`
 
-**Badge Profesor:** `App.js` muestra notificación si hay quest disponible y no hay delay activo
+**Badge Profesor:** `App.js` muestra notificacion si hay quest disponible y no hay delay activo
 
-## Sistema de Items
+## Sistema de Inventario
 
-**Tabla `items`:**
+El sistema usa tablas especializadas por tipo de item:
 
-| Campo | Tipo | Descripción |
-|-------|------|-------------|
-| `name` | TEXT | Identificador interno (ej: `basic_potion`, `chigo_egg`) |
-| `label` | TEXT | Nombre visible al usuario (ej: "Poción Básica") |
-| `description` | TEXT | Descripción del item (opcional) |
-| `price` | INTEGER | Precio en oro (0 = no comprable, es recompensa) |
-| `icon` | TEXT | Nombre del archivo en /assets (ej: `sprite-egg.png`) |
-| `type` | TEXT | Categoría: `potion`, `egg`, `misc` |
+### Catalogos (tipos disponibles en el juego)
 
-**API REST:**
-- `GET /api/items` - Listado de items (cache 5 min)
-- `POST /api/marketplace/buy` - Comprar item
-- `GET /api/users/:id/inventory` - Inventario del usuario
+| Tabla | Descripcion |
+|-------|-------------|
+| `egg_types` | Tipos de huevos (wild, tame) con possible_species |
+| `candy_types` | Caramelos que modifican stats (hp, atk, def, spd) |
+| `stone_types` | Piedras elementales equipables |
+| `chigo_species` | Especies de chigos con stats base |
 
-**Admin (solo dev):**
-- `GET /api/admin/items` - Listar items
-- `POST /api/admin/items` - Crear item
-- `PUT /api/admin/items/:id` - Actualizar item
-- `DELETE /api/admin/items/:id` - Eliminar item
-- `DELETE /api/admin/items` - Eliminar todos
+### Inventario del Usuario
 
-**Frontend:**
-- `InventoryScene` - Vista del inventario (`/inventory`)
-- `MarketplaceScene` - Tienda (`/marketplace`)
-- `inventoryService` - Operaciones de inventario
-- `ItemCard` - Componente reutilizable para mostrar items
+| Tabla | Descripcion |
+|-------|-------------|
+| `user_eggs` | Huevos con uuid, status (inventory/incubating/hatched), care_params |
+| `user_candies` | Cantidad de cada tipo de caramelo |
+| `user_stones` | Cantidad de cada tipo de piedra |
+| `user_chigos` | Chigos con uuid, stats individuales, nickname |
+| `chigo_stones` | Piedras equipadas permanentemente (max 4 por chigo) |
 
-**Recompensas en Quests:**
+### API REST
 
-Los items se otorgan via `rewards_json` en quests:
+**Huevos:**
+- `GET /api/egg-types` - Catalogo de tipos
+- `GET /api/users/:id/eggs` - Huevos del usuario
+- `POST /api/users/:id/eggs/:uuid/incubate` - Iniciar incubacion
+- `POST /api/users/:id/eggs/:uuid/hatch` - Eclosionar
+
+**Caramelos:**
+- `GET /api/candy-types` - Catalogo
+- `GET /api/candy-types/buyable` - Comprables (price > 0)
+- `GET /api/users/:id/candies` - Caramelos del usuario
+- `POST /api/marketplace/buy-candy` - Comprar
+- `POST /api/users/:id/candies/use` - Usar en chigo
+
+**Piedras:**
+- `GET /api/stone-types` - Catalogo
+- `GET /api/stone-types/buyable` - Comprables
+- `GET /api/users/:id/stones` - Piedras del usuario
+- `POST /api/marketplace/buy-stone` - Comprar
+- `POST /api/users/:id/stones/equip` - Equipar a chigo (permanente)
+
+**Chigos:**
+- `GET /api/chigo-species` - Catalogo de especies
+- `GET /api/users/:id/chigos` - Chigos del usuario
+- `GET /api/users/:id/chigos/:chigoId` - Detalle de un chigo
+- `PUT /api/users/:id/chigos/:chigoId/nickname` - Cambiar nombre
+- `DELETE /api/users/:id/chigos/:chigoId` - Liberar
+
+**Inventario consolidado:**
+- `GET /api/users/:id/inventory` - Retorna `{ gold, eggs, candies, stones, chigos }`
+
+### Admin (solo dev)
+
+- `GET/POST/PUT/DELETE /api/admin/egg-types`
+- `GET/POST/PUT/DELETE /api/admin/candy-types`
+- `GET/POST/PUT/DELETE /api/admin/stone-types`
+- `GET/POST/PUT/DELETE /api/admin/chigo-species`
+- `POST /api/admin/users/:id/give-egg`
+- `POST /api/admin/users/:id/give-candy`
+- `POST /api/admin/users/:id/give-stone`
+
+### Frontend Services
+
+- `eggService` - getUserEggs, startIncubation, hatchEgg
+- `candyService` - getUserCandies, buyCandy, useCandy
+- `stoneService` - getUserStones, buyStone, equipStone
+- `chigoService` - getUserChigos, setNickname, releaseChigo
+- `marketplaceService` - getAllBuyableItems, buyCandy, buyStone
+
+### Recompensas en Quests
+
 ```json
 {
   "gold": 500,
-  "items": [{ "itemName": "chigo_egg", "quantity": 1 }]
+  "eggs": [{ "eggTypeName": "wild", "quantity": 1 }],
+  "candies": [{ "candyTypeName": "hp_candy_small", "quantity": 5 }],
+  "stones": [{ "stoneTypeName": "flame_burst", "quantity": 1 }]
 }
 ```
-Nota: `itemName` usa el campo `name` (identificador interno).
 
 ## Notas Importantes
 
 - El frontend compila a `/public` (no a `/dist`)
-- Pixi.js renderiza background con partículas animadas
-- Modo "cutscene" oculta navbar para diálogos inmersivos
+- Pixi.js renderiza background con particulas animadas
+- Modo "cutscene" oculta navbar para dialogos inmersivos
 - Admin routes solo disponibles en desarrollo
+- Los chigos tienen stats individuales (no solo los base de la especie)
+- Las piedras equipadas son permanentes (no se pueden desequipar)
 
 ## Restricciones de Claude
 
-- **NO ejecutar builds automáticamente** - No correr `npm run build`, `npm run dev`, `npm run frontend`, `npm run backend` ni comandos similares sin autorización explícita del usuario.
-- Solo ejecutar comandos de build/dev cuando el usuario lo solicite específicamente.
+- **NO ejecutar builds automaticamente** - No correr `npm run build`, `npm run dev`, `npm run frontend`, `npm run backend` ni comandos similares sin autorizacion explicita del usuario.
+- Solo ejecutar comandos de build/dev cuando el usuario lo solicite especificamente.
