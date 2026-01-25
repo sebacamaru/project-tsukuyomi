@@ -1,9 +1,24 @@
 import { store } from "../core/Store.js";
 import { app } from "../main.js";
-import { inventoryService } from "./inventoryService.js";
+import { eggService } from "./eggService.js";
+import { candyService } from "./candyService.js";
+import { stoneService } from "./stoneService.js";
+import { chigoService } from "./chigoService.js";
 
 const API_BASE = "/auth";
 const STORAGE_KEY = "tsukuyomi_auth";
+
+/**
+ * Carga todo el inventario del usuario
+ */
+async function loadFullInventory() {
+  await Promise.all([
+    eggService.getUserEggs(),
+    candyService.getUserCandies(),
+    stoneService.getUserStones(),
+    chigoService.getUserChigos(),
+  ]);
+}
 
 /**
  * Servicio de autenticación
@@ -34,7 +49,7 @@ export const authService = {
       this._saveSession(data.token, data.user);
 
       // Cargar inventario después de login
-      await inventoryService.loadInventory();
+      await loadFullInventory();
 
       return { success: true };
     } catch (error) {
@@ -64,7 +79,7 @@ export const authService = {
       this._saveSession(data.token, data.user);
 
       // Cargar inventario después de registro
-      await inventoryService.loadInventory();
+      await loadFullInventory();
 
       return { success: true };
     } catch (error) {
@@ -80,7 +95,10 @@ export const authService = {
     store.token = null;
     store.user = null;
     store.gold = 0;
-    store.inventory = [];
+    store.eggs = [];
+    store.candies = [];
+    store.stones = [];
+    store.chigos = [];
     localStorage.removeItem(STORAGE_KEY);
   },
 
@@ -99,7 +117,7 @@ export const authService = {
         store.user = user;
 
         // Cargar inventario al restaurar sesión
-        inventoryService.loadInventory();
+        loadFullInventory();
       }
     } catch (error) {
       console.error("Error restoring session:", error);

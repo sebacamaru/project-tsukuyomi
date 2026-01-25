@@ -58,40 +58,96 @@
     margin-left: var(--space-2);
 }
 
-/* Item Form */
-.item-form {
+.admin__hint {
+    font-size: var(--text-xs);
+    color: var(--color-text-secondary);
+}
+
+/* Give Items Row */
+.admin__give-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+}
+
+.admin__give-row .input--sm {
+    flex: 1;
+    min-width: 150px;
+}
+
+.admin__give-row .input--xs {
+    width: 60px;
+    flex-shrink: 0;
+}
+
+/* Catalog Tabs */
+.catalog-tabs {
+    display: flex;
+    gap: var(--space-1);
+    flex-wrap: wrap;
+    border-bottom: 2px solid var(--color-border);
+    padding-bottom: var(--space-2);
+}
+
+.catalog-tab {
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+    cursor: pointer;
+    color: var(--color-text-secondary);
+    transition: all 0.2s ease;
+}
+
+.catalog-tab:hover {
+    background: var(--color-bg-secondary);
+    color: var(--color-text);
+}
+
+.catalog-tab.active {
+    background: var(--color-primary);
+    color: white;
+}
+
+/* Catalog Form */
+.catalog-form {
     padding: var(--space-4);
     background: var(--color-bg-secondary);
     border-radius: var(--radius-md);
 }
 
-.item-form__grid {
+.catalog-form__grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: var(--space-3);
     margin-bottom: var(--space-3);
 }
 
-.item-form__actions {
+.catalog-form__actions {
     display: flex;
     gap: var(--space-2);
 }
 
-/* Items List */
-.items-list__title {
+/* Catalog List */
+.catalog-list__title {
     font-size: var(--text-base);
     font-weight: var(--weight-bold);
     margin: 0 0 var(--space-3) 0;
     color: var(--color-text);
 }
 
-.items-list__container {
+.catalog-list__container {
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
+    max-height: 400px;
+    overflow-y: auto;
 }
 
-.item-row {
+.catalog-row {
     display: flex;
     align-items: center;
     gap: var(--space-3);
@@ -102,12 +158,12 @@
     transition: all 0.2s ease;
 }
 
-.item-row:hover {
+.catalog-row:hover {
     border-color: var(--color-primary);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-.item-row__icon {
+.catalog-row__icon {
     width: 40px;
     height: 40px;
     object-fit: contain;
@@ -116,37 +172,30 @@
     border-radius: var(--radius-sm);
 }
 
-.item-row__info {
+.catalog-row__info {
     flex: 1;
     min-width: 0;
 }
 
-.item-row__name {
+.catalog-row__name {
     font-weight: var(--weight-bold);
     color: var(--color-text);
     margin: 0;
     font-size: var(--text-sm);
 }
 
-.item-row__meta {
+.catalog-row__meta {
     font-size: var(--text-xs);
     color: var(--color-text-secondary);
     margin: 0;
 }
 
-.item-row__price {
-    font-weight: var(--weight-bold);
-    color: #f39c12;
-    font-size: var(--text-sm);
-    white-space: nowrap;
-}
-
-.item-row__actions {
+.catalog-row__actions {
     display: flex;
     gap: var(--space-1);
 }
 
-.item-row__btn {
+.catalog-row__btn {
     padding: var(--space-1) var(--space-2);
     font-size: var(--text-xs);
     border: none;
@@ -155,28 +204,22 @@
     transition: all 0.2s ease;
 }
 
-.item-row__btn--edit {
+.catalog-row__btn--edit {
     background: #3b82f6;
     color: white;
 }
 
-.item-row__btn--edit:hover {
+.catalog-row__btn--edit:hover {
     background: #2563eb;
 }
 
-.item-row__btn--delete {
+.catalog-row__btn--delete {
     background: #fee2e2;
     color: #dc2626;
 }
 
-.item-row__btn--delete:hover {
+.catalog-row__btn--delete:hover {
     background: #fecaca;
-}
-
-/* Danger zone */
-.items-danger {
-    padding-top: var(--space-3);
-    border-top: 1px solid var(--color-border);
 }
 
 /* Button variants */
@@ -193,4 +236,13 @@
 .button--small {
     padding: var(--space-2) var(--space-3);
     font-size: var(--text-sm);
+}
+
+.button--danger {
+    background: #dc2626;
+    color: white;
+}
+
+.button--danger:hover {
+    background: #b91c1c;
 }

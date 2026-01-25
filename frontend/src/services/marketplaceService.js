@@ -1,19 +1,48 @@
 import { store } from "../core/Store.js";
+import { candyService } from "./candyService.js";
+import { stoneService } from "./stoneService.js";
 
 export const marketplaceService = {
-  async getItems() {
-    console.warn("holis...");
-    if (store.items.length) return store.items;
+  /**
+   * Carga los caramelos comprables
+   */
+  async getCandyTypes() {
+    return candyService.getBuyableCandyTypes();
+  },
 
-    try {
-      const res = await fetch("/api/items");
-      if (!res.ok) throw new Error("Failed to fetch items");
-      const json = await res.json();
-      store.items = json;
-      return json;
-    } catch (error) {
-      console.error("Error loading items:", error);
-      return [];
-    }
+  /**
+   * Carga las piedras comprables
+   */
+  async getStoneTypes() {
+    return stoneService.getBuyableStoneTypes();
+  },
+
+  /**
+   * Carga todos los items comprables (candies + stones)
+   */
+  async getAllBuyableItems() {
+    const [candies, stones] = await Promise.all([
+      this.getCandyTypes(),
+      this.getStoneTypes(),
+    ]);
+
+    return {
+      candies,
+      stones,
+    };
+  },
+
+  /**
+   * Compra caramelos
+   */
+  async buyCandy(candyTypeId, quantity = 1) {
+    return candyService.buyCandy(candyTypeId, quantity);
+  },
+
+  /**
+   * Compra piedras
+   */
+  async buyStone(stoneTypeId, quantity = 1) {
+    return stoneService.buyStone(stoneTypeId, quantity);
   },
 };

@@ -1,0 +1,74 @@
+[
+  {
+    "name": "hp_candy_small",
+    "label": "Caramelo de Vida (S)",
+    "description": "Un pequeño caramelo que aumenta la vida de tu chigo.",
+    "icon": "candy-hp-small.png",
+    "stat_affected": "hp",
+    "stat_amount": 5,
+    "price": 100
+  },
+  {
+    "name": "hp_candy_large",
+    "label": "Caramelo de Vida (L)",
+    "description": "Un gran caramelo que aumenta considerablemente la vida de tu chigo.",
+    "icon": "candy-hp-large.png",
+    "stat_affected": "hp",
+    "stat_amount": 15,
+    "price": 250
+  },
+  {
+    "name": "atk_candy_small",
+    "label": "Caramelo de Ataque (S)",
+    "description": "Un pequeño caramelo que aumenta el ataque de tu chigo.",
+    "icon": "candy-atk-small.png",
+    "stat_affected": "atk",
+    "stat_amount": 3,
+    "price": 100
+  },
+  {
+    "name": "atk_candy_large",
+    "label": "Caramelo de Ataque (L)",
+    "description": "Un gran caramelo que aumenta considerablemente el ataque de tu chigo.",
+    "icon": "candy-atk-large.png",
+    "stat_affected": "atk",
+    "stat_amount": 8,
+    "price": 250
+  },
+  {
+    "name": "def_candy_small",
+    "label": "Caramelo de Defensa (S)",
+    "description": "Un pequeño caramelo que aumenta la defensa de tu chigo.",
+    "icon": "candy-def-small.png",
+    "stat_affected": "def",
+    "stat_amount": 3,
+    "price": 100
+  },
+  {
+    "name": "def_candy_large",
+    "label": "Caramelo de Defensa (L)",
+    "description": "Un gran caramelo que aumenta considerablemente la defensa de tu chigo.",
+    "icon": "candy-def-large.png",
+    "stat_affected": "def",
+    "stat_amount": 8,
+    "price": 250
+  },
+  {
+    "name": "spd_candy_small",
+    "label": "Caramelo de Velocidad (S)",
+    "description": "Un pequeño caramelo que aumenta la velocidad de tu chigo.",
+    "icon": "candy-spd-small.png",
+    "stat_affected": "spd",
+    "stat_amount": 3,
+    "price": 100
+  },
+  {
+    "name": "spd_candy_large",
+    "label": "Caramelo de Velocidad (L)",
+    "description": "Un gran caramelo que aumenta considerablemente la velocidad de tu chigo.",
+    "icon": "candy-spd-large.png",
+    "stat_affected": "spd",
+    "stat_amount": 8,
+    "price": 250
+  }
+]

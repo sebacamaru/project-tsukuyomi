@@ -1,0 +1,38 @@
+[
+  {
+    "name": "flamey",
+    "label": "Flamey",
+    "description": "Un pequeño chigo de fuego con una llama en la cola.",
+    "icon": "chigo-flamey.png",
+    "element_type": "fire",
+    "base_hp": 100,
+    "base_atk": 65,
+    "base_def": 45,
+    "base_spd": 55,
+    "generation": 1
+  },
+  {
+    "name": "aquon",
+    "label": "Aquon",
+    "description": "Un chigo acuático con escamas brillantes.",
+    "icon": "chigo-aquon.png",
+    "element_type": "water",
+    "base_hp": 110,
+    "base_atk": 50,
+    "base_def": 60,
+    "base_spd": 50,
+    "generation": 1
+  },
+  {
+    "name": "leafling",
+    "label": "Leafling",
+    "description": "Un chigo de naturaleza cubierto de hojas.",
+    "icon": "chigo-leafling.png",
+    "element_type": "grass",
+    "base_hp": 105,
+    "base_atk": 55,
+    "base_def": 55,
+    "base_spd": 55,
+    "generation": 1
+  }
+]

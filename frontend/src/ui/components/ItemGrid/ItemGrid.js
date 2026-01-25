@@ -8,7 +8,7 @@ import { initLazyImages } from "../../../utils/lazyLoader.js";
  * Uso:
  *   const grid = new ItemGrid({
  *     container: "#inventoryItems",
- *     items: store.inventory,
+ *     items: normalizedItems,
  *     onItemClick: (item) => console.log("Clicked", item),
  *     showQuantity: true
  *   });
@@ -146,7 +146,7 @@ export class ItemGrid {
           this.showTooltip(item);
         }
       },
-      true
+      true,
     );
 
     this.on(
@@ -158,7 +158,7 @@ export class ItemGrid {
           this.hideTooltipTimeout = setTimeout(() => this.hideTooltip(), 100);
         }
       },
-      true
+      true,
     );
 
     // Keyboard support
@@ -220,7 +220,9 @@ export class ItemGrid {
   populateTooltip(item) {
     const nameEl = this.tooltip.querySelector(".item-grid-tooltip__name");
     const typeEl = this.tooltip.querySelector(".item-grid-tooltip__type");
-    const descEl = this.tooltip.querySelector(".item-grid-tooltip__description");
+    const descEl = this.tooltip.querySelector(
+      ".item-grid-tooltip__description",
+    );
     const priceEl = this.tooltip.querySelector(".item-grid-tooltip__price");
     const footerEl = this.tooltip.querySelector(".item-grid-tooltip__footer");
 
@@ -241,8 +243,10 @@ export class ItemGrid {
 
   getTypeLabel(type) {
     const labels = {
-      potion: "Poción",
+      potion: "Pocion",
       egg: "Huevo",
+      candy: "Caramelo",
+      stone: "Piedra",
       chigo: "Chigo",
       misc: "Otro",
     };
@@ -315,10 +319,24 @@ export class ItemGrid {
     tooltip.style.left = `${left}px`;
     tooltip.setAttribute("data-position", position);
 
-    this.positionArrow(targetRect, left, top, position, tooltipWidth, tooltipHeight);
+    this.positionArrow(
+      targetRect,
+      left,
+      top,
+      position,
+      tooltipWidth,
+      tooltipHeight,
+    );
   }
 
-  positionArrow(targetRect, tooltipLeft, tooltipTop, position, tooltipWidth, tooltipHeight) {
+  positionArrow(
+    targetRect,
+    tooltipLeft,
+    tooltipTop,
+    position,
+    tooltipWidth,
+    tooltipHeight,
+  ) {
     const arrow = this.tooltip.querySelector(".item-grid-tooltip__arrow");
 
     if (position === "top" || position === "bottom") {

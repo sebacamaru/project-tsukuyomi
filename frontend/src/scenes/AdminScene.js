@@ -11,8 +11,12 @@ export class AdminScene extends Scene {
     super();
     this.users = [];
     this.quests = [];
-    this.items = [];
-    this.editingItemId = null;
+    this.eggTypes = [];
+    this.candyTypes = [];
+    this.stoneTypes = [];
+    this.chigoSpecies = [];
+    this.currentCatalog = "egg-types";
+    this.editingId = null;
   }
 
   async getHTML() {
@@ -31,19 +35,27 @@ export class AdminScene extends Scene {
 
   async loadData() {
     try {
-      const [users, quests, items] = await Promise.all([
-        adminService.getUsers(),
-        adminService.getQuests(),
-        adminService.getItems(),
-      ]);
+      const [users, quests, eggTypes, candyTypes, stoneTypes, chigoSpecies] =
+        await Promise.all([
+          adminService.getUsers(),
+          adminService.getQuests(),
+          adminService.getEggTypes(),
+          adminService.getCandyTypes(),
+          adminService.getStoneTypes(),
+          adminService.getChigoSpecies(),
+        ]);
 
       this.users = users;
       this.quests = quests;
-      this.items = items;
+      this.eggTypes = eggTypes;
+      this.candyTypes = candyTypes;
+      this.stoneTypes = stoneTypes;
+      this.chigoSpecies = chigoSpecies;
 
       this.populateUserSelect();
       this.populateQuestSelect();
-      this.renderItemsList();
+      this.populateGiveSelects();
+      this.renderCatalogList();
     } catch (error) {
       console.error("Error loading admin data:", error);
       this.showMessage("Error al cargar datos", "error");
@@ -51,7 +63,7 @@ export class AdminScene extends Scene {
   }
 
   populateUserSelect() {
-    const select = document.getElementById("user-select");
+    const select = this.$("#user-select");
     select.innerHTML = '<option value="">-- Seleccionar usuario --</option>';
 
     this.users.forEach((user) => {
@@ -63,7 +75,7 @@ export class AdminScene extends Scene {
   }
 
   populateQuestSelect() {
-    const select = document.getElementById("quest-select");
+    const select = this.$("#quest-select");
     select.innerHTML =
       '<option value="">-- Todas completadas (null) --</option>';
 
@@ -75,188 +87,325 @@ export class AdminScene extends Scene {
     });
   }
 
-  setupEventListeners() {
-    // Cambio de usuario seleccionado
-    const userSelect = document.getElementById("user-select");
-    userSelect.addEventListener("change", () => this.onUserChange());
+  populateGiveSelects() {
+    // Usuarios
+    const userSelect = this.$("#give-user-select");
+    userSelect.innerHTML =
+      '<option value="">-- Seleccionar usuario --</option>';
+    this.users.forEach((user) => {
+      const option = document.createElement("option");
+      option.value = user.id;
+      option.textContent = `${user.username} (${user.email})`;
+      userSelect.appendChild(option);
+    });
 
-    // Click en resetear quest
-    const resetBtn = document.getElementById("reset-quest-btn");
-    resetBtn.addEventListener("click", () => this.onResetQuest());
+    // Huevos
+    const eggSelect = this.$("#give-egg-select");
+    eggSelect.innerHTML =
+      '<option value="">-- Seleccionar tipo de huevo --</option>';
+    this.eggTypes.forEach((egg) => {
+      const option = document.createElement("option");
+      option.value = egg.id;
+      option.textContent = `${egg.label} (${egg.name})`;
+      eggSelect.appendChild(option);
+    });
 
-    // Click en borrar todos los items
-    const deleteItemsBtn = document.getElementById("delete-items-btn");
-    deleteItemsBtn.addEventListener("click", () => this.onDeleteAllItems());
+    // Caramelos
+    const candySelect = this.$("#give-candy-select");
+    candySelect.innerHTML =
+      '<option value="">-- Seleccionar caramelo --</option>';
+    this.candyTypes.forEach((candy) => {
+      const option = document.createElement("option");
+      option.value = candy.id;
+      option.textContent = `${candy.label} (${candy.name})`;
+      candySelect.appendChild(option);
+    });
 
-    // Click en guardar item
-    const saveItemBtn = document.getElementById("save-item-btn");
-    saveItemBtn.addEventListener("click", () => this.onSaveItem());
-
-    // Click en cancelar edicion
-    const cancelItemBtn = document.getElementById("cancel-item-btn");
-    cancelItemBtn.addEventListener("click", () => this.onCancelEdit());
-
-    // Event delegation para botones de items
-    const itemsContainer = document.getElementById("items-list-container");
-    itemsContainer.addEventListener("click", (e) => {
-      const editBtn = e.target.closest(".item-row__btn--edit");
-      const deleteBtn = e.target.closest(".item-row__btn--delete");
-
-      if (editBtn) {
-        const id = parseInt(editBtn.dataset.id);
-        this.onEditItem(id);
-      } else if (deleteBtn) {
-        const id = parseInt(deleteBtn.dataset.id);
-        this.onDeleteItem(id);
-      }
+    // Piedras
+    const stoneSelect = this.$("#give-stone-select");
+    stoneSelect.innerHTML =
+      '<option value="">-- Seleccionar piedra --</option>';
+    this.stoneTypes.forEach((stone) => {
+      const option = document.createElement("option");
+      option.value = stone.id;
+      option.textContent = `${stone.label} (${stone.name})`;
+      stoneSelect.appendChild(option);
     });
   }
 
-  renderItemsList() {
-    const container = document.getElementById("items-list-container");
+  setupEventListeners() {
+    // Usuario seleccionado
+    this.$("#user-select").addEventListener("change", () =>
+      this.onUserChange(),
+    );
 
-    if (this.items.length === 0) {
-      container.innerHTML = '<p class="text-muted">No hay items</p>';
+    // Reset quest
+    this.$("#reset-quest-btn").addEventListener("click", () =>
+      this.onResetQuest(),
+    );
+
+    // Tabs de catálogo
+    this.onClick(".catalog-tab", (e, tab) => {
+      this.$$(".catalog-tab").forEach((t) => t.classList.remove("active"));
+      tab.classList.add("active");
+      this.currentCatalog = tab.dataset.catalog;
+      this.renderCatalogList();
+      this.onCancelEdit();
+    });
+
+    // Guardar/Crear item del catálogo
+    this.$("#save-catalog-btn").addEventListener("click", () =>
+      this.onSaveCatalogItem(),
+    );
+
+    // Cancelar edición
+    this.$("#cancel-catalog-btn").addEventListener("click", () =>
+      this.onCancelEdit(),
+    );
+
+    // Event delegation para lista de catálogo
+    this.$("#catalog-list-container").addEventListener("click", (e) => {
+      const editBtn = e.target.closest(".catalog-row__btn--edit");
+      const deleteBtn = e.target.closest(".catalog-row__btn--delete");
+
+      if (editBtn) {
+        this.onEditCatalogItem(parseInt(editBtn.dataset.id));
+      } else if (deleteBtn) {
+        this.onDeleteCatalogItem(parseInt(deleteBtn.dataset.id));
+      }
+    });
+
+    // Dar huevo
+    this.$("#give-egg-btn").addEventListener("click", () => this.onGiveEgg());
+
+    // Dar caramelo
+    this.$("#give-candy-btn").addEventListener("click", () =>
+      this.onGiveCandy(),
+    );
+
+    // Dar piedra
+    this.$("#give-stone-btn").addEventListener("click", () =>
+      this.onGiveStone(),
+    );
+  }
+
+  // ==================== CATÁLOGO ====================
+
+  getCurrentCatalogData() {
+    switch (this.currentCatalog) {
+      case "egg-types":
+        return this.eggTypes;
+      case "candy-types":
+        return this.candyTypes;
+      case "stone-types":
+        return this.stoneTypes;
+      case "chigo-species":
+        return this.chigoSpecies;
+      default:
+        return [];
+    }
+  }
+
+  renderCatalogList() {
+    const container = this.$("#catalog-list-container");
+    const data = this.getCurrentCatalogData();
+
+    if (data.length === 0) {
+      container.innerHTML = '<p class="text-muted">No hay elementos</p>';
       return;
     }
 
-    container.innerHTML = this.items
+    container.innerHTML = data
       .map((item) => {
         const iconUrl = getAssetUrl(item.icon) || item.icon;
         return `
-      <div class="item-row" data-id="${item.id}">
-        <img class="item-row__icon lazy" data-src="${iconUrl}" alt="${item.label}" onerror="this.src='https://via.placeholder.com/40'">
-        <div class="item-row__info">
-          <p class="item-row__name">${item.label}</p>
-          <p class="item-row__meta">${item.name} | ${item.type}</p>
+        <div class="catalog-row" data-id="${item.id}">
+          <img class="catalog-row__icon lazy" data-src="${iconUrl}" alt="${item.label}" onerror="this.src='https://via.placeholder.com/40'">
+          <div class="catalog-row__info">
+            <p class="catalog-row__name">${item.label}</p>
+            <p class="catalog-row__meta">${item.name}${item.price ? ` | ${item.price}g` : ""}</p>
+          </div>
+          <div class="catalog-row__actions">
+            <button class="catalog-row__btn catalog-row__btn--edit" data-id="${item.id}">Editar</button>
+            <button class="catalog-row__btn catalog-row__btn--delete" data-id="${item.id}">X</button>
+          </div>
         </div>
-        <span class="item-row__price">${item.price}g</span>
-        <div class="item-row__actions">
-          <button class="item-row__btn item-row__btn--edit" data-id="${item.id}">Editar</button>
-          <button class="item-row__btn item-row__btn--delete" data-id="${item.id}">X</button>
-        </div>
-      </div>
-    `;
+      `;
       })
       .join("");
 
     initLazyImages(this.root);
   }
 
-  onEditItem(id) {
-    const item = this.items.find((i) => i.id === id);
+  onEditCatalogItem(id) {
+    const data = this.getCurrentCatalogData();
+    const item = data.find((i) => i.id === id);
     if (!item) return;
 
-    this.editingItemId = id;
+    this.editingId = id;
 
-    document.getElementById("item-name").value = item.name;
-    document.getElementById("item-label").value = item.label;
-    document.getElementById("item-description").value = item.description || "";
-    document.getElementById("item-price").value = item.price;
-    document.getElementById("item-icon").value = item.icon;
-    document.getElementById("item-type").value = item.type;
-    document.getElementById("item-edit-id").value = id;
+    this.$("#catalog-name").value = item.name;
+    this.$("#catalog-label").value = item.label;
+    this.$("#catalog-description").value = item.description || "";
+    this.$("#catalog-icon").value = item.icon || "";
+    this.$("#catalog-price").value = item.price || "";
 
-    document.getElementById("save-item-btn").textContent = "Guardar Cambios";
-    document.getElementById("cancel-item-btn").classList.remove("hidden");
+    this.$("#save-catalog-btn").textContent = "Guardar Cambios";
+    this.$("#cancel-catalog-btn").classList.remove("hidden");
   }
 
   onCancelEdit() {
-    this.editingItemId = null;
-    this.clearItemForm();
-    document.getElementById("save-item-btn").textContent = "Crear Item";
-    document.getElementById("cancel-item-btn").classList.add("hidden");
+    this.editingId = null;
+    this.clearCatalogForm();
+    this.$("#save-catalog-btn").textContent = "Crear";
+    this.$("#cancel-catalog-btn").classList.add("hidden");
   }
 
-  clearItemForm() {
-    document.getElementById("item-name").value = "";
-    document.getElementById("item-label").value = "";
-    document.getElementById("item-description").value = "";
-    document.getElementById("item-price").value = "";
-    document.getElementById("item-icon").value = "";
-    document.getElementById("item-type").value = "misc";
-    document.getElementById("item-edit-id").value = "";
+  clearCatalogForm() {
+    this.$("#catalog-name").value = "";
+    this.$("#catalog-label").value = "";
+    this.$("#catalog-description").value = "";
+    this.$("#catalog-icon").value = "";
+    this.$("#catalog-price").value = "";
   }
 
-  async onSaveItem() {
-    const name = document.getElementById("item-name").value.trim();
-    const label = document.getElementById("item-label").value.trim();
-    const description = document
-      .getElementById("item-description")
-      .value.trim();
-    const price = parseInt(document.getElementById("item-price").value) || 0;
-    const icon = document.getElementById("item-icon").value.trim();
-    const type = document.getElementById("item-type").value;
+  async onSaveCatalogItem() {
+    const name = this.$("#catalog-name").value.trim();
+    const label = this.$("#catalog-label").value.trim();
+    const description = this.$("#catalog-description").value.trim();
+    const icon = this.$("#catalog-icon").value.trim();
+    const price = parseInt(this.$("#catalog-price").value) || 0;
 
-    if (!name || !label || !icon) {
-      this.showItemMessage("Name, label e icon son requeridos", "error");
+    if (!name || !label) {
+      this.showCatalogMessage("Name y label son requeridos", "error");
       return;
     }
 
-    const saveBtn = document.getElementById("save-item-btn");
+    const saveBtn = this.$("#save-catalog-btn");
     saveBtn.disabled = true;
     saveBtn.textContent = "Guardando...";
 
     try {
-      const data = { name, label, description, price, icon, type };
+      const data = { name, label, description, icon, price };
       let result;
 
-      if (this.editingItemId) {
-        result = await adminService.updateItem(this.editingItemId, data);
+      if (this.editingId) {
+        result = await this.updateCatalogItem(this.editingId, data);
       } else {
-        result = await adminService.createItem(data);
+        result = await this.createCatalogItem(data);
       }
 
       if (result.success) {
-        this.showItemMessage(
-          this.editingItemId ? "Item actualizado" : "Item creado",
+        this.showCatalogMessage(
+          this.editingId ? "Actualizado" : "Creado",
           "success",
         );
-        this.items = await adminService.getItems();
-        this.renderItemsList();
+        await this.reloadCurrentCatalog();
+        this.renderCatalogList();
         this.onCancelEdit();
       } else {
-        this.showItemMessage(result.error || "Error al guardar", "error");
+        this.showCatalogMessage(result.error || "Error al guardar", "error");
       }
     } catch (error) {
-      console.error("Error saving item:", error);
-      this.showItemMessage("Error de conexion", "error");
+      console.error("Error saving catalog item:", error);
+      this.showCatalogMessage("Error de conexión", "error");
     } finally {
       saveBtn.disabled = false;
-      saveBtn.textContent = this.editingItemId
-        ? "Guardar Cambios"
-        : "Crear Item";
+      saveBtn.textContent = this.editingId ? "Guardar Cambios" : "Crear";
     }
   }
 
-  async onDeleteItem(id) {
-    const item = this.items.find((i) => i.id === id);
+  async createCatalogItem(data) {
+    switch (this.currentCatalog) {
+      case "egg-types":
+        return adminService.createEggType(data);
+      case "candy-types":
+        return adminService.createCandyType(data);
+      case "stone-types":
+        return adminService.createStoneType(data);
+      case "chigo-species":
+        return adminService.createSpecies(data);
+      default:
+        return { success: false, error: "Catálogo no válido" };
+    }
+  }
+
+  async updateCatalogItem(id, data) {
+    switch (this.currentCatalog) {
+      case "egg-types":
+        return adminService.updateEggType(id, data);
+      case "candy-types":
+        return adminService.updateCandyType(id, data);
+      case "stone-types":
+        return adminService.updateStoneType(id, data);
+      case "chigo-species":
+        return adminService.updateSpecies(id, data);
+      default:
+        return { success: false, error: "Catálogo no válido" };
+    }
+  }
+
+  async onDeleteCatalogItem(id) {
+    const data = this.getCurrentCatalogData();
+    const item = data.find((i) => i.id === id);
     if (!item) return;
 
     if (!confirm(`¿Eliminar "${item.label}"?`)) return;
 
     try {
-      const result = await adminService.deleteItem(id);
+      let result;
+      switch (this.currentCatalog) {
+        case "egg-types":
+          result = await adminService.deleteEggType(id);
+          break;
+        case "candy-types":
+          result = await adminService.deleteCandyType(id);
+          break;
+        case "stone-types":
+          result = await adminService.deleteStoneType(id);
+          break;
+        case "chigo-species":
+          result = await adminService.deleteSpecies(id);
+          break;
+      }
 
       if (result.success) {
-        this.showItemMessage("Item eliminado", "success");
-        this.items = await adminService.getItems();
-        this.renderItemsList();
+        this.showCatalogMessage("Eliminado", "success");
+        await this.reloadCurrentCatalog();
+        this.renderCatalogList();
 
-        if (this.editingItemId === id) {
+        if (this.editingId === id) {
           this.onCancelEdit();
         }
       } else {
-        this.showItemMessage(result.error || "Error al eliminar", "error");
+        this.showCatalogMessage(result.error || "Error al eliminar", "error");
       }
     } catch (error) {
-      console.error("Error deleting item:", error);
-      this.showItemMessage("Error de conexion", "error");
+      console.error("Error deleting catalog item:", error);
+      this.showCatalogMessage("Error de conexión", "error");
     }
   }
 
-  showItemMessage(text, type = "info") {
-    const messageEl = document.getElementById("item-form-message");
+  async reloadCurrentCatalog() {
+    switch (this.currentCatalog) {
+      case "egg-types":
+        this.eggTypes = await adminService.getEggTypes();
+        break;
+      case "candy-types":
+        this.candyTypes = await adminService.getCandyTypes();
+        break;
+      case "stone-types":
+        this.stoneTypes = await adminService.getStoneTypes();
+        break;
+      case "chigo-species":
+        this.chigoSpecies = await adminService.getChigoSpecies();
+        break;
+    }
+    this.populateGiveSelects();
+  }
+
+  showCatalogMessage(text, type = "info") {
+    const messageEl = this.$("#catalog-message");
     messageEl.textContent = text;
     messageEl.className = `admin__message ${type}`;
 
@@ -266,9 +415,118 @@ export class AdminScene extends Scene {
     }, 3000);
   }
 
+  // ==================== DAR ITEMS ====================
+
+  async onGiveEgg() {
+    const userId = parseInt(this.$("#give-user-select").value);
+    const eggTypeId = parseInt(this.$("#give-egg-select").value);
+
+    if (!userId || !eggTypeId) {
+      this.showGiveMessage("Selecciona usuario y tipo de huevo", "error");
+      return;
+    }
+
+    const btn = this.$("#give-egg-btn");
+    btn.disabled = true;
+    btn.textContent = "Dando...";
+
+    try {
+      const result = await adminService.giveEggToUser(userId, eggTypeId);
+      if (result.success) {
+        this.showGiveMessage("Huevo asignado", "success");
+      } else {
+        this.showGiveMessage(result.error || "Error", "error");
+      }
+    } catch (error) {
+      this.showGiveMessage("Error de conexión", "error");
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Dar Huevo";
+    }
+  }
+
+  async onGiveCandy() {
+    const userId = parseInt(this.$("#give-user-select").value);
+    const candyTypeId = parseInt(this.$("#give-candy-select").value);
+    const quantity = parseInt(this.$("#give-candy-quantity").value) || 1;
+
+    if (!userId || !candyTypeId) {
+      this.showGiveMessage("Selecciona usuario y caramelo", "error");
+      return;
+    }
+
+    const btn = this.$("#give-candy-btn");
+    btn.disabled = true;
+    btn.textContent = "Dando...";
+
+    try {
+      const result = await adminService.giveCandyToUser(
+        userId,
+        candyTypeId,
+        quantity,
+      );
+      if (result.success) {
+        this.showGiveMessage(`${quantity}x caramelos asignados`, "success");
+      } else {
+        this.showGiveMessage(result.error || "Error", "error");
+      }
+    } catch (error) {
+      this.showGiveMessage("Error de conexión", "error");
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Dar Caramelo";
+    }
+  }
+
+  async onGiveStone() {
+    const userId = parseInt(this.$("#give-user-select").value);
+    const stoneTypeId = parseInt(this.$("#give-stone-select").value);
+    const quantity = parseInt(this.$("#give-stone-quantity").value) || 1;
+
+    if (!userId || !stoneTypeId) {
+      this.showGiveMessage("Selecciona usuario y piedra", "error");
+      return;
+    }
+
+    const btn = this.$("#give-stone-btn");
+    btn.disabled = true;
+    btn.textContent = "Dando...";
+
+    try {
+      const result = await adminService.giveStoneToUser(
+        userId,
+        stoneTypeId,
+        quantity,
+      );
+      if (result.success) {
+        this.showGiveMessage(`${quantity}x piedras asignadas`, "success");
+      } else {
+        this.showGiveMessage(result.error || "Error", "error");
+      }
+    } catch (error) {
+      this.showGiveMessage("Error de conexión", "error");
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Dar Piedra";
+    }
+  }
+
+  showGiveMessage(text, type = "info") {
+    const messageEl = this.$("#give-message");
+    messageEl.textContent = text;
+    messageEl.className = `admin__message ${type}`;
+
+    setTimeout(() => {
+      messageEl.textContent = "";
+      messageEl.className = "admin__message";
+    }, 3000);
+  }
+
+  // ==================== USUARIOS/QUESTS ====================
+
   onUserChange() {
-    const userId = document.getElementById("user-select").value;
-    const userInfo = document.getElementById("user-info");
+    const userId = this.$("#user-select").value;
+    const userInfo = this.$("#user-info");
 
     if (!userId) {
       userInfo.innerHTML =
@@ -290,17 +548,15 @@ export class AdminScene extends Scene {
   }
 
   async onResetQuest() {
-    const userSelect = document.getElementById("user-select");
-    const questSelect = document.getElementById("quest-select");
-    const userId = parseInt(userSelect.value);
-    const questCode = questSelect.value || null;
+    const userId = parseInt(this.$("#user-select").value);
+    const questCode = this.$("#quest-select").value || null;
 
     if (!userId) {
       this.showMessage("Selecciona un usuario", "error");
       return;
     }
 
-    const resetBtn = document.getElementById("reset-quest-btn");
+    const resetBtn = this.$("#reset-quest-btn");
     resetBtn.disabled = true;
     resetBtn.textContent = "Reseteando...";
 
@@ -327,7 +583,7 @@ export class AdminScene extends Scene {
       }
     } catch (error) {
       console.error("Error resetting quest:", error);
-      this.showMessage("Error de conexion", "error");
+      this.showMessage("Error de conexión", "error");
     } finally {
       resetBtn.disabled = false;
       resetBtn.textContent = "Guardar";
@@ -335,7 +591,7 @@ export class AdminScene extends Scene {
   }
 
   showMessage(text, type = "info") {
-    const messageEl = document.getElementById("admin-message");
+    const messageEl = this.$("#admin-message");
     messageEl.textContent = text;
     messageEl.className = `admin__message ${type}`;
 
@@ -343,37 +599,5 @@ export class AdminScene extends Scene {
       messageEl.textContent = "";
       messageEl.className = "admin__message";
     }, 3000);
-  }
-
-  async onDeleteAllItems() {
-    if (
-      !confirm(
-        "¿Estás seguro? Se borrarán TODOS los items de la base de datos.",
-      )
-    ) {
-      return;
-    }
-
-    const deleteBtn = document.getElementById("delete-items-btn");
-    deleteBtn.disabled = true;
-    deleteBtn.textContent = "Borrando...";
-
-    try {
-      const result = await adminService.deleteAllItems();
-
-      if (result.success) {
-        this.showItemMessage("Todos los items han sido eliminados", "success");
-        this.items = [];
-        this.renderItemsList();
-      } else {
-        this.showItemMessage(result.error || "Error al borrar items", "error");
-      }
-    } catch (error) {
-      console.error("Error deleting items:", error);
-      this.showItemMessage("Error de conexion", "error");
-    } finally {
-      deleteBtn.disabled = false;
-      deleteBtn.textContent = "Borrar todos los items";
-    }
   }
 }

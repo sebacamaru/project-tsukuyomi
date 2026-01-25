@@ -63,18 +63,13 @@
     cursor: pointer;
     transition: all 0.2s ease;
     white-space: nowrap;
-}
-
-.inventory__tabs .tab:hover {
-    background: var(--color-bg-secondary);
-    border-color: var(--color-primary);
-    color: var(--color-primary);
+    opacity: 0.4;
 }
 
 .inventory__tabs .tab.active {
     background: var(--color-primary);
     border-color: var(--color-primary);
-    color: white;
+    opacity: 1;
 }
 
 /* Grid container - usa clase del componente ItemGrid */

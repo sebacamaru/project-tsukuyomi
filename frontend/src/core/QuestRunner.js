@@ -1,7 +1,10 @@
 import { MessageBox } from "../ui/components/MessageBox/MessageBox.js";
 import { questService } from "../services/questService.js";
 import { authService } from "../services/authService.js";
-import { inventoryService } from "../services/inventoryService.js";
+import { eggService } from "../services/eggService.js";
+import { candyService } from "../services/candyService.js";
+import { stoneService } from "../services/stoneService.js";
+import { chigoService } from "../services/chigoService.js";
 import { store } from "./Store.js";
 import { app } from "../main.js";
 import { actions } from "../ui/actions/index.js";
@@ -326,7 +329,12 @@ export class QuestRunner {
       // }
 
       // Recargar inventario desde servidor
-      await inventoryService.loadInventory();
+      await Promise.all([
+        eggService.getUserEggs(),
+        candyService.getUserCandies(),
+        stoneService.getUserStones(),
+        chigoService.getUserChigos(),
+      ]);
 
       // Actualizar el current_quest_code y next_quest_available_at en el store
       store.user.current_quest_code = result.user.current_quest_code;

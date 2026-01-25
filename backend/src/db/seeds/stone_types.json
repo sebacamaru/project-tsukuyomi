@@ -1,0 +1,67 @@
+[
+  {
+    "name": "electric_storm",
+    "label": "Tormenta Eléctrica",
+    "description": "Una piedra cargada con la furia de las tormentas. Otorga un ataque eléctrico devastador.",
+    "icon": "stone-electric-storm.png",
+    "element": "electric",
+    "effect_data": {
+      "power": 90,
+      "accuracy": 85,
+      "type": "special"
+    },
+    "price": 500
+  },
+  {
+    "name": "earthquake",
+    "label": "Terremoto",
+    "description": "Una piedra que contiene el poder de la tierra. Provoca temblores devastadores.",
+    "icon": "stone-earthquake.png",
+    "element": "earth",
+    "effect_data": {
+      "power": 100,
+      "accuracy": 100,
+      "type": "physical"
+    },
+    "price": 500
+  },
+  {
+    "name": "flame_burst",
+    "label": "Explosión de Fuego",
+    "description": "Una piedra ardiente que libera una explosión de llamas.",
+    "icon": "stone-flame-burst.png",
+    "element": "fire",
+    "effect_data": {
+      "power": 85,
+      "accuracy": 90,
+      "type": "special"
+    },
+    "price": 500
+  },
+  {
+    "name": "hydro_wave",
+    "label": "Ola Hidro",
+    "description": "Una piedra marina que invoca una poderosa ola.",
+    "icon": "stone-hydro-wave.png",
+    "element": "water",
+    "effect_data": {
+      "power": 85,
+      "accuracy": 90,
+      "type": "special"
+    },
+    "price": 500
+  },
+  {
+    "name": "leaf_storm",
+    "label": "Tormenta de Hojas",
+    "description": "Una piedra natural que desata un torbellino de hojas afiladas.",
+    "icon": "stone-leaf-storm.png",
+    "element": "grass",
+    "effect_data": {
+      "power": 95,
+      "accuracy": 85,
+      "type": "special"
+    },
+    "price": 500
+  }
+]

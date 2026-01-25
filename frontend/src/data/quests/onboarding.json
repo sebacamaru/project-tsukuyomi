@@ -121,7 +121,7 @@
     {
       "id": "chigo_info_5",
       "speaker": "Profesor Cacho",
-      "text": "Algo fascinante es que sin importar el tipo de chigo que sea, cada uno nace con dos elementos: uno dominante y uno secundario.",
+      "text": "Algo fascinante es que sin importar su especie, cada chigo nace con dos elementos: uno dominante y uno secundario.",
       "next": "chigo_info_6"
     },
     {
@@ -133,7 +133,7 @@
     {
       "id": "chigo_info_7",
       "speaker": "Profesor Cacho",
-      "text": "Hay cosas de los chigos que… bueno, ya las vas a descubrir. Perdón, me entusiasmo un poco cuando se trata de chigos. 😅",
+      "text": "Y hay una cosa peculiar de los chigos que es… bueno, ya las vas a descubrir. Perdón, me entusiasmo un poco cuando se trata de chigos. 😅",
       "next": "ask_question_2"
     },
     {

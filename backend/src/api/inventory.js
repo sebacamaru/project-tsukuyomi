@@ -1,15 +1,14 @@
 import { asyncHandler } from "../utils/errorHandler.js";
 import { cache } from "../services/cache.js";
-import {
-  getUserInventory,
-  addItemToInventory,
-  removeItemFromInventory,
-  getUserGold,
-  getItemById,
-} from "../db/schema/inventory.js";
+import { getUserGold } from "../db/schema/users.js";
+import { getUserEggs } from "../db/schema/eggs.js";
+import { getUserCandies } from "../db/schema/candies.js";
+import { getUserStones } from "../db/schema/stones.js";
+import { getUserChigos, getChigoStones } from "../db/schema/chigos.js";
 
 export function registerInventory(router) {
-  // GET /api/users/:userId/inventory - Obtener inventario del usuario
+  // GET /api/users/:userId/inventory - Obtener inventario completo del usuario
+  // Retorna: { eggs, candies, stones, chigos, gold }
   router.get(
     "/api/users/:userId/inventory",
     asyncHandler(async (ctx) => {
@@ -20,66 +19,26 @@ export function registerInventory(router) {
       const cached = await cache.get(cacheKey);
       if (cached) return cached;
 
-      const inventory = getUserInventory(userId);
+      // Obtener todos los datos del usuario
       const gold = getUserGold(userId);
+      const eggs = getUserEggs(userId);
+      const candies = getUserCandies(userId);
+      const stones = getUserStones(userId);
+      const chigos = getUserChigos(userId).map((chigo) => ({
+        ...chigo,
+        stones: getChigoStones(chigo.id),
+      }));
 
-      const result = { inventory, gold };
+      const result = {
+        gold,
+        eggs,
+        candies,
+        stones,
+        chigos,
+      };
+
       await cache.set(cacheKey, result, 60); // Cache 1 minuto
 
-      return result;
-    }),
-  );
-
-  // POST /api/users/:userId/inventory/add - Agregar item (interno/recompensas)
-  router.post(
-    "/api/users/:userId/inventory/add",
-    asyncHandler(async (ctx) => {
-      const userId = parseInt(ctx.params.userId);
-      const { itemId, quantity = 1 } = ctx.body;
-
-      if (!itemId) {
-        ctx.set.status = 400;
-        return { error: "itemId is required" };
-      }
-
-      const item = getItemById(itemId);
-      if (!item) {
-        ctx.set.status = 404;
-        return { error: "Item not found" };
-      }
-
-      const result = addItemToInventory(userId, itemId, quantity);
-
-      // Invalidar cache
-      await cache.delete(`inventory:${userId}`);
-
-      return {
-        success: true,
-        item: { ...item, quantity: result.newQuantity },
-      };
-    }),
-  );
-
-  // POST /api/users/:userId/inventory/remove - Remover item
-  router.post(
-    "/api/users/:userId/inventory/remove",
-    asyncHandler(async (ctx) => {
-      const userId = parseInt(ctx.params.userId);
-      const { itemId, quantity = 1 } = ctx.body;
-
-      if (!itemId) {
-        ctx.set.status = 400;
-        return { error: "itemId is required" };
-      }
-
-      const result = removeItemFromInventory(userId, itemId, quantity);
-
-      if (!result.success) {
-        ctx.set.status = 400;
-        return { error: result.error };
-      }
-
-      await cache.delete(`inventory:${userId}`);
       return result;
     }),
   );

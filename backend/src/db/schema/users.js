@@ -1,11 +1,16 @@
 import { db, generateTempUsername } from "../index.js";
 import { getNextQuest, getQuestByCode } from "./quests.js";
+import { createUserEgg, getEggTypeByName, getEggTypeById } from "./eggs.js";
 import {
-  addItemToInventory,
-  modifyUserGold,
-  getItemByName,
-  getItemById,
-} from "./inventory.js";
+  addCandyToUser,
+  getCandyTypeByName,
+  getCandyTypeById,
+} from "./candies.js";
+import {
+  addStoneToUser,
+  getStoneTypeByName,
+  getStoneTypeById,
+} from "./stones.js";
 
 export const insertUser = (email, password) => {
   let username = generateTempUsername();
@@ -73,6 +78,29 @@ export const checkUsernameAvailable = (username, excludeUserId = null) => {
   return !existing;
 };
 
+/**
+ * Obtiene el oro de un usuario
+ */
+export const getUserGold = (userId) => {
+  const user = db.query("SELECT gold FROM users WHERE id = ?").get(userId);
+  return user ? user.gold : 0;
+};
+
+/**
+ * Modifica el oro de un usuario (puede ser positivo o negativo)
+ */
+export const modifyUserGold = (userId, amount) => {
+  const current = getUserGold(userId);
+  const newAmount = current + amount;
+
+  if (newAmount < 0) {
+    return { success: false, error: "Not enough gold" };
+  }
+
+  db.run("UPDATE users SET gold = ? WHERE id = ?", newAmount, userId);
+  return { success: true, newGold: newAmount };
+};
+
 export const completeCurrentQuest = (userId, delayMinutes = 0) => {
   const user = getUserById(userId);
   if (!user || !user.current_quest_code) {
@@ -126,9 +154,16 @@ export const completeCurrentQuest = (userId, delayMinutes = 0) => {
 
 /**
  * Procesa las recompensas de una quest
+ * Nuevo formato de rewards:
+ * {
+ *   gold: 500,
+ *   eggs: [{ eggTypeName: "wild", quantity: 1 }],
+ *   candies: [{ candyTypeName: "hp_candy_small", quantity: 5 }],
+ *   stones: [{ stoneTypeName: "flame_burst", quantity: 1 }]
+ * }
  */
 function processRewards(userId, rewards) {
-  const result = { gold: 0, items: [] };
+  const result = { gold: 0, eggs: [], candies: [], stones: [] };
 
   // Dar oro
   if (rewards.gold) {
@@ -136,25 +171,77 @@ function processRewards(userId, rewards) {
     result.gold = rewards.gold;
   }
 
-  // Dar items
-  if (rewards.items && Array.isArray(rewards.items)) {
-    for (const itemReward of rewards.items) {
-      let item;
+  // Dar huevos
+  if (rewards.eggs && Array.isArray(rewards.eggs)) {
+    for (const eggReward of rewards.eggs) {
+      let eggType;
 
-      // Soportar tanto ID como nombre de item
-      if (itemReward.itemId) {
-        item = getItemById(itemReward.itemId);
-      } else if (itemReward.itemName) {
-        item = getItemByName(itemReward.itemName);
+      if (eggReward.eggTypeId) {
+        eggType = getEggTypeById(eggReward.eggTypeId);
+      } else if (eggReward.eggTypeName) {
+        eggType = getEggTypeByName(eggReward.eggTypeName);
       }
 
-      if (item) {
-        const quantity = itemReward.quantity || 1;
-        addItemToInventory(userId, item.id, quantity);
-        result.items.push({
-          id: item.id,
-          name: item.name,
-          icon: item.icon,
+      if (eggType) {
+        const quantity = eggReward.quantity || 1;
+        for (let i = 0; i < quantity; i++) {
+          const created = createUserEgg(userId, eggType.id);
+          result.eggs.push({
+            uuid: created.uuid,
+            eggTypeId: eggType.id,
+            name: eggType.name,
+            label: eggType.label,
+            icon: eggType.icon,
+          });
+        }
+      }
+    }
+  }
+
+  // Dar caramelos
+  if (rewards.candies && Array.isArray(rewards.candies)) {
+    for (const candyReward of rewards.candies) {
+      let candyType;
+
+      if (candyReward.candyTypeId) {
+        candyType = getCandyTypeById(candyReward.candyTypeId);
+      } else if (candyReward.candyTypeName) {
+        candyType = getCandyTypeByName(candyReward.candyTypeName);
+      }
+
+      if (candyType) {
+        const quantity = candyReward.quantity || 1;
+        addCandyToUser(userId, candyType.id, quantity);
+        result.candies.push({
+          candyTypeId: candyType.id,
+          name: candyType.name,
+          label: candyType.label,
+          icon: candyType.icon,
+          quantity,
+        });
+      }
+    }
+  }
+
+  // Dar piedras
+  if (rewards.stones && Array.isArray(rewards.stones)) {
+    for (const stoneReward of rewards.stones) {
+      let stoneType;
+
+      if (stoneReward.stoneTypeId) {
+        stoneType = getStoneTypeById(stoneReward.stoneTypeId);
+      } else if (stoneReward.stoneTypeName) {
+        stoneType = getStoneTypeByName(stoneReward.stoneTypeName);
+      }
+
+      if (stoneType) {
+        const quantity = stoneReward.quantity || 1;
+        addStoneToUser(userId, stoneType.id, quantity);
+        result.stones.push({
+          stoneTypeId: stoneType.id,
+          name: stoneType.name,
+          label: stoneType.label,
+          icon: stoneType.icon,
           quantity,
         });
       }

@@ -3,6 +3,7 @@
         <div class="flex flex-col gap-4">
             <!-- Reset Quest -->
             <div class="box">
+                <h2 class="box__title">Gestionar Quest de Usuario</h2>
                 <div class="box__content">
                     <div class="flex flex-col gap-4">
                         <div class="admin__field">
@@ -34,7 +35,7 @@
 
             <!-- User Info -->
             <div class="box">
-                <h2 class="box__title secondary">Información del usuario</h2>
+                <h2 class="box__title secondary">Informacion del usuario</h2>
                 <div class="box__content">
                     <div id="user-info" class="admin__user-info">
                         <p class="text-muted">
@@ -44,94 +45,204 @@
                 </div>
             </div>
 
-            <!-- Items Editor -->
+            <!-- Dar Items a Usuario -->
             <div class="box">
-                <h2 class="box__title secondary">Editor de Items</h2>
+                <h2 class="box__title secondary">Dar Items a Usuario</h2>
                 <div class="box__content">
                     <div class="flex flex-col gap-4">
-                        <!-- Formulario de item -->
-                        <div id="item-form" class="item-form">
-                            <div class="item-form__grid">
+                        <div class="admin__field">
+                            <label class="admin__label" for="give-user-select"
+                                >Usuario</label
+                            >
+                            <select id="give-user-select" class="input">
+                                <option value="">
+                                    -- Seleccionar usuario --
+                                </option>
+                            </select>
+                        </div>
+
+                        <!-- Dar Huevo -->
+                        <div class="admin__give-row">
+                            <select
+                                id="give-egg-select"
+                                class="input input--sm"
+                            >
+                                <option value="">-- Tipo de huevo --</option>
+                            </select>
+                            <button
+                                id="give-egg-btn"
+                                class="button button--small"
+                            >
+                                Dar Huevo
+                            </button>
+                        </div>
+
+                        <!-- Dar Caramelo -->
+                        <div class="admin__give-row">
+                            <select
+                                id="give-candy-select"
+                                class="input input--sm"
+                            >
+                                <option value="">-- Caramelo --</option>
+                            </select>
+                            <input
+                                type="number"
+                                id="give-candy-quantity"
+                                class="input input--xs"
+                                value="1"
+                                min="1"
+                            />
+                            <button
+                                id="give-candy-btn"
+                                class="button button--small"
+                            >
+                                Dar Caramelo
+                            </button>
+                        </div>
+
+                        <!-- Dar Piedra -->
+                        <div class="admin__give-row">
+                            <select
+                                id="give-stone-select"
+                                class="input input--sm"
+                            >
+                                <option value="">-- Piedra --</option>
+                            </select>
+                            <input
+                                type="number"
+                                id="give-stone-quantity"
+                                class="input input--xs"
+                                value="1"
+                                min="1"
+                            />
+                            <button
+                                id="give-stone-btn"
+                                class="button button--small"
+                            >
+                                Dar Piedra
+                            </button>
+                        </div>
+
+                        <div id="give-message" class="admin__message"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Editor de Catalogos -->
+            <div class="box">
+                <h2 class="box__title secondary">Editor de Catalogos</h2>
+                <div class="box__content">
+                    <div class="flex flex-col gap-4">
+                        <!-- Tabs -->
+                        <div class="catalog-tabs">
+                            <button
+                                class="catalog-tab active"
+                                data-catalog="egg-types"
+                            >
+                                Huevos
+                            </button>
+                            <button
+                                class="catalog-tab"
+                                data-catalog="candy-types"
+                            >
+                                Caramelos
+                            </button>
+                            <button
+                                class="catalog-tab"
+                                data-catalog="stone-types"
+                            >
+                                Piedras
+                            </button>
+                            <button
+                                class="catalog-tab"
+                                data-catalog="chigo-species"
+                            >
+                                Especies
+                            </button>
+                        </div>
+
+                        <!-- Formulario -->
+                        <div id="catalog-form" class="catalog-form">
+                            <div class="catalog-form__grid">
                                 <div class="admin__field">
-                                    <label class="admin__label" for="item-name"
+                                    <label
+                                        class="admin__label"
+                                        for="catalog-name"
                                         >Name (interno)</label
                                     >
                                     <input
                                         type="text"
-                                        id="item-name"
+                                        id="catalog-name"
                                         class="input"
-                                        placeholder="basic_potion"
-                                    />
-                                </div>
-                                <div class="admin__field">
-                                    <label class="admin__label" for="item-label"
-                                        >Label (visible)</label
-                                    >
-                                    <input
-                                        type="text"
-                                        id="item-label"
-                                        class="input"
-                                        placeholder="Pocion Basica"
-                                    />
-                                </div>
-                                <div class="admin__field">
-                                    <label class="admin__label" for="item-price"
-                                        >Precio</label
-                                    >
-                                    <input
-                                        type="number"
-                                        id="item-price"
-                                        class="input"
-                                        placeholder="100"
-                                        min="0"
-                                    />
-                                </div>
-                                <div class="admin__field">
-                                    <label class="admin__label" for="item-type"
-                                        >Tipo</label
-                                    >
-                                    <select id="item-type" class="input">
-                                        <option value="misc">Misc</option>
-                                        <option value="potion">Potion</option>
-                                        <option value="egg">Egg</option>
-                                    </select>
-                                </div>
-                                <div class="admin__field">
-                                    <label class="admin__label" for="item-icon"
-                                        >Icon (URL/path)</label
-                                    >
-                                    <input
-                                        type="text"
-                                        id="item-icon"
-                                        class="input"
-                                        placeholder="/assets/item.png"
+                                        placeholder="hp_candy_small"
                                     />
                                 </div>
                                 <div class="admin__field">
                                     <label
                                         class="admin__label"
-                                        for="item-description"
+                                        for="catalog-label"
+                                        >Label (visible)</label
+                                    >
+                                    <input
+                                        type="text"
+                                        id="catalog-label"
+                                        class="input"
+                                        placeholder="Caramelo HP Pequeno"
+                                    />
+                                </div>
+                                <div class="admin__field">
+                                    <label
+                                        class="admin__label"
+                                        for="catalog-description"
                                         >Descripcion</label
                                     >
                                     <input
                                         type="text"
-                                        id="item-description"
+                                        id="catalog-description"
                                         class="input"
-                                        placeholder="Descripcion del item"
+                                        placeholder="Descripcion"
+                                    />
+                                </div>
+                                <div class="admin__field">
+                                    <label
+                                        class="admin__label"
+                                        for="catalog-icon"
+                                        >Icon (path)</label
+                                    >
+                                    <input
+                                        type="text"
+                                        id="catalog-icon"
+                                        class="input"
+                                        placeholder="/assets/candy.png"
+                                    />
+                                </div>
+                                <div class="admin__field">
+                                    <label
+                                        class="admin__label"
+                                        for="catalog-price"
+                                        >Precio (0 = no comprable)</label
+                                    >
+                                    <input
+                                        type="number"
+                                        id="catalog-price"
+                                        class="input"
+                                        placeholder="100"
+                                        min="0"
                                     />
                                 </div>
                             </div>
-                            <input type="hidden" id="item-edit-id" value="" />
+
                             <div
-                                id="item-form-message"
+                                id="catalog-message"
                                 class="admin__message"
                             ></div>
-                            <div class="item-form__actions">
-                                <button id="save-item-btn" class="button">
-                                    Crear Item
+
+                            <div class="catalog-form__actions">
+                                <button id="save-catalog-btn" class="button">
+                                    Crear
                                 </button>
                                 <button
-                                    id="cancel-item-btn"
+                                    id="cancel-catalog-btn"
                                     class="button button--secondary hidden"
                                 >
                                     Cancelar
@@ -139,25 +250,17 @@
                             </div>
                         </div>
 
-                        <!-- Lista de items -->
-                        <div class="items-list">
-                            <h3 class="items-list__title">Items existentes</h3>
+                        <!-- Lista -->
+                        <div class="catalog-list">
+                            <h3 class="catalog-list__title">
+                                Elementos del catalogo
+                            </h3>
                             <div
-                                id="items-list-container"
-                                class="items-list__container"
+                                id="catalog-list-container"
+                                class="catalog-list__container"
                             >
-                                <p class="text-muted">Cargando items...</p>
+                                <p class="text-muted">Cargando...</p>
                             </div>
-                        </div>
-
-                        <!-- Acciones peligrosas -->
-                        <div class="items-danger">
-                            <button
-                                id="delete-items-btn"
-                                class="button button--danger button--small"
-                            >
-                                Borrar todos los items
-                            </button>
                         </div>
                     </div>
                 </div>

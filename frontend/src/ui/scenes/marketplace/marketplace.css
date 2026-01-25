@@ -1,4 +1,94 @@
 .marketplace {
-  padding: 20px;
-  font-family: sans-serif;
+    padding: 20px;
+    font-family: sans-serif;
+}
+
+/* Grid de items */
+#marketItems {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+/* Item card */
+.item-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    background: var(--color-surface, #fff);
+    border: 1px solid var(--color-border, #e0e0e0);
+    border-radius: 8px;
+    transition:
+        transform 0.2s,
+        box-shadow 0.2s;
+}
+
+.item-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.item-card__image {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    margin-bottom: 0.5rem;
+}
+
+.item-card__info {
+    text-align: center;
+    flex: 1;
+}
+
+.item-card__name {
+    margin: 0 0 0.25rem;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.item-card__price {
+    margin: 0;
+    color: var(--color-gold, #d4a017);
+    font-weight: 500;
+}
+
+/* Stock indicator */
+.item-card__stock {
+    margin: 0.25rem 0 0;
+    font-size: 0.75rem;
+    color: var(--color-text-muted, #666);
+}
+
+/* Low stock warning (opcional, para futuro) */
+.item-card__stock--low {
+    color: var(--color-warning, #e67e22);
+}
+
+/* Sold out state */
+.item-card--sold-out {
+    opacity: 0.6;
+    filter: grayscale(50%);
+}
+
+.item-card--sold-out:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.item-card--sold-out .item-card__buy-btn {
+    background-color: var(--color-disabled, #ccc);
+    cursor: not-allowed;
+}
+
+/* Buy button */
+.item-card__buy-btn {
+    margin-top: 0.75rem;
+    width: 100%;
+}
+
+.item-card__buy-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
 }

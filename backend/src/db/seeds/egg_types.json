@@ -1,0 +1,18 @@
+[
+  {
+    "name": "wild",
+    "label": "Huevo Salvaje",
+    "description": "Un huevo encontrado en la naturaleza. El chigo que nazca puede ser impredecible.",
+    "icon": "egg-wild.png",
+    "generation": 1,
+    "possible_species": [1, 2, 3]
+  },
+  {
+    "name": "tame",
+    "label": "Huevo Domesticado",
+    "description": "Un huevo criado con cuidado. Mayor probabilidad de un chigo dócil.",
+    "icon": "egg-tame.png",
+    "generation": 1,
+    "possible_species": [1, 2, 3]
+  }
+]

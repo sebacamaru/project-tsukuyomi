@@ -5,75 +5,75 @@
 
 /* Grid Layout - 3 columnas */
 .item-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-3);
-  position: relative;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-3);
+    position: relative;
 }
 
 /* Item - cuadrado con sprite y cantidad */
 .item-grid__item {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  aspect-ratio: 1;
-  background: var(--neutral-100);
-  border: 2px solid var(--border);
-  border-radius: var(--radius-lg);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  padding: var(--space-2);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1;
+    background: var(--neutral-100);
+    border: 2px solid var(--border);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    padding: var(--space-2);
 }
 
 .item-grid__item:hover,
 .item-grid__item:focus,
 .item-grid__item.active {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 2px rgba(254, 81, 80, 0.2);
-  transform: scale(1.02);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(254, 81, 80, 0.2);
+    transform: scale(1.02);
 }
 
 .item-grid__sprite {
-  width: 100%;
-  height: 100%;
-  max-width: 64px;
-  max-height: 64px;
-  object-fit: contain;
+    width: 100%;
+    height: 100%;
+    max-width: 64px;
+    max-height: 64px;
+    object-fit: contain;
 }
 
 .item-grid__sprite.lazy {
-  background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
-  background-size: 200% 100%;
-  animation: item-grid-skeleton 1.5s infinite;
+    background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+    background-size: 200% 100%;
+    animation: item-grid-skeleton 1.5s infinite;
 }
 
 @keyframes item-grid-skeleton {
-  0% {
-    background-position: 200% 0;
-  }
-  100% {
-    background-position: -200% 0;
-  }
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
 }
 
 .item-grid__quantity {
-  position: absolute;
-  top: -6px;
-  right: -6px;
-  min-width: 22px;
-  height: 22px;
-  padding: 0 6px;
-  background: var(--primary);
-  color: white;
-  border-radius: var(--radius-full);
-  font-size: var(--text-xs);
-  font-weight: var(--weight-bold);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: var(--shadow-sm);
-  border: 2px solid white;
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    background: var(--primary);
+    color: white;
+    border-radius: var(--radius-full);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-bold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-sm);
+    border: 2px solid white;
 }
 
 /* ========================================
@@ -81,143 +81,143 @@
    ======================================== */
 
 .item-grid-tooltip {
-  position: fixed;
-  z-index: var(--z-tooltip);
-  min-width: 180px;
-  max-width: 260px;
-  padding: var(--space-3);
-  background: var(--neutral-50);
-  border: var(--retro-border-width) solid var(--retro-border-color);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--retro-shadow);
-  pointer-events: none;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(4px);
-  transition:
-    opacity var(--transition-fast),
-    visibility var(--transition-fast),
-    transform var(--transition-fast);
+    position: fixed;
+    z-index: var(--z-tooltip);
+    min-width: 180px;
+    max-width: 260px;
+    padding: var(--space-3);
+    background: var(--neutral-50);
+    border: var(--retro-border-width) solid var(--retro-border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--retro-shadow);
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(4px);
+    transition:
+        opacity var(--transition-fast),
+        visibility var(--transition-fast),
+        transform var(--transition-fast);
 }
 
 .item-grid-tooltip.visible {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
 }
 
 .item-grid-tooltip.visible.mobile {
-  pointer-events: auto;
+    pointer-events: auto;
 }
 
 /* Header */
 .item-grid-tooltip__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: var(--space-2);
-  margin-bottom: var(--space-2);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--space-2);
+    margin-bottom: var(--space-2);
 }
 
 .item-grid-tooltip__name {
-  font-size: var(--text-base);
-  font-weight: var(--weight-bold);
-  color: var(--text);
-  line-height: 1.2;
+    font-size: var(--text-base);
+    font-weight: var(--weight-bold);
+    color: var(--text);
+    line-height: 1.2;
 }
 
 .item-grid-tooltip__type {
-  font-size: var(--text-xs);
-  font-weight: var(--weight-medium);
-  color: var(--neutral-50);
-  background: var(--neutral-500);
-  padding: 2px 8px;
-  border-radius: var(--radius-full);
-  text-transform: capitalize;
-  white-space: nowrap;
-  flex-shrink: 0;
+    font-size: var(--text-xs);
+    font-weight: var(--weight-medium);
+    color: var(--neutral-50);
+    background: var(--neutral-500);
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+    text-transform: capitalize;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 /* Type color variants */
 .item-grid-tooltip__type--potion {
-  background: var(--success);
+    background: var(--success);
 }
 
 .item-grid-tooltip__type--egg {
-  background: var(--warning);
+    background: var(--warning);
 }
 
 .item-grid-tooltip__type--chigo {
-  background: var(--primary);
+    background: var(--primary);
 }
 
 .item-grid-tooltip__type--misc {
-  background: var(--neutral-500);
+    background: var(--neutral-500);
 }
 
 /* Description */
 .item-grid-tooltip__description {
-  font-size: var(--text-sm);
-  color: var(--text-muted);
-  margin: 0 0 var(--space-2) 0;
-  line-height: 1.4;
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+    margin: 0 0 var(--space-2) 0;
+    line-height: 1.4;
 }
 
 /* Footer */
 .item-grid-tooltip__footer {
-  display: flex;
-  justify-content: flex-end;
-  padding-top: var(--space-2);
-  border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: flex-end;
+    padding-top: var(--space-2);
+    border-top: 1px solid var(--border);
 }
 
 .item-grid-tooltip__footer.hidden {
-  display: none;
+    display: none;
 }
 
 .item-grid-tooltip__price {
-  font-size: var(--text-sm);
-  font-weight: var(--weight-bold);
-  color: #b8860b;
+    font-size: var(--text-sm);
+    font-weight: var(--weight-bold);
+    color: #b8860b;
 }
 
 .item-grid-tooltip__price::before {
-  content: "Valor: ";
-  font-weight: var(--weight-normal);
-  color: var(--text-muted);
+    content: "Valor: ";
+    font-weight: var(--weight-normal);
+    color: var(--text-muted);
 }
 
 /* Arrow */
 .item-grid-tooltip__arrow {
-  position: absolute;
-  width: 12px;
-  height: 12px;
-  background: var(--neutral-50);
-  border: var(--retro-border-width) solid var(--retro-border-color);
-  transform: rotate(45deg);
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: var(--neutral-50);
+    border: var(--retro-border-width) solid var(--retro-border-color);
+    transform: rotate(45deg);
 }
 
 /* Arrow positions */
 .item-grid-tooltip[data-position="top"] .item-grid-tooltip__arrow {
-  bottom: -8px;
-  border-top: none;
-  border-left: none;
+    bottom: -8px;
+    border-top: none;
+    border-left: none;
 }
 
 .item-grid-tooltip[data-position="bottom"] .item-grid-tooltip__arrow {
-  top: -8px;
-  border-bottom: none;
-  border-right: none;
+    top: -8px;
+    border-bottom: none;
+    border-right: none;
 }
 
 .item-grid-tooltip[data-position="left"] .item-grid-tooltip__arrow {
-  right: -8px;
-  border-bottom: none;
-  border-left: none;
+    right: -8px;
+    border-bottom: none;
+    border-left: none;
 }
 
 .item-grid-tooltip[data-position="right"] .item-grid-tooltip__arrow {
-  left: -8px;
-  border-top: none;
-  border-right: none;
+    left: -8px;
+    border-top: none;
+    border-right: none;
 }
