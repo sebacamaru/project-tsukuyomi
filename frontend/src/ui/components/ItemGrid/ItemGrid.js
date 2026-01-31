@@ -243,7 +243,6 @@ export class ItemGrid {
 
   getTypeLabel(type) {
     const labels = {
-      potion: "Pocion",
       egg: "Huevo",
       candy: "Caramelo",
       stone: "Piedra",
@@ -445,8 +444,8 @@ export class ItemGrid {
    * Obtiene los datos del item desde el elemento DOM
    */
   getItemData(itemElement) {
-    const inventoryId = parseInt(itemElement.dataset.inventoryId);
-    return this.items.find((i) => i.id === inventoryId);
+    const inventoryId = itemElement.dataset.inventoryId;
+    return this.items.find((i) => String(i.id) === inventoryId);
   }
 
   // ==========================================

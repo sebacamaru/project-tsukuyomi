@@ -107,6 +107,21 @@ export const authService = {
    * Llamar al iniciar la app
    */
   restoreSession() {
+    // Modo maquetación: auto-login sin backend
+    if (import.meta.env.MODE === "mock") {
+      store.user = {
+        id: 1,
+        username: "dev_user",
+        email: "dev@mock.local",
+        gold: 1000,
+        current_quest_code: "set_username",
+        next_quest_available_at: null,
+      };
+      store.token = "mock-token";
+      console.log("[Mock] Modo maquetación activo");
+      return;
+    }
+
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (!saved) return;

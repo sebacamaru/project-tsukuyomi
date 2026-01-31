@@ -1,4 +1,5 @@
 import "./Navbar.css";
+import { store } from "../../../core/Store.js";
 
 /**
  * Componente Navbar
@@ -7,6 +8,14 @@ export class Navbar {
   constructor(items = []) {
     this.items = items;
     this.currentRoute = window.location.pathname;
+  }
+
+  /**
+   * Evalua si un item esta habilitado
+   */
+  isItemEnabled(item) {
+    if (!item.enabledWhen) return true;
+    return item.enabledWhen(store);
   }
 
   /**
@@ -53,6 +62,11 @@ export class Navbar {
       link.classList.add("navbar__item--active");
     }
 
+    // Marcar como deshabilitado si no cumple condicion
+    if (!this.isItemEnabled(item)) {
+      link.classList.add("navbar__item--disabled");
+    }
+
     // Badge opcional
     const badgeHTML =
       item.badge && item.badge > 0
@@ -70,7 +84,9 @@ export class Navbar {
     // Event listener para navegación
     link.addEventListener("click", (e) => {
       e.preventDefault();
-      this.navigate(item.route);
+      if (this.isItemEnabled(item)) {
+        this.navigate(item.route);
+      }
     });
 
     return link;
@@ -160,6 +176,21 @@ export class Navbar {
         badge.remove();
       }
     }
+  }
+
+  /**
+   * Re-evalua las condiciones de habilitacion de todos los items
+   */
+  refreshEnabledStates() {
+    this.items.forEach((item) => {
+      const navItem = document.querySelector(
+        `.navbar__item[data-route="${item.route}"]`,
+      );
+      if (navItem) {
+        const isEnabled = this.isItemEnabled(item);
+        navItem.classList.toggle("navbar__item--disabled", !isEnabled);
+      }
+    });
   }
 
   /**

@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "frontend": "cd frontend && bun run dev",
+    "frontend:mock": "cd frontend && bun run dev --mode mock",
     "backend": "cd backend && bun ./src/server.js",
     "docker": "cd backend && docker-compose up -d",
     "dev": "concurrently \"npm:docker\" \"npm:backend\"",

@@ -46,6 +46,10 @@ async function start() {
     "inventory",
     () => import("./scenes/InventoryScene.js"),
   );
+  SceneManager.register(
+    "incubator",
+    () => import("./scenes/IncubatorScene.js"),
+  );
 
   // Si querés una ruta custom, pasá el tercer parámetro:
   // SceneManager.register("profile", () => import("./scenes/ProfileScene.js"), "/mi-perfil");

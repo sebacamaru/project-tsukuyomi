@@ -1,6 +1,15 @@
 import { authService } from "../services/authService.js";
+import { store } from "./Store.js";
+import { isQuestCompleted } from "../utils/questUtils.js";
 
 const PUBLIC_ROUTES = ["/login", "/register"];
+
+// Rutas que requieren haber completado ciertas quests
+const QUEST_PROTECTED_ROUTES = {
+  "/inventory": "onboarding",
+  "/marketplace": "onboarding",
+  "/incubator": "onboarding",
+};
 
 /**
  * Router simple con History API
@@ -69,6 +78,13 @@ export class Router {
 
     // Guard: redirigir a / si está autenticado y quiere ir a login/register
     if (PUBLIC_ROUTES.includes(path) && authService.isAuthenticated()) {
+      this.navigate("/");
+      return;
+    }
+
+    // Guard: redirigir a / si la ruta requiere quest no completada
+    const requiredQuest = QUEST_PROTECTED_ROUTES[path];
+    if (requiredQuest && !isQuestCompleted(store, requiredQuest)) {
       this.navigate("/");
       return;
     }

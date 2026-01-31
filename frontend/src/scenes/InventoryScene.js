@@ -61,7 +61,8 @@ export class InventoryScene extends Scene {
     const eggs = (store.eggs || []).filter((e) => e.status === "inventory");
     eggs.forEach((egg) => {
       items.push({
-        id: egg.id,
+        id: `egg_${egg.id}`,
+        item_id: egg.id,
         uuid: egg.uuid,
         type: "egg",
         name: egg.type_name,
@@ -78,7 +79,8 @@ export class InventoryScene extends Scene {
     (store.candies || []).forEach((candy) => {
       if (candy.quantity > 0) {
         items.push({
-          id: candy.candy_type_id,
+          id: `candy_${candy.candy_type_id}`,
+          item_id: candy.candy_type_id,
           type: "candy",
           name: candy.name,
           label: candy.label || candy.name,
@@ -95,7 +97,8 @@ export class InventoryScene extends Scene {
     (store.stones || []).forEach((stone) => {
       if (stone.quantity > 0) {
         items.push({
-          id: stone.stone_type_id,
+          id: `stone_${stone.stone_type_id}`,
+          item_id: stone.stone_type_id,
           type: "stone",
           name: stone.name,
           label: stone.label || stone.name,
@@ -111,7 +114,8 @@ export class InventoryScene extends Scene {
     // Chigos
     (store.chigos || []).forEach((chigo) => {
       items.push({
-        id: chigo.id,
+        id: `chigo_${chigo.id}`,
+        item_id: chigo.id,
         uuid: chigo.uuid,
         type: "chigo",
         name: chigo.species_name,

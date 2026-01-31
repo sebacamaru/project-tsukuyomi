@@ -4,6 +4,7 @@ import { router } from "./Router.js";
 import { loadingIndicator } from "../ui/components/LoadingIndicator/LoadingIndicator.js";
 import { Navbar } from "../ui/components/Navbar/Navbar.js";
 import { store } from "./Store.js";
+import { isQuestCompleted } from "../utils/questUtils.js";
 import layoutHTML from "../ui/layout/layout.html?raw";
 import "../ui/layout/layout.css";
 import "../styles/chigui.css";
@@ -67,6 +68,7 @@ export class App {
         route: "/inventory",
         label: "Inventario",
         icon: "🎒",
+        enabledWhen: (s) => isQuestCompleted(s, "onboarding"),
       },
       {
         route: "/professor",
@@ -78,11 +80,13 @@ export class App {
         route: "/marketplace",
         label: "Marketplace",
         icon: "🏪",
+        enabledWhen: (s) => isQuestCompleted(s, "onboarding"),
       },
       {
-        route: "/profile",
-        label: "Perfil",
-        icon: "👤",
+        route: "/incubator",
+        label: "Incubadora",
+        icon: "🐣",
+        enabledWhen: (s) => isQuestCompleted(s, "onboarding"),
       },
     ];
 
@@ -100,6 +104,15 @@ export class App {
     }
     // Reprogramar timer si hay delay pendiente
     this.scheduleBadgeUpdate();
+  }
+
+  /**
+   * Actualiza los estados de habilitacion del navbar
+   */
+  refreshNavbar() {
+    if (this.navbar) {
+      this.navbar.refreshEnabledStates();
+    }
   }
 
   /**

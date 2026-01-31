@@ -345,6 +345,7 @@ export class QuestRunner {
       // Actualizar el badge del navbar (esto también programa el timer automático)
       if (app) {
         app.updateProfessorBadge();
+        app.refreshNavbar();
       }
 
       return true;
