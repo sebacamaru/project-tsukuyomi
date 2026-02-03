@@ -15,6 +15,11 @@ const QUEST_ORDER = ["set_username", "onboarding"];
  * @returns {boolean}
  */
 export function isQuestCompleted(store, questCode) {
+  // En modo mock, todas las quests se consideran completadas
+  if (import.meta.env.MODE === "mock") {
+    return true;
+  }
+
   const user = store.user;
   if (!user) return false;
 

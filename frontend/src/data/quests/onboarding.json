@@ -195,7 +195,50 @@
     {
       "id": "start_adventure_5",
       "speaker": "Profesor Cacho",
-      "text": "Bueno, ya me tendría que ir tomando el palo porque tengo algunas investigaciones en curso. ¿Te puedo ayudar en algo más?",
+      "text": "Bueno, ya me tendría que ir tomando el palo porque tengo algunas investigaciones en curso...",
+      "action": "final_questions"
+    },
+    {
+      "id": "final_questions",
+      "speaker": "Profesor Cacho",
+      "text": " ¿Te puedo ayudar en algo más?",
+      "options": [
+        {
+          "text": "¿Cómo lo cuido?",
+          "value": "info_egg",
+          "icon": "😬",
+          "next": "info_egg"
+        },
+        {
+          "text": "¿Dónde están las cámaras de incubación?",
+          "value": "info_incubation",
+          "icon": "🤔",
+          "next": "info_incubation"
+        },
+        {
+          "text": "¡No, gracias por todo profe!",
+          "value": "bye",
+          "icon": "🫡",
+          "next": "bye"
+        }
+      ]
+    },
+    {
+      "id": "info_egg",
+      "speaker": "Profesor Cacho",
+      "text": "¿Te agarró miedo? Tranqui, cuidar de un huevo chigo no es tan difícil. Después te veo en la cámara de incubación y te tiro un par de tips, ¿querés?",
+      "action": "final_questions"
+    },
+    {
+      "id": "info_incubation",
+      "speaker": "Profesor Cacho",
+      "text": "Tenés un acceso directo en el menú inferior de tu aplicación.",
+      "action": "final_questions"
+    },
+    {
+      "id": "bye",
+      "speaker": "Profesor Cacho",
+      "text": "¡Nos estamos viendo crack, mucha suerte! ¡Y cuidalo bien, los primeros pasos siempre cuentan más de lo que parece!",
       "action": "complete_quest"
     }
   ]

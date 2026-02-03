@@ -1,4 +1,4 @@
-import{n as e,r as t}from"./index-p46PUYUA.js";import{t as n}from"./Scene-CdUoGsRA.js";/* empty css             */var r=`<div class="auth">
+import{n as e,r as t}from"./index-wKzs5zvE.js";import{t as n}from"./Scene-BghZtMD0.js";/* empty css             */var r=`<div class="auth">
     <div class="auth__container">
         <p class="auth__subtitle">Crear una cuenta</p>
 

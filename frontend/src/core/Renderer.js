@@ -5,7 +5,7 @@ export class Renderer {
     this.PIXI = null;
   }
 
-  async init() {
+  async init(wrapper) {
     if (this.app) return this.app;
 
     // Cargar PIXI dinámicamente
@@ -18,18 +18,16 @@ export class Renderer {
 
     await this.app.init({
       background: 0x0a0e27,
-      resizeTo: window,
+      resizeTo: wrapper,
       antialias: true,
     });
 
-    // Insertar canvas como fondo
-    this.app.canvas.style.position = "fixed";
+    // Insertar canvas como fondo dentro del wrapper
+    this.app.canvas.style.position = "absolute";
     this.app.canvas.style.top = "0";
     this.app.canvas.style.left = "0";
     this.app.canvas.style.zIndex = "-1";
-    this.app.canvas.style.width = "100%";
-    this.app.canvas.style.height = "100%";
-    document.body.prepend(this.app.canvas);
+    wrapper.prepend(this.app.canvas);
 
     // Crear efecto de partículas
     this.createParticles();
@@ -57,8 +55,8 @@ export class Renderer {
 
       const particle = {
         graphics,
-        x: Math.random() * window.innerWidth,
-        y: Math.random() * window.innerHeight,
+        x: Math.random() * this.app.screen.width,
+        y: Math.random() * this.app.screen.height,
         vx: (Math.random() - 0.5) * 0.5,
         vy: (Math.random() - 0.5) * 0.5,
         size,
@@ -73,16 +71,19 @@ export class Renderer {
   }
 
   animate() {
+    const width = this.app.screen.width;
+    const height = this.app.screen.height;
+
     this.particles.forEach((particle) => {
       // Mover partícula
       particle.x += particle.vx;
       particle.y += particle.vy;
 
       // Wrap around screen
-      if (particle.x < 0) particle.x = window.innerWidth;
-      if (particle.x > window.innerWidth) particle.x = 0;
-      if (particle.y < 0) particle.y = window.innerHeight;
-      if (particle.y > window.innerHeight) particle.y = 0;
+      if (particle.x < 0) particle.x = width;
+      if (particle.x > width) particle.x = 0;
+      if (particle.y < 0) particle.y = height;
+      if (particle.y > height) particle.y = 0;
 
       // Actualizar posición del gráfico
       particle.graphics.x = particle.x;

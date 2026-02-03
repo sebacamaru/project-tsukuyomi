@@ -15,15 +15,20 @@ export class App {
   }
 
   async init() {
+    // Crear wrapper contenedor primero (el renderer lo necesita)
+    const appWrapper = document.createElement("div");
+    appWrapper.id = "app-wrapper";
+    document.body.appendChild(appWrapper);
+
     // Inicializar renderer PIXI (canvas de fondo) con loading indicator
     await loadingIndicator.wrap(async () => {
-      await this.renderer.init();
+      await this.renderer.init(appWrapper);
     });
 
     const uiRoot = document.createElement("div");
     uiRoot.id = "ui-root";
     uiRoot.innerHTML = layoutHTML;
-    document.body.appendChild(uiRoot);
+    appWrapper.appendChild(uiRoot);
 
     // Inicializar SceneManager con el outlet y el router
     const outlet = uiRoot.querySelector("#scene-outlet");
@@ -85,6 +90,18 @@ export class App {
       {
         route: "/incubator",
         label: "Incubadora",
+        icon: "🐣",
+        enabledWhen: (s) => isQuestCompleted(s, "onboarding"),
+      },
+      {
+        route: "/chigos",
+        label: "Chigos",
+        icon: "🐣",
+        enabledWhen: (s) => isQuestCompleted(s, "onboarding"),
+      },
+      {
+        route: "/profile",
+        label: "Perfil",
         icon: "🐣",
         enabledWhen: (s) => isQuestCompleted(s, "onboarding"),
       },

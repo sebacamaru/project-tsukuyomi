@@ -45,6 +45,18 @@ export class Navbar {
     nav.appendChild(title);
     nav.appendChild(container);
 
+    // Centrar scroll en el item del medio después de insertar en DOM
+    requestAnimationFrame(() => {
+      const items = container.querySelectorAll(".navbar__item");
+      if (items.length > 0) {
+        const middleIndex = Math.floor(items.length / 2);
+        items[middleIndex].scrollIntoView({
+          inline: "center",
+          behavior: "instant",
+        });
+      }
+    });
+
     return nav;
   }
 

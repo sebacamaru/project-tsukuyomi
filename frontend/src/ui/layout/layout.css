@@ -3,11 +3,27 @@
  * Sistema de layout principal que distribuye el espacio entre scene-outlet y navbar
  */
 
+#app-wrapper {
+    width: 360px;
+    height: 640px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    overflow: hidden;
+    border: 1px solid red;
+}
+
+#ui-root {
+    width: 100%;
+    height: 100%;
+}
+
 #app-layout {
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: 100vh;
+    height: 100%;
     overflow: hidden;
 }
 
