@@ -98,6 +98,12 @@
     --transition-base: 200ms ease;
     --transition-slow: 300ms ease;
 
+    /* Animaciones */
+    --anim-fast: 200ms;
+    --anim-base: 400ms;
+    --anim-slow: 800ms;
+    --anim-loop: 1.5s;
+
     /* Z-index */
     --z-base: 0;
     --z-dropdown: 1000;

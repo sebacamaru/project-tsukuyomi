@@ -66,7 +66,7 @@ export class App {
     const navItems = [
       {
         route: "/",
-        label: "Inicio",
+        label: "Dashboard",
         icon: "🏠",
       },
       {

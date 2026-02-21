@@ -3,12 +3,103 @@ import { loadingIndicator } from "../ui/components/LoadingIndicator/LoadingIndic
 import { SceneManager } from "./SceneManager.js";
 
 /**
+ * Wrapper para elementos DOM interactuables/animables
+ * Registrados automáticamente via data-entity="name" en HTML
+ */
+class Entity {
+  constructor(el, scene) {
+    this.el = el;
+    this._stopFn = null;
+    this._scene = scene;
+  }
+
+  /** Animación one-shot (await). Auto-stop de loop activo */
+  async play(animClass) {
+    if (this._stopFn) this.stop();
+    return this._scene.playAnim(this.el, animClass);
+  }
+
+  /** Animación loop. Retorna this para chaining */
+  start(animClass) {
+    if (this._stopFn) this.stop();
+    this._stopFn = this._scene.startAnim(this.el, animClass);
+    return this;
+  }
+
+  /** Detener animación loop activa */
+  stop() {
+    if (this._stopFn) {
+      this._stopFn();
+      this._stopFn = null;
+    }
+    return this;
+  }
+
+  show() { this.el.hidden = false; return this; }
+  hide() { this.el.hidden = true; return this; }
+  addClass(cls) { this.el.classList.add(cls); return this; }
+  removeClass(cls) { this.el.classList.remove(cls); return this; }
+  toggle(cls) { this.el.classList.toggle(cls); return this; }
+
+  onClick(callback) { this._scene.on(this.el, "click", callback); return this; }
+  on(event, callback) { this._scene.on(this.el, event, callback); return this; }
+
+  get disabled() { return this.el.disabled; }
+  set disabled(v) { this.el.disabled = v; }
+}
+
+/**
+ * Wrapper para grupos de entities (data-group="name")
+ */
+class EntityGroup {
+  constructor(entities) {
+    this.items = entities;
+  }
+
+  /** Animación one-shot en todos en paralelo */
+  async playAll(animClass) {
+    return Promise.all(this.items.map((e) => e.play(animClass)));
+  }
+
+  /** Animación one-shot secuencial con delay entre cada uno */
+  async playSequential(animClass, delayMs = 200) {
+    for (let i = 0; i < this.items.length; i++) {
+      await this.items[i].play(animClass);
+      if (i < this.items.length - 1 && delayMs > 0) {
+        await new Promise((r) => setTimeout(r, delayMs));
+      }
+    }
+  }
+
+  /** Aplicar función a cada entity */
+  each(fn) {
+    this.items.forEach(fn);
+    return this;
+  }
+
+  /** Ejecutar función async secuencialmente con delay */
+  async eachSequential(fn, delayMs = 200) {
+    for (let i = 0; i < this.items.length; i++) {
+      await fn(this.items[i], i);
+      if (i < this.items.length - 1 && delayMs > 0) {
+        await new Promise((r) => setTimeout(r, delayMs));
+      }
+    }
+  }
+
+  startAll(animClass) { this.items.forEach((e) => e.start(animClass)); return this; }
+  stopAll() { this.items.forEach((e) => e.stop()); return this; }
+}
+
+/**
  * Clase base para todas las escenas
  * Maneja lógica común: event delegation, lazy loading, cleanup
  */
 export class Scene {
   constructor() {
     this.root = null;
+    this.entity = {};
+    this.entities = {};
     this.eventHandlers = new Map();
     this.background = null; // Propiedad opcional para background personalizado (inline style)
     this.backgroundClass = null; // Propiedad opcional para clase CSS de background
@@ -38,6 +129,9 @@ export class Scene {
     const html = await this.getHTML();
     root.innerHTML = html;
 
+    // Auto-registrar entities y grupos desde data attributes
+    this._registerEntities();
+
     // Inicializar UI específica de la escena
     await this.initUI(root);
 
@@ -57,6 +151,9 @@ export class Scene {
    * Limpia automáticamente todos los event listeners registrados
    */
   onExit() {
+    // Cancelar secuencias de animación en curso
+    this._sequenceCancelled = true;
+
     // Auto-cleanup de cutscene mode si estaba activo
     if (this._cutsceneModeActive) {
       this.exitCutsceneMode();
@@ -72,6 +169,13 @@ export class Scene {
       this.root.style.background = this._originalBackground;
       this._originalBackground = null;
     }
+
+    // Cleanup automático de entities (stop animaciones activas)
+    for (const e of Object.values(this.entity)) {
+      e.stop();
+    }
+    this.entity = {};
+    this.entities = {};
 
     // Cleanup automático de todos los event handlers
     this.eventHandlers.forEach(({ element, event, handler }) => {
@@ -159,6 +263,55 @@ export class Scene {
   }
 
   /**
+   * Ejecuta una animación CSS one-shot y espera a que termine
+   * Agrega la clase, espera animationend, la remueve
+   * Ejemplo: await this.playAnim(egg, 'anim-shake')
+   */
+  playAnim(el, animClass) {
+    el.classList.remove(animClass);
+    void el.offsetWidth;
+    return new Promise((resolve) => {
+      el.addEventListener(
+        "animationend",
+        () => {
+          el.classList.remove(animClass);
+          resolve();
+        },
+        { once: true },
+      );
+      el.classList.add(animClass);
+    });
+  }
+
+  /**
+   * Inicia una animación CSS en loop, retorna función para detenerla
+   * Ejemplo: const stop = this.startAnim(egg, 'anim-wobble')
+   *          stop() // para la animación
+   */
+  startAnim(el, animClass) {
+    el.classList.add(animClass);
+    return () => el.classList.remove(animClass);
+  }
+
+  /**
+   * Ejecuta una lista de pasos async en secuencia con cancelación automática
+   * Se cancela si la escena sale (onExit). Cada paso es una función que retorna Promise.
+   * Ejemplo:
+   *   await this.runSequence([
+   *     () => this.playAnim(btn, 'anim-press'),
+   *     () => this.turnLightsOn(),
+   *     () => this.shakeEgg(3),
+   *   ]);
+   */
+  async runSequence(steps) {
+    this._sequenceCancelled = false;
+    for (const step of steps) {
+      if (this._sequenceCancelled) return;
+      await step();
+    }
+  }
+
+  /**
    * Activa el modo cutscene (oculta navbar)
    * Útil para diálogos cinemáticos o secuencias inmersivas
    */
@@ -191,5 +344,53 @@ export class Scene {
    */
   async withLoading(asyncFn) {
     return loadingIndicator.wrap(asyncFn);
+  }
+
+  /**
+   * Helper: mostrar mensaje al jugador via MessageBox
+   * Ejemplo: await this.showMessage("Hatching...", "Professor")
+   */
+  async showMessage(text, speaker = null) {
+    const { MessageBox } = await import(
+      "../ui/components/MessageBox/MessageBox.js"
+    );
+    return MessageBox.alert(text, speaker);
+  }
+
+  /**
+   * Helper: animación one-shot en el root de la escena
+   * Útil para flashes, fades, screen-shakes
+   * Ejemplo: await this.playSceneAnim("anim-shake")
+   */
+  async playSceneAnim(animClass) {
+    return this.playAnim(this.root, animClass);
+  }
+
+  /**
+   * Auto-registra entities (data-entity) y grupos (data-group) del HTML
+   */
+  _registerEntities() {
+    this.entity = {};
+    this.entities = {};
+
+    for (const el of this.root.querySelectorAll("[data-entity]")) {
+      const name = el.dataset.entity;
+      if (!this.entity[name]) {
+        this.entity[name] = new Entity(el, this);
+      }
+    }
+
+    const groupArrays = {};
+    for (const el of this.root.querySelectorAll("[data-group]")) {
+      const group = el.dataset.group;
+      if (!groupArrays[group]) {
+        groupArrays[group] = [];
+      }
+      groupArrays[group].push(new Entity(el, this));
+    }
+
+    for (const [name, items] of Object.entries(groupArrays)) {
+      this.entities[name] = new EntityGroup(items);
+    }
   }
 }

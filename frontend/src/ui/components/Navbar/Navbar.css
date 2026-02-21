@@ -10,40 +10,45 @@
     width: 100%;
     z-index: var(--z-fixed);
     background-color: var(--bg);
-    height: 102px;
+    height: 100px;
 }
 
 .navbar__title {
     display: flex;
     align-items: flex-end;
     justify-content: center;
-    margin-top: -10px;
-    background-image: url("@/assets/images/navbar__title_bg1.png");
-    background-position: 0px -4px;
+    position: absolute;
+    top: -26px;
+    width: 100%;
 }
 
 .navbar__title h1 {
-    margin: -6px 0 0 0;
-    font-size: var(--text-lg);
+    font-size: var(--text-sm);
     color: var(--text);
     display: block;
-    padding: 6px 14px;
-    background-image: url("@/assets/images/navbar__title_bg2.png");
-    background-position: 0px -5px;
+    padding: 6px 14px 0 14px;
     line-height: var(--text-xl);
-    background-color: var(--neutral-50);
     border-radius: var(--radius);
+    background-color: var(--bg);
+    border: 1px solid;
+    border-bottom: 0;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    user-select: none;
+    font-weight: normal;
 }
 
 .navbar__container {
     display: flex;
     align-items: flex-end;
     justify-content: flex-start;
-    gap: var(--space-2);
+    gap: var(--space-3);
     margin: 0 auto;
     padding: 0 0 var(--space-3) 0;
     overflow-x: auto;
     overflow-y: hidden;
+    height: 100px;
+    border-top: 1px solid var(--neutral-900);
 }
 
 .navbar__container::before,
@@ -70,15 +75,16 @@
     position: relative;
     border: 3px solid var(--neutral-900);
     box-shadow: 2px 4px 0 var(--neutral-900);
+    user-select: none;
 }
 
-.navbar__item:nth-child(odd) {
+/*.navbar__item--active:nth-child(odd) {
     background-color: var(--frosted-blue);
 }
 
-.navbar__item:nth-child(even) {
+.navbar__item--active:nth-child(even) {
     background-color: var(--lime-yellow);
-}
+}*/
 
 .navbar__icon {
     width: 40px;
@@ -115,8 +121,8 @@
     font-size: 11px;
     font-weight: var(--weight-bold);
     padding: 0 4px;
-    border: 2px solid #000;
-    box-shadow: 1px 2px 0 #000;
+    border: 2px solid var(--neutral-900);
+    box-shadow: 1px 2px 0 var(--neutral-900);
     z-index: 1;
     animation: badgePulse 2s ease-in-out infinite;
 }
@@ -142,8 +148,9 @@
 
 /* Item activo - zoom fijo solo en el ícono */
 .navbar__item--active {
-    width: 72px;
-    height: 72px;
+    /*border-color: var(--primary-dark);
+    box-shadow: 2px 4px 0 var(--primary-dark);*/
+    background-color: var(--lime-yellow);
 }
 .navbar__item--active .navbar__icon {
     transform: scale(1.4) translateY(5px);

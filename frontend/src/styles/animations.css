@@ -1,0 +1,88 @@
+/**
+ * Animations - Clases reutilizables de animacion CSS
+ *
+ * One-shot: .anim-shake, .anim-press, .anim-rotate
+ * Loop:     .anim-wobble, .anim-bounce, .anim-glow
+ *
+ * Uso con Scene helpers:
+ *   await this.playAnim(el, 'anim-shake')   // one-shot, espera a que termine
+ *   const stop = this.startAnim(el, 'anim-wobble')  // loop, stop() para parar
+ */
+
+/* === KEYFRAMES === */
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-4px); }
+    40% { transform: translateX(4px); }
+    60% { transform: translateX(-3px); }
+    80% { transform: translateX(3px); }
+}
+
+@keyframes press {
+    0% { transform: scale(1); }
+    50% { transform: scale(0.9); }
+    100% { transform: scale(1); }
+}
+
+@keyframes rotate {
+    from { transform: rotate(var(--anim-rotate-from, 0deg)); }
+    to { transform: rotate(var(--anim-rotate-to, -45deg)); }
+}
+
+@keyframes wobble {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(3deg); }
+    75% { transform: rotate(-3deg); }
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+}
+
+@keyframes glow {
+    0%, 100% { filter: drop-shadow(0 0 4px var(--anim-glow-color, rgba(255, 215, 0, 0.5))); }
+    50% { filter: drop-shadow(0 0 12px var(--anim-glow-color, rgba(255, 215, 0, 0.8))); }
+}
+
+/* === ONE-SHOT CLASSES === */
+
+.anim-shake {
+    animation: shake var(--anim-duration, var(--anim-base)) ease;
+}
+
+.anim-press {
+    animation: press var(--anim-duration, var(--anim-fast)) ease;
+}
+
+.anim-rotate {
+    animation: rotate var(--anim-duration, var(--anim-slow)) ease forwards;
+}
+
+/* === LOOP CLASSES === */
+
+.anim-wobble {
+    animation: wobble var(--anim-duration, var(--anim-loop)) ease-in-out infinite;
+}
+
+.anim-bounce {
+    animation: bounce var(--anim-duration, var(--anim-loop)) ease-in-out infinite;
+}
+
+.anim-glow {
+    animation: glow var(--anim-duration, var(--anim-loop)) ease-in-out infinite;
+}
+
+/* === ACCESIBILIDAD === */
+
+@media (prefers-reduced-motion: reduce) {
+    .anim-shake,
+    .anim-press,
+    .anim-rotate,
+    .anim-wobble,
+    .anim-bounce,
+    .anim-glow {
+        animation: none !important;
+    }
+}

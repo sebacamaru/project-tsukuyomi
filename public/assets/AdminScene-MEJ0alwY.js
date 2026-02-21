@@ -1,4 +1,4 @@
-import{i as e,l as t}from"./index-wKzs5zvE.js";import{n,t as r}from"./Scene-BghZtMD0.js";import{t as i}from"./assetRegistry-BWgvEy0G.js";var a=`<div class="admin">
+import{i as e,l as t}from"./index-fQczqod7.js";import{n,t as r}from"./Scene-DQmjfrAv.js";import{t as i}from"./assetRegistry-DBSWNWD4.js";var a=`<div class="admin">
     <div class="container">
         <div class="flex flex-col gap-4">
             <!-- Reset Quest -->

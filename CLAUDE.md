@@ -62,6 +62,50 @@ project-tsukuyomi/
 - Lazy loading con dynamic imports
 - Router custom con History API
 
+**Sistema de Entities (Scene.js):**
+
+Elementos interactuables se declaran en HTML con data attributes y se auto-registran:
+
+```html
+<img data-entity="egg" />          <!-- this.entity.egg -->
+<button data-entity="button" />    <!-- this.entity.button -->
+<div data-group="lights" />        <!-- this.entities.lights (EntityGroup) -->
+```
+
+- `this.entity.name` — elemento individual (`Entity` wrapper)
+- `this.entities.name` — grupo de elementos (`EntityGroup` wrapper)
+
+**API de Entity:**
+```javascript
+this.entity.egg.play("anim-shake")       // one-shot, await
+this.entity.egg.start("anim-wobble")     // loop
+this.entity.egg.stop()                   // para loop
+this.entity.egg.show() / .hide()
+this.entity.egg.addClass("cls") / .removeClass("cls")
+this.entity.egg.onClick(() => ...)       // con cleanup automático
+this.entity.egg.on("mouseenter", () => ...) // cualquier evento
+this.entity.egg.el                       // DOM nativo
+```
+
+**API de EntityGroup:**
+```javascript
+this.entities.lights.playAll("anim-shake")           // paralelo
+this.entities.lights.playSequential("anim-shake", 200) // secuencial
+this.entities.lights.eachSequential((e) => e.addClass("on"), 200)
+this.entities.lights.startAll("anim-wobble")
+this.entities.lights.stopAll()
+```
+
+**Helpers de Scene:**
+```javascript
+await this.delay(500)
+await this.showMessage("Hatching...", "Professor")
+await this.playSceneAnim("anim-flash")   // aplica al root de la escena
+await this.runSequence([fn1, fn2, fn3])  // cancelable en onExit()
+```
+
+El cleanup de animaciones es automático en `onExit()`. Las escenas no necesitan `onExit()` custom si solo usan el sistema de entities.
+
 **Estado global:**
 ```javascript
 store = {

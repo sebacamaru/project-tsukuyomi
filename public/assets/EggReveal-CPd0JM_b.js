@@ -1,4 +1,4 @@
-import{t as e}from"./assetRegistry-BWgvEy0G.js";var t=class{constructor(e,t){this.context=e,this.data=t||{},this.element=null,this._keyHandler=null}render(){let t=document.createElement(`div`);return t.className=`egg-reveal`,t.innerHTML=`
+import{t as e}from"./assetRegistry-DBSWNWD4.js";var t=class{constructor(e,t){this.context=e,this.data=t||{},this.element=null,this._keyHandler=null}render(){let t=document.createElement(`div`);return t.className=`egg-reveal`,t.innerHTML=`
       <div class="egg-reveal__content">
         <div class="egg-reveal__egg-container">
           <img class="egg-reveal__egg" src="${e(`sprite-egg.png`)}" alt="Huevo misterioso" />

@@ -1,4 +1,4 @@
-import{l as e}from"./index-wKzs5zvE.js";import{t}from"./Scene-BghZtMD0.js";var n=`<div class="dashboard">
+import{l as e}from"./index-fQczqod7.js";import{t}from"./Scene-DQmjfrAv.js";var n=`<div class="dashboard">
     <div class="container">
         <h1>
             ¡Bienvenido, <span class="text-primary">\${{ user.username }}</span>!

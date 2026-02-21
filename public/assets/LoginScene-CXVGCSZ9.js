@@ -1,4 +1,4 @@
-import{n as e,r as t}from"./index-wKzs5zvE.js";import{t as n}from"./Scene-BghZtMD0.js";/* empty css             */var r=`<div class="auth">
+import{n as e,r as t}from"./index-fQczqod7.js";import{t as n}from"./Scene-DQmjfrAv.js";/* empty css             */var r=`<div class="auth">
     <div class="auth__container">
         <p class="auth__subtitle">Inicia sesión para continuar</p>
 
