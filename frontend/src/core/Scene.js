@@ -105,6 +105,9 @@ export class Scene {
     this.backgroundClass = null; // Propiedad opcional para clase CSS de background
     this._originalBackground = null; // Guardar el background original
     this._cutsceneModeActive = false; // Track si esta escena activó cutscene mode
+    this.useSpriteRenderer = false; // Opt-in: estructura dual sprite-renderer + ui-renderer
+    this.spriteRoot = null; // Ref al div de sprites (90x135 escalado)
+    this.uiRoot = null; // Ref al div de UI overlay (no escalado)
   }
 
   /**
@@ -125,9 +128,29 @@ export class Scene {
       root.style.background = this.background;
     }
 
-    // Renderizar HTML de la escena
-    const html = await this.getHTML();
-    root.innerHTML = html;
+    if (this.useSpriteRenderer) {
+      // Estructura dual: sprite-renderer (escalado) + ui-renderer (overlay)
+      root.innerHTML = `
+        <div id="sprite-renderer"></div>
+        <div id="ui-renderer"></div>
+      `;
+      this.spriteRoot = root.querySelector("#sprite-renderer");
+      this.uiRoot = root.querySelector("#ui-renderer");
+
+      const spriteHTML = await this.getSpriteHTML();
+      if (spriteHTML) this.spriteRoot.innerHTML = spriteHTML;
+
+      const uiHTML = await this.getHTML();
+      if (uiHTML) this.uiRoot.innerHTML = uiHTML;
+
+      this._updateSpriteScale();
+      this._resizeHandler = () => this._updateSpriteScale();
+      window.addEventListener("resize", this._resizeHandler);
+    } else {
+      // Comportamiento estándar (sin cambios)
+      const html = await this.getHTML();
+      root.innerHTML = html;
+    }
 
     // Auto-registrar entities y grupos desde data attributes
     this._registerEntities();
@@ -176,6 +199,14 @@ export class Scene {
     }
     this.entity = {};
     this.entities = {};
+
+    // Cleanup resize listener del sprite-renderer
+    if (this._resizeHandler) {
+      window.removeEventListener("resize", this._resizeHandler);
+      this._resizeHandler = null;
+    }
+    this.spriteRoot = null;
+    this.uiRoot = null;
 
     // Cleanup automático de todos los event handlers
     this.eventHandlers.forEach(({ element, event, handler }) => {
@@ -229,11 +260,32 @@ export class Scene {
   }
 
   /**
-   * DEBE ser implementado por subclases
+   * DEBE ser implementado por subclases (UI-only scenes)
+   * En escenas con useSpriteRenderer=true, retorna HTML para el ui-renderer (overlay)
    * Retorna el HTML de la escena (string o Promise<string>)
    */
   async getHTML() {
+    if (this.useSpriteRenderer) return "";
     throw new Error("getHTML() must be implemented by subclass");
+  }
+
+  /**
+   * PUEDE ser sobrescrito por subclases con useSpriteRenderer=true
+   * Retorna HTML para el sprite-renderer (90x135px escalado)
+   */
+  async getSpriteHTML() {
+    return "";
+  }
+
+  /**
+   * Calcula y aplica la escala del sprite-renderer relativo al #app-wrapper
+   */
+  _updateSpriteScale() {
+    if (!this.spriteRoot) return;
+    const wrapper = document.querySelector("#app-wrapper");
+    if (!wrapper) return;
+    const s = Math.min(wrapper.clientWidth / 90, wrapper.clientHeight / 135);
+    this.spriteRoot.style.transform = `translate(-50%, -50%) scale(${s})`;
   }
 
   /**

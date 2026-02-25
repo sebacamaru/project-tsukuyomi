@@ -106,6 +106,48 @@ await this.runSequence([fn1, fn2, fn3])  // cancelable en onExit()
 
 El cleanup de animaciones es automático en `onExit()`. Las escenas no necesitan `onExit()` custom si solo usan el sistema de entities.
 
+**Sistema Dual de Renderers (Sprite + UI):**
+
+Escenas pueden optar por un sistema de renderizado dual con `this.useSpriteRenderer = true`:
+
+- `#sprite-renderer` — Canvas de 90x135px escalado con CSS transform al `#app-wrapper`. Para pixel art y sprites posicionados.
+- `#ui-renderer` — Overlay sin escalar, z-index superior, pointer-events pass-through. Para tooltips, menús, HUD.
+
+```javascript
+// Escena sprite-only
+class ProfessorScene extends Scene {
+  constructor() {
+    super();
+    this.useSpriteRenderer = true;
+  }
+  async getSpriteHTML() { return spritesHTML; }  // va al sprite-renderer
+}
+
+// Escena mixta (sprites + UI)
+class BattleScene extends Scene {
+  constructor() {
+    super();
+    this.useSpriteRenderer = true;
+  }
+  async getSpriteHTML() { return spritesHTML; }  // sprites escalados
+  async getHTML() { return uiHTML; }             // UI overlay sin escalar
+}
+```
+
+- `getSpriteHTML()` → contenido del sprite-renderer (coordenadas en 90x135px)
+- `getHTML()` → contenido del ui-renderer (o escena normal si `useSpriteRenderer=false`)
+- `this.spriteRoot` / `this.uiRoot` → refs a los divs
+- Entities de ambos renderers se registran y usan igual
+- Escenas UI-only no necesitan cambios (comportamiento por defecto)
+
+**Archivos de escena con sprites:**
+```
+ui/scenes/incubator/
+├── incubator-sprites.html   # Template del sprite-renderer
+├── incubator.html           # Template del ui-renderer (overlay)
+└── incubator.css            # Background + posicionamiento de sprites
+```
+
 **Estado global:**
 ```javascript
 store = {
