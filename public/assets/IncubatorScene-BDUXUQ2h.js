@@ -1,0 +1,4 @@
+import{c as e}from"./index-7r-Yw5Rn.js";import{t}from"./Scene-6Sn1BImB.js";var n=`<div class="incubator-spr__incubator"></div>
+<div data-entity="egg" class="incubator-spr__egg"></div>
+<div data-entity="button" class="incubator-spr__button"></div>
+`,r=class extends t{constructor(){super(),this.backgroundClass=`incubator-background`,this.currentEgg=null}async getSpriteHTML(){return n}async initUI(){await this.loadEgg(),this.entity.button.onClick(()=>this.onButtonPress())}async loadEgg(){await e.getUserEggs(`incubating`),this.currentEgg=e.getIncubatingEggs()[0]||null}async onButtonPress(){if(console.warn(`Hiciste click en el botón`),!this.currentEgg){await this.entity.button.play(`anim-press`);return}await this.runSequence([()=>this.entity.button.play(`anim-press`),()=>this.shakeEgg(3)])}async shakeEgg(e){}};export{r as IncubatorScene};

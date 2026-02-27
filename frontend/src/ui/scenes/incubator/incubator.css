@@ -1,24 +1,40 @@
 /* === INCUBATOR SCENE === */
 
 .incubator-background {
-    background: linear-gradient(135deg, #7d1b4e 0%, #1a1a2e 100%) !important;
+    background: none !important;
 }
 
-/* === SPRITES (90x135 canvas) === */
+/* === SPRITES === */
 
-.incubator-spr__machine {
+.incubator-spr__incubator {
     position: absolute;
     left: 0;
     top: 0;
     width: 90px;
     height: 135px;
+    background-image: url("@/assets/sprites/spr--incubator.webp");
 }
 
 .incubator-spr__button {
     position: absolute;
     left: 28px;
-    top: 105px;
+    bottom: 9px;
     width: 34px;
     height: 18px;
     cursor: pointer;
+    background-image: url("@/assets/sprites/spr--incubator-button.webp");
+}
+
+.incubator-spr__button:active {
+    background-position: bottom;
+}
+
+.incubator-spr__egg {
+    position: absolute;
+    left: 32px;
+    top: 46px;
+    width: 26px;
+    height: 34px;
+    background-image: url("@/assets/sprites/spr--incubator-egg.webp");
+    animation: bounce 3s ease-in-out infinite;
 }

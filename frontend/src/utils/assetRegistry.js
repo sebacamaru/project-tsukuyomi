@@ -4,7 +4,7 @@
  */
 
 const imageModules = import.meta.glob(
-  "../assets/images/*.{png,jpg,jpeg,svg,gif,webp}",
+  ["../assets/images/*.{png,jpg,jpeg,svg,gif,webp}", "../assets/sprites/*.{png,jpg,jpeg,svg,gif,webp}"],
   { eager: true, import: "default" }
 );
 

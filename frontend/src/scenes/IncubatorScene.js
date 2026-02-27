@@ -2,12 +2,10 @@ import spritesHTML from "../ui/scenes/incubator/incubator-sprites.html?raw";
 import "../ui/scenes/incubator/incubator.css";
 import { Scene } from "../core/Scene.js";
 import { eggService } from "../services/eggService.js";
-import { getAssetUrl } from "../utils/assetRegistry.js";
 
 export class IncubatorScene extends Scene {
   constructor() {
     super();
-    this.useSpriteRenderer = true;
     this.backgroundClass = "incubator-background";
     this.currentEgg = null;
   }
@@ -17,9 +15,6 @@ export class IncubatorScene extends Scene {
   }
 
   async initUI() {
-    this.entity.machine.el.src = getAssetUrl("spr-incubator.png");
-    this.entity.button.el.src = getAssetUrl("spr-incubator-button.png");
-
     await this.loadEgg();
     this.entity.button.onClick(() => this.onButtonPress());
   }
