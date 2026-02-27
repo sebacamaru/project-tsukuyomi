@@ -15,6 +15,45 @@
     background-image: url("@/assets/sprites/spr--incubator.webp");
 }
 
+.incubator-div__indicator {
+    position: absolute;
+    left: 33px;
+    top: 21px;
+    width: 24px;
+    height: 13px;
+    overflow: hidden;
+}
+
+.incubator-div__indicator .wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.incubator-div__indicator .wrapper .srp__actions {
+    position: absolute;
+    width: 90px;
+    height: 13px;
+    background-image: url("@/assets/sprites/spr--incubator-actions-indicator.webp");
+}
+
+.incubator-div__indicator .wrapper .srp__mask {
+    position: absolute;
+    width: 24px;
+    height: 13px;
+    background-image: url("@/assets/sprites/spr--incubator-indicator-mask.webp");
+}
+
+.incubator-spr__egg {
+    position: absolute;
+    left: 32px;
+    top: 46px;
+    width: 26px;
+    height: 34px;
+    background-image: url("@/assets/sprites/spr--incubator-egg.webp");
+    animation: bounce 3s ease-in-out infinite;
+}
+
 .incubator-spr__button {
     position: absolute;
     left: 28px;
@@ -27,14 +66,4 @@
 
 .incubator-spr__button:active {
     background-position: bottom;
-}
-
-.incubator-spr__egg {
-    position: absolute;
-    left: 32px;
-    top: 46px;
-    width: 26px;
-    height: 34px;
-    background-image: url("@/assets/sprites/spr--incubator-egg.webp");
-    animation: bounce 3s ease-in-out infinite;
 }

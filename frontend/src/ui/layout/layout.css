@@ -4,16 +4,16 @@
  */
 
 #app-wrapper {
-    width: 360px;
+    /*width: 360px;
     height: 640px;
-    /*width: 100%;
-    height: 100%;*/
+    /*outline: 1px solid red;*/
+    width: 100%;
+    height: 100%;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     overflow: hidden;
-    outline: 1px solid red;
 }
 
 #ui-root {
@@ -66,11 +66,16 @@
 
 #navbar-container {
     flex-shrink: 0;
-    transition: transform var(--transition-slow);
+    height: 100px;
+    transition:
+        transform var(--transition-slow),
+        height var(--transition-slow);
 }
 
 /* Ocultar navbar en modo cutscene con transición suave */
 #navbar-container.navbar-container--hidden {
+    height: 0;
     transform: translateY(126px);
     pointer-events: none;
+    overflow: hidden;
 }

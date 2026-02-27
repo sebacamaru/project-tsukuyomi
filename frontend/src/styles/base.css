@@ -103,7 +103,7 @@ a:hover {
 }
 
 /* Imágenes y media */
-img {
+img.rounded {
     border-radius: var(--radius);
 }
 

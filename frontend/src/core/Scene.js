@@ -105,7 +105,6 @@ export class Scene {
     this.backgroundClass = null; // Propiedad opcional para clase CSS de background
     this._originalBackground = null; // Guardar el background original
     this._cutsceneModeActive = false; // Track si esta escena activó cutscene mode
-    this.useSpriteRenderer = false; // Opt-in: estructura dual sprite-renderer + ui-renderer
     this.spriteRoot = null; // Ref al div de sprites (90x135 escalado)
     this.uiRoot = null; // Ref al div de UI overlay (no escalado)
   }
@@ -128,7 +127,9 @@ export class Scene {
       root.style.background = this.background;
     }
 
-    if (this.useSpriteRenderer) {
+    const spriteHTML = await this.getSpriteHTML();
+
+    if (spriteHTML) {
       // Estructura dual: sprite-renderer (escalado) + ui-renderer (overlay)
       root.innerHTML = `
         <div id="sprite-renderer"></div>
@@ -137,8 +138,7 @@ export class Scene {
       this.spriteRoot = root.querySelector("#sprite-renderer");
       this.uiRoot = root.querySelector("#ui-renderer");
 
-      const spriteHTML = await this.getSpriteHTML();
-      if (spriteHTML) this.spriteRoot.innerHTML = spriteHTML;
+      this.spriteRoot.innerHTML = spriteHTML;
 
       const uiHTML = await this.getHTML();
       if (uiHTML) this.uiRoot.innerHTML = uiHTML;
@@ -261,17 +261,16 @@ export class Scene {
 
   /**
    * DEBE ser implementado por subclases (UI-only scenes)
-   * En escenas con useSpriteRenderer=true, retorna HTML para el ui-renderer (overlay)
+   * En escenas con sprites, retorna HTML para el ui-renderer (overlay)
    * Retorna el HTML de la escena (string o Promise<string>)
    */
   async getHTML() {
-    if (this.useSpriteRenderer) return "";
-    throw new Error("getHTML() must be implemented by subclass");
+    return "";
   }
 
   /**
-   * PUEDE ser sobrescrito por subclases con useSpriteRenderer=true
-   * Retorna HTML para el sprite-renderer (90x135px escalado)
+   * Override para activar el sistema dual de renderers automáticamente
+   * Si retorna HTML, se crea sprite-renderer (90x135px escalado) + ui-renderer (overlay)
    */
   async getSpriteHTML() {
     return "";
@@ -281,10 +280,8 @@ export class Scene {
    * Calcula y aplica la escala del sprite-renderer relativo al #app-wrapper
    */
   _updateSpriteScale() {
-    if (!this.spriteRoot) return;
-    const wrapper = document.querySelector("#app-wrapper");
-    if (!wrapper) return;
-    const s = Math.min(wrapper.clientWidth / 90, wrapper.clientHeight / 135);
+    if (!this.spriteRoot || !this.root) return;
+    const s = Math.min(this.root.clientWidth / 90, this.root.clientHeight / 135);
     this.spriteRoot.style.transform = `translate(-50%, -50%) scale(${s})`;
   }
 
@@ -375,6 +372,7 @@ export class Scene {
 
     SceneManager._applyCutsceneMode(true);
     this._cutsceneModeActive = true;
+    this._recalcSpriteAfterTransition();
   }
 
   /**
@@ -388,6 +386,18 @@ export class Scene {
 
     SceneManager._applyCutsceneMode(false);
     this._cutsceneModeActive = false;
+    this._recalcSpriteAfterTransition();
+  }
+
+  /**
+   * Re-calcula escala del sprite-renderer después de que la transición
+   * de navbar termine (height cambia → scene-outlet cambia)
+   */
+  _recalcSpriteAfterTransition() {
+    if (!this.spriteRoot) return;
+    const navbar = document.querySelector("#navbar-container");
+    if (!navbar) return;
+    navbar.addEventListener("transitionend", () => this._updateSpriteScale(), { once: true });
   }
 
   /**

@@ -108,34 +108,26 @@ El cleanup de animaciones es automático en `onExit()`. Las escenas no necesitan
 
 **Sistema Dual de Renderers (Sprite + UI):**
 
-Escenas pueden optar por un sistema de renderizado dual con `this.useSpriteRenderer = true`:
+El sistema dual se activa automáticamente si `getSpriteHTML()` retorna contenido:
 
 - `#sprite-renderer` — Canvas de 90x135px escalado con CSS transform al `#app-wrapper`. Para pixel art y sprites posicionados.
 - `#ui-renderer` — Overlay sin escalar, z-index superior, pointer-events pass-through. Para tooltips, menús, HUD.
 
 ```javascript
-// Escena sprite-only
+// Escena sprite-only (getSpriteHTML activa el modo dual automáticamente)
 class ProfessorScene extends Scene {
-  constructor() {
-    super();
-    this.useSpriteRenderer = true;
-  }
   async getSpriteHTML() { return spritesHTML; }  // va al sprite-renderer
 }
 
 // Escena mixta (sprites + UI)
 class BattleScene extends Scene {
-  constructor() {
-    super();
-    this.useSpriteRenderer = true;
-  }
   async getSpriteHTML() { return spritesHTML; }  // sprites escalados
   async getHTML() { return uiHTML; }             // UI overlay sin escalar
 }
 ```
 
-- `getSpriteHTML()` → contenido del sprite-renderer (coordenadas en 90x135px)
-- `getHTML()` → contenido del ui-renderer (o escena normal si `useSpriteRenderer=false`)
+- `getSpriteHTML()` → contenido del sprite-renderer (coordenadas en 90x135px). Si retorna string no vacío, activa modo dual.
+- `getHTML()` → contenido del ui-renderer (o escena normal si no hay sprites)
 - `this.spriteRoot` / `this.uiRoot` → refs a los divs
 - Entities de ambos renderers se registran y usan igual
 - Escenas UI-only no necesitan cambios (comportamiento por defecto)

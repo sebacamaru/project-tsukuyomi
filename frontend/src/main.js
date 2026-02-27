@@ -56,6 +56,13 @@ async function start() {
 
   // Inicializar router (esto carga la ruta inicial automáticamente)
   router.init(SceneManager);
+
+  // Fadeout del splash screen
+  const splash = document.getElementById("splash");
+  if (splash) {
+    splash.style.opacity = "0";
+    splash.addEventListener("transitionend", () => splash.remove(), { once: true });
+  }
 }
 
 start();

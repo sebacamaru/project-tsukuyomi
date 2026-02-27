@@ -1,4 +1,4 @@
-import{l as e,o as t,s as n}from"./index-7r-Yw5Rn.js";import{t as r}from"./Scene-6Sn1BImB.js";import{t as i}from"./assetRegistry-B3bpuhkC.js";var a=`<div class="marketplace">
+import{l as e,o as t,s as n}from"./index-zi4sCZYj.js";import{t as r}from"./Scene-DWeb6wuE.js";import{t as i}from"./assetRegistry-B3bpuhkC.js";var a=`<div class="marketplace">
     <header class="marketplace__header">
         <h1>Marketplace</h1>
         <div class="marketplace__gold"><span id="goldAmount">0</span>g</div>
