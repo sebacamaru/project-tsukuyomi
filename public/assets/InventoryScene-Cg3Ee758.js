@@ -1,4 +1,4 @@
-import{a as e,c as t,l as n,o as r,s as i}from"./index-zi4sCZYj.js";import{n as a,t as o}from"./Scene-DWeb6wuE.js";import{t as s}from"./assetRegistry-B3bpuhkC.js";var c=`<div class="inventory">
+import{a as e,c as t,l as n,o as r,s as i}from"./index-BVPkigdB.js";import{n as a,t as o}from"./Scene-DWmEMtPM.js";import{t as s}from"./assetRegistry-Ds_wQa9b.js";var c=`<div class="inventory">
     <div class="container">
         <div class="inventory__header">
             <h1>Inventario</h1>

@@ -283,6 +283,7 @@ export class Scene {
     if (!this.spriteRoot || !this.root) return;
     const s = Math.min(this.root.clientWidth / 90, this.root.clientHeight / 135);
     this.spriteRoot.style.transform = `translate(-50%, -50%) scale(${s})`;
+    this._spriteScale = s;
   }
 
   /**
@@ -320,15 +321,25 @@ export class Scene {
     el.classList.remove(animClass);
     void el.offsetWidth;
     return new Promise((resolve) => {
-      el.addEventListener(
-        "animationend",
-        () => {
-          el.classList.remove(animClass);
-          resolve();
-        },
-        { once: true },
-      );
+      let resolved = false;
+      const done = () => {
+        if (resolved) return;
+        resolved = true;
+        el.classList.remove(animClass);
+        resolve();
+      };
+      el.addEventListener("animationend", done, { once: true });
       el.classList.add(animClass);
+      // Fallback: si animationend nunca se dispara (reduced-motion, clase sin keyframes, etc)
+      const computed = getComputedStyle(el);
+      const duration = parseFloat(computed.animationDuration) || 0;
+      const delay = parseFloat(computed.animationDelay) || 0;
+      const totalMs = (duration + delay) * 1000;
+      if (totalMs <= 0) {
+        done();
+      } else {
+        setTimeout(done, totalMs + 50);
+      }
     });
   }
 
