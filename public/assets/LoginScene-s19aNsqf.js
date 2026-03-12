@@ -1,4 +1,4 @@
-import{n as e,r as t}from"./index-BVPkigdB.js";import{t as n}from"./Scene-DWmEMtPM.js";/* empty css             */var r=`<div class="auth">
+import{i as e,r as t}from"./index-CqwTlPNv.js";import{t as n}from"./Scene-RZqpEbS7.js";/* empty css             */var r=`<div class="auth">
     <div class="auth__container">
         <p class="auth__subtitle">Inicia sesión para continuar</p>
 
@@ -40,4 +40,4 @@ import{n as e,r as t}from"./index-BVPkigdB.js";import{t as n}from"./Scene-DWmEMt
         </p>
     </div>
 </div>
-`,i=class extends n{async getHTML(){return r}async initUI(){this.enterCutsceneMode(),this.on(this.$(`#auth-form`),`submit`,e=>{this.handleSubmit(e)})}async handleSubmit(n){n.preventDefault();let r=this.$(`#email`).value.trim(),i=this.$(`#password`).value,a=this.$(`#auth-submit`);if(!r||!i){this.showError(`Completa todos los campos`);return}a.disabled=!0,this.clearError();let o=await t.login(r,i);a.disabled=!1,o.success?e.navigate(`/`):this.showError(o.error)}showError(e){this.$(`#auth-error`).textContent=e}clearError(){this.$(`#auth-error`).textContent=``}};export{i as LoginScene};
+`,i=class extends n{async getHTML(){return r}async initUI(){this.enterCutsceneMode(),this.on(this.$(`#auth-form`),`submit`,e=>{this.handleSubmit(e)})}async handleSubmit(n){n.preventDefault();let r=this.$(`#email`).value.trim(),i=this.$(`#password`).value,a=this.$(`#auth-submit`);if(!r||!i){this.showError(`Completa todos los campos`);return}a.disabled=!0,this.clearError();let o=await e.login(r,i);a.disabled=!1,o.success?t.navigate(`/`):this.showError(o.error)}showError(e){this.$(`#auth-error`).textContent=e}clearError(){this.$(`#auth-error`).textContent=``}};export{i as LoginScene};

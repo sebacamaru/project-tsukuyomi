@@ -17,7 +17,9 @@ export class IncubatorScene extends Scene {
 
   async initUI() {
     await this.loadEgg();
+    this.startBouncingEgg();
     this.entity.button.onClick(() => this.onButtonPress());
+    this.entity.egg.onClick(() => this.entity.egg.playOver("anim-egg-tap"));
 
     this._actionSwiper = new SpriteSwiper(this.entity.actionSlider.el, {
       itemWidth: 24,
@@ -46,25 +48,35 @@ export class IncubatorScene extends Scene {
   }
 
   async onButtonPress() {
-    // if (!this.currentEgg) {
-    //   await this.entity.button.play("anim-press");
-    //   return;
-    // }
+    if (this._buttonPressed) return;
+    this._buttonPressed = true;
 
     await this.runSequence([
-      () => console.log("holis1"),
       () => this.entity.button.play("anim-press"),
       () => {
-        console.log("holis2");
         this._actionSwiper.disable();
-        this.entity.charging.start("anim-fade-in");
         this.entity.button.addClass("pressed");
       },
-      () => this.shakeEgg(3),
+      () => this.shutdownAlerts(),
+      () => this.shakeEgg(1),
+      () => this.startBouncingEgg(),
+      () => this.entity.charging.start("anim-fade-in"),
     ]);
   }
 
   async shakeEgg(times) {
-    // TODO: implementar con sprite de egg
+    for (let i = 0; i < times; i++) {
+      this.entity.spriteRenderer.play("anim-incubator-shake");
+      await this.entity.egg.playOver("anim-egg-shake");
+    }
+  }
+
+  async startBouncingEgg() {
+    this.entity.egg.start("anim-egg-bounce");
+  }
+
+  async shutdownAlerts() {
+    this.entity.lights.fadeOut(1000);
+    this.entity.led.fadeOut(1000);
   }
 }

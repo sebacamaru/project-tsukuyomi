@@ -19,6 +19,11 @@ class Entity {
     return this._scene.playAnim(this.el, animClass);
   }
 
+  /** Animación one-shot sin parar el loop activo (usa WAAPI para no pisar CSS animations) */
+  async playOver(animClass) {
+    return this._scene.playOverAnim(this.el, animClass);
+  }
+
   /** Animación loop. Retorna this para chaining */
   start(animClass) {
     if (this._stopFn) this.stop();
@@ -37,6 +42,24 @@ class Entity {
 
   show() { this.el.hidden = false; return this; }
   hide() { this.el.hidden = true; return this; }
+
+  async fadeIn(duration = 300) {
+    this.el.style.opacity = '0';
+    this.show();
+    await this.el.animate([{ opacity: 0 }, { opacity: 1 }], { duration }).finished;
+    this.el.style.opacity = '';
+  }
+
+  getOpacity() {
+    return parseFloat(getComputedStyle(this.el).opacity ?? '1');
+  }
+
+  async fadeOut(duration = 300, from = null) {
+    const startOpacity = from ?? this.getOpacity();
+    await this.el.animate([{ opacity: startOpacity }, { opacity: 0 }], { duration }).finished;
+    this.hide();
+  }
+
   addClass(cls) { this.el.classList.add(cls); return this; }
   removeClass(cls) { this.el.classList.remove(cls); return this; }
   toggle(cls) { this.el.classList.toggle(cls); return this; }
@@ -154,6 +177,12 @@ export class Scene {
 
     // Auto-registrar entities y grupos desde data attributes
     this._registerEntities();
+
+    // Registrar renderers como entities (después de _registerEntities para no ser pisados)
+    if (this.spriteRoot) {
+      this.entity.spriteRenderer = new Entity(this.spriteRoot, this);
+      this.entity.uiRenderer = new Entity(this.uiRoot, this);
+    }
 
     // Inicializar UI específica de la escena
     await this.initUI(root);
@@ -328,7 +357,12 @@ export class Scene {
         el.classList.remove(animClass);
         resolve();
       };
-      el.addEventListener("animationend", done, { once: true });
+      const onEnd = (e) => {
+        if (e.target !== el) return;
+        el.removeEventListener("animationend", onEnd);
+        done();
+      };
+      el.addEventListener("animationend", onEnd);
       el.classList.add(animClass);
       // Fallback: si animationend nunca se dispara (reduced-motion, clase sin keyframes, etc)
       const computed = getComputedStyle(el);
@@ -341,6 +375,29 @@ export class Scene {
         setTimeout(done, totalMs + 50);
       }
     });
+  }
+
+  /**
+   * Ejecuta una animación one-shot via WAAPI sin interferir con CSS animations activas.
+   * Extrae keyframes y timing de la clase CSS, los reproduce con el.animate().
+   */
+  playOverAnim(el, animClass) {
+    const tmp = document.createElement("div");
+    tmp.className = animClass;
+    (el.parentNode || document.body).appendChild(tmp);
+    void tmp.offsetWidth;
+
+    const anims = tmp.getAnimations();
+    if (!anims.length) {
+      tmp.remove();
+      return Promise.resolve();
+    }
+
+    const keyframes = anims[0].effect.getKeyframes();
+    const timing = anims[0].effect.getTiming();
+    tmp.remove();
+
+    return el.animate(keyframes, timing).finished;
   }
 
   /**

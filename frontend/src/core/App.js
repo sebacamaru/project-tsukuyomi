@@ -1,4 +1,3 @@
-import { Renderer } from "./Renderer.js";
 import { SceneManager } from "./SceneManager.js";
 import { router } from "./Router.js";
 import { loadingIndicator } from "../ui/components/LoadingIndicator/LoadingIndicator.js";
@@ -10,9 +9,7 @@ import "../ui/layout/layout.css";
 import "../styles/chigui.css";
 
 export class App {
-  constructor() {
-    this.renderer = new Renderer();
-  }
+  constructor() {}
 
   async init() {
     // Crear wrapper contenedor primero (el renderer lo necesita)
@@ -20,10 +17,7 @@ export class App {
     appWrapper.id = "app-wrapper";
     document.body.appendChild(appWrapper);
 
-    // Inicializar renderer PIXI (canvas de fondo) con loading indicator
-    await loadingIndicator.wrap(async () => {
-      await this.renderer.init(appWrapper);
-    });
+    await loadingIndicator.wrap(async () => {});
 
     const uiRoot = document.createElement("div");
     uiRoot.id = "ui-root";

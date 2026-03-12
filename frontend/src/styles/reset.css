@@ -1,4 +1,5 @@
 /* Reset moderno y minimalista */
+[hidden] { display: none !important; }
 *,
 *::before,
 *::after {

@@ -40,12 +40,16 @@
 }
 
 .srp__charging.anim-fade-in {
-    animation: chargingFadeIn 0.3s ease forwards;
+    animation: chargingFadeIn 0.7s ease forwards;
 }
 
 @keyframes chargingFadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 .incubator-div__indicator .wrapper .srp__actions {
@@ -66,6 +70,39 @@
     pointer-events: none;
 }
 
+.incubator-div__lights {
+    position: absolute;
+    left: 24px;
+    top: 13px;
+    width: 42px;
+    height: 4px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.incubator-spr__light {
+    background-image: url("@/assets/sprites/spr--incubator-light-on.webp");
+    width: 6px;
+    height: 4px;
+    animation: lightOn 0.6s infinite;
+}
+
+.incubator-spr__light:nth-child(2) {
+    animation-delay: -0.3s;
+}
+
+@keyframes lightOn {
+    0% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
 .incubator-spr__egg {
     position: absolute;
     left: 32px;
@@ -73,7 +110,77 @@
     width: 26px;
     height: 34px;
     background-image: url("@/assets/sprites/spr--incubator-egg.webp");
+    opacity: 0.8;
+}
+
+.anim-egg-bounce {
     animation: bounce 3s ease-in-out infinite;
+}
+
+.anim-egg-shake {
+    animation: eggShake 0.7s ease;
+}
+
+.anim-incubator-shake {
+    animation: incubatorShake 0.5s;
+}
+
+.anim-egg-tap {
+    animation: eggTap 0.7s;
+}
+
+@keyframes eggTap {
+    0% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(1px);
+    }
+    50% {
+        transform: translateX(-1px);
+    }
+    75% {
+        transform: translateX(1px);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+@keyframes incubatorShake {
+    0% {
+        translate: 0;
+    }
+    25% {
+        translate: 7px;
+    }
+    50% {
+        translate: -7px;
+    }
+    75% {
+        translate: 7px;
+    }
+    100% {
+        translate: 0;
+    }
+}
+
+@keyframes eggShake {
+    0% {
+        rotate: 0;
+    }
+    25% {
+        rotate: 8deg;
+    }
+    50% {
+        rotate: -8deg;
+    }
+    75% {
+        rotate: 8deg;
+    }
+    100% {
+        rotate: 0;
+    }
 }
 
 .incubator-spr__button {
@@ -86,7 +193,107 @@
     background-image: url("@/assets/sprites/spr--incubator-button.webp");
 }
 
+.incubator-spr__glass-bg {
+    position: absolute;
+    left: 21px;
+    top: 35px;
+    width: 48px;
+    height: 51px;
+    background-image: url("@/assets/sprites/spr--incubator-glass-bg.webp");
+    animation: glassBounce 5s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes glassBounce {
+    0%,
+    100% {
+        background-position-y: 1px;
+    }
+    50% {
+        background-position-y: -46px;
+    }
+}
+
+.incubator-spr__glass-mask {
+    position: absolute;
+    left: 21px;
+    top: 35px;
+    width: 48px;
+    height: 51px;
+    background-image: url("@/assets/sprites/spr--incubator-glass-mask.webp");
+    pointer-events: none;
+}
+
 .incubator-spr__button:active,
 .incubator-spr__button.pressed {
     background-position: bottom;
+}
+
+.incubator-spr__led-notification {
+    position: absolute;
+    left: 40px;
+    top: 3px;
+    width: 10px;
+    height: 10px;
+    background-image: url("@/assets/sprites/spr--incubator-led-notifications.webp");
+    opacity: 0;
+}
+
+.incubator-spr__led-notification {
+    background-position: 0 0;
+    animation: ledOn 2s infinite;
+}
+
+@keyframes ledOn {
+    0% {
+        opacity: 0;
+    }
+    25% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 0.9;
+    }
+    25% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+.incubator-div__temperature,
+.incubator-div__humidity {
+    position: absolute;
+    bottom: 34px;
+    width: 14px;
+    height: 13px;
+    font-size: 6.5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    line-height: 7px;
+    color: #071821;
+}
+
+.incubator-div__temperature span.number,
+.incubator-div__humidity span.number {
+    font-family: var(--font-pixel);
+    display: block;
+}
+
+.incubator-div__temperature span.sign,
+.incubator-div__humidity span.sign {
+    display: block;
+    font-size: 2.5px;
+    line-height: 1px;
+    opacity: 0.5;
+}
+
+.incubator-div__temperature {
+    left: 28px;
+}
+.incubator-div__humidity {
+    right: 28px;
 }
