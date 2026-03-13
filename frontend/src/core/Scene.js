@@ -2,6 +2,14 @@ import { initLazyImages } from "../utils/lazyLoader.js";
 import { loadingIndicator } from "../ui/components/LoadingIndicator/LoadingIndicator.js";
 import { SceneManager } from "./SceneManager.js";
 
+const EASINGS = {
+  linear: (t) => t,
+  "ease-out": (t) => 1 - Math.pow(1 - t, 3),
+  "ease-in": (t) => t * t * t,
+  "ease-in-out": (t) =>
+    t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2,
+};
+
 /**
  * Wrapper para elementos DOM interactuables/animables
  * Registrados automáticamente via data-entity="name" en HTML
@@ -37,38 +45,117 @@ class Entity {
       this._stopFn();
       this._stopFn = null;
     }
+    if (this._cancelNumber) this._cancelNumber();
     return this;
   }
 
-  show() { this.el.hidden = false; return this; }
-  hide() { this.el.hidden = true; return this; }
+  show() {
+    this.el.hidden = false;
+    return this;
+  }
+  hide() {
+    this.el.hidden = true;
+    return this;
+  }
 
   async fadeIn(duration = 300) {
-    this.el.style.opacity = '0';
+    this.el.style.opacity = "0";
     this.show();
-    await this.el.animate([{ opacity: 0 }, { opacity: 1 }], { duration }).finished;
-    this.el.style.opacity = '';
+    await this.el.animate([{ opacity: 0 }, { opacity: 1 }], { duration })
+      .finished;
+    this.el.style.opacity = "";
   }
 
   getOpacity() {
-    return parseFloat(getComputedStyle(this.el).opacity ?? '1');
+    return parseFloat(getComputedStyle(this.el).opacity ?? "1");
   }
 
   async fadeOut(duration = 300, from = null) {
     const startOpacity = from ?? this.getOpacity();
-    await this.el.animate([{ opacity: startOpacity }, { opacity: 0 }], { duration }).finished;
+    await this.el.animate([{ opacity: startOpacity }, { opacity: 0 }], {
+      duration,
+    }).finished;
     this.hide();
   }
 
-  addClass(cls) { this.el.classList.add(cls); return this; }
-  removeClass(cls) { this.el.classList.remove(cls); return this; }
-  toggle(cls) { this.el.classList.toggle(cls); return this; }
+  /** Animar transición numérica en un hijo (default .number) con easing */
+  async animateNumber(
+    target,
+    {
+      duration = 2200,
+      easing = "ease-out",
+      selector = ".number",
+      round = true,
+    } = {},
+  ) {
+    if (this._cancelNumber) this._cancelNumber();
 
-  onClick(callback) { this._scene.on(this.el, "click", callback); return this; }
-  on(event, callback) { this._scene.on(this.el, event, callback); return this; }
+    const numberEl = this.el.querySelector(selector);
+    if (!numberEl) return;
 
-  get disabled() { return this.el.disabled; }
-  set disabled(v) { this.el.disabled = v; }
+    const from = parseFloat(numberEl.textContent) || 0;
+    const delta = target - from;
+    if (delta === 0) return;
+
+    const easeFn = EASINGS[easing] || EASINGS["ease-out"];
+
+    return new Promise((resolve) => {
+      let rafId,
+        startTime,
+        cancelled = false;
+
+      const cancel = () => {
+        cancelled = true;
+        if (rafId) cancelAnimationFrame(rafId);
+        this._cancelNumber = null;
+        resolve();
+      };
+      this._cancelNumber = cancel;
+
+      const tick = (ts) => {
+        if (cancelled) return;
+        if (!startTime) startTime = ts;
+        const progress = Math.min((ts - startTime) / duration, 1);
+        const current = from + delta * easeFn(progress);
+        numberEl.textContent = round ? Math.round(current) : current.toFixed(1);
+        if (progress < 1) rafId = requestAnimationFrame(tick);
+        else {
+          this._cancelNumber = null;
+          resolve();
+        }
+      };
+      rafId = requestAnimationFrame(tick);
+    });
+  }
+
+  addClass(cls) {
+    this.el.classList.add(cls);
+    return this;
+  }
+  removeClass(cls) {
+    this.el.classList.remove(cls);
+    return this;
+  }
+  toggle(cls) {
+    this.el.classList.toggle(cls);
+    return this;
+  }
+
+  onClick(callback) {
+    this._scene.on(this.el, "click", callback);
+    return this;
+  }
+  on(event, callback) {
+    this._scene.on(this.el, event, callback);
+    return this;
+  }
+
+  get disabled() {
+    return this.el.disabled;
+  }
+  set disabled(v) {
+    this.el.disabled = v;
+  }
 }
 
 /**
@@ -110,8 +197,14 @@ class EntityGroup {
     }
   }
 
-  startAll(animClass) { this.items.forEach((e) => e.start(animClass)); return this; }
-  stopAll() { this.items.forEach((e) => e.stop()); return this; }
+  startAll(animClass) {
+    this.items.forEach((e) => e.start(animClass));
+    return this;
+  }
+  stopAll() {
+    this.items.forEach((e) => e.stop());
+    return this;
+  }
 }
 
 /**
@@ -310,7 +403,10 @@ export class Scene {
    */
   _updateSpriteScale() {
     if (!this.spriteRoot || !this.root) return;
-    const s = Math.min(this.root.clientWidth / 90, this.root.clientHeight / 135);
+    const s = Math.min(
+      this.root.clientWidth / 90,
+      this.root.clientHeight / 135,
+    );
     this.spriteRoot.style.transform = `translate(-50%, -50%) scale(${s})`;
     this._spriteScale = s;
   }
@@ -465,7 +561,9 @@ export class Scene {
     if (!this.spriteRoot) return;
     const navbar = document.querySelector("#navbar-container");
     if (!navbar) return;
-    navbar.addEventListener("transitionend", () => this._updateSpriteScale(), { once: true });
+    navbar.addEventListener("transitionend", () => this._updateSpriteScale(), {
+      once: true,
+    });
   }
 
   /**
@@ -481,9 +579,8 @@ export class Scene {
    * Ejemplo: await this.showMessage("Hatching...", "Professor")
    */
   async showMessage(text, speaker = null) {
-    const { MessageBox } = await import(
-      "../ui/components/MessageBox/MessageBox.js"
-    );
+    const { MessageBox } =
+      await import("../ui/components/MessageBox/MessageBox.js");
     return MessageBox.alert(text, speaker);
   }
 

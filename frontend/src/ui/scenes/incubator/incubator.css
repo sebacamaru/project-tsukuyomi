@@ -1,7 +1,32 @@
 /* === INCUBATOR SCENE === */
 
 .incubator-background {
-    background: none !important;
+    position: relative;
+    background-image: none !important;
+    background-color: #071821 !important;
+}
+
+.incubator-background::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("@/assets/sprites/bg--lines-1.webp");
+    background-repeat: repeat;
+    background-size: 512px;
+    image-rendering: pixelated;
+    animation: bgLinesDiagonal 10s linear infinite;
+    opacity: 0.5;
+    z-index: 0;
+    pointer-events: none;
+}
+
+@keyframes bgLinesDiagonal {
+    from {
+        background-position: 0 0;
+    }
+    to {
+        background-position: 512px 512px;
+    }
 }
 
 /* === SPRITES === */
@@ -200,8 +225,11 @@
     width: 48px;
     height: 51px;
     background-image: url("@/assets/sprites/spr--incubator-glass-bg.webp");
-    animation: glassBounce 5s ease-in-out infinite;
     pointer-events: none;
+}
+
+.incubator-spr__glass-bg.active {
+    animation: glassBounce 5s ease-in-out infinite;
 }
 
 @keyframes glassBounce {
@@ -236,11 +264,25 @@
     width: 10px;
     height: 10px;
     background-image: url("@/assets/sprites/spr--incubator-led-notifications.webp");
-    opacity: 0;
 }
 
-.incubator-spr__led-notification {
+.incubator-spr__led-notification.led-alert {
     background-position: 0 0;
+}
+.incubator-spr__led-notification.led-excellent {
+    background-position: -10px 0;
+}
+.incubator-spr__led-notification.led-meh {
+    background-position: -20px 0;
+}
+.incubator-spr__led-notification.led-good {
+    background-position: -30px 0;
+}
+
+.incubator-spr__led-notification.led-alert,
+.incubator-spr__led-notification.led-excellent,
+.incubator-spr__led-notification.led-meh,
+.incubator-spr__led-notification.led-good {
     animation: ledOn 2s infinite;
 }
 

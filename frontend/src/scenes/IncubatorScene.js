@@ -18,6 +18,7 @@ export class IncubatorScene extends Scene {
   async initUI() {
     await this.loadEgg();
     this.startBouncingEgg();
+    this.setLedNotification("alert");
     this.entity.button.onClick(() => this.onButtonPress());
     this.entity.egg.onClick(() => this.entity.egg.playOver("anim-egg-tap"));
 
@@ -60,7 +61,14 @@ export class IncubatorScene extends Scene {
       () => this.shutdownAlerts(),
       () => this.shakeEgg(1),
       () => this.startBouncingEgg(),
+      () => this.entity.glass.addClass("active"),
       () => this.entity.charging.start("anim-fade-in"),
+      () => {
+        this.entity.temperature.animateNumber(24);
+        this.entity.humidity.animateNumber(68);
+      },
+      () => this.delay(3000),
+      () => this.setLedNotification("excellent", 6000),
     ]);
   }
 
@@ -78,5 +86,27 @@ export class IncubatorScene extends Scene {
   async shutdownAlerts() {
     this.entity.lights.fadeOut(1000);
     this.entity.led.fadeOut(1000);
+  }
+
+  static LED_STATES = ["led-alert", "led-excellent", "led-meh", "led-good"];
+
+  setLedNotification(state, duration = 0) {
+    if (this._ledTimeout) {
+      clearTimeout(this._ledTimeout);
+      this._ledTimeout = null;
+    }
+    const el = this.entity.led;
+    for (const s of IncubatorScene.LED_STATES) el.removeClass(s);
+    if (state) {
+      const cls = state.startsWith("led-") ? state : `led-${state}`;
+      el.show();
+      el.addClass(cls);
+      if (duration > 0) {
+        this._ledTimeout = setTimeout(() => {
+          this._ledTimeout = null;
+          el.fadeOut(300);
+        }, duration);
+      }
+    }
   }
 }
